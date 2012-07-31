@@ -1,0 +1,14 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Version=1.0
+Name=Tilo
+Type=Application
+X-AWN-Type=Applet
+X-AWN-AppletType=Python
+Comment=Tilo consolidated menu for Mate
+Exec=awn-applet -p %k
+X-AWN-AppletExec=Tilo/Tilo.py
+Icon=Tilo/logo.png
+X-AWN-Applet-Category=Utility,Menu
+Name[pt_PT]=Tilo

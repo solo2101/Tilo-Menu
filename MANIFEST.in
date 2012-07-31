@@ -1,0 +1,11 @@
+# include all files in root
+include *
+exclude MANIFEST *~
+
+# include all files in bin (except temp-files)
+recursive-include bin *
+recursive-exclude bin *~
+
+# include all files in src and below (except temp-files and bytecode-files)
+recursive-include src * *.*
+recursive-exclude src *.pyc *.pyo *~

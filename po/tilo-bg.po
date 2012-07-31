@@ -1,0 +1,745 @@
+# Bulgarian translation for tilo
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the tilo package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: tilo\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-06-16 22:37+0000\n"
+"PO-Revision-Date: 2010-06-19 22:30+0000\n"
+"Last-Translator: Svetoslav Stefanov <svetlisashkov@yahoo.com>\n"
+"Language-Team: Bulgarian <bg@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-07-07 17:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: tilo/src/lib/tilo/Globals.py:73
+msgid ""
+"Tilo detected a malicious script in this theme.\n"
+"The script was blocked!\n"
+"You should uninstall the selected theme and contact the website where you "
+"got it.\n"
+"\n"
+"The script that tried to run was:"
+msgstr ""
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "All Applications"
+msgstr "Всички Приложения"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "All Programs"
+msgstr "Всички Програми"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Applications"
+msgstr "Приложения"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect"
+msgstr "Връзка"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect To"
+msgstr "Свързване с"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect To Server"
+msgstr "Свързване със Сървар"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect to Server"
+msgstr "Свързване към сървър"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Control Center"
+msgstr "Контрол Център"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Distro"
+msgstr "Дистрибутор"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Documents"
+msgstr "Документи"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Execute Application"
+msgstr "Изпълни Апликацията"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Favorites"
+msgstr "Любими"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Games"
+msgstr "Игри"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Hdd"
+msgstr ""
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Help And Support"
+msgstr "Помощ и Подкрепа"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Help Center"
+msgstr "Помощен център"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "History"
+msgstr "Хронология"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Home"
+msgstr "Начало"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Install Software"
+msgstr "Инсталирай Софтуера"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Leave"
+msgstr "Напусни"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Lock"
+msgstr "Заключено"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Lock Computer"
+msgstr "Заключи Компютър"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Log Out"
+msgstr "Излизане"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Menu"
+msgstr "Меню"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Music"
+msgstr "Музика"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "My Computer"
+msgstr "Моят компютър"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Personal Folder"
+msgstr "Персонална Папка"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Pictures"
+msgstr "Изображения"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Power"
+msgstr "Захранване"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Programs"
+msgstr "Програми"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent"
+msgstr "Последни"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Applications"
+msgstr "Последно използвани програми"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Documents"
+msgstr "Последни Документи"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Items"
+msgstr "Последни файлове"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Run Application"
+msgstr "Стартиране на програма"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Search for Files"
+msgstr "Търсене на файлове"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Show History"
+msgstr "Покажи Историята"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shut Down"
+msgstr "Изключване"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shut Down..."
+msgstr "Изключване..."
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shutdown Computer"
+msgstr "Изключи Компютъра"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Start"
+msgstr "Старт"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Status"
+msgstr "Статус"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Used"
+msgstr "Използва"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "User"
+msgstr "Потребител"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Videos"
+msgstr "Видео"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Web Bookmarks"
+msgstr "Отметки"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Web Sites"
+msgstr "Уеб Страници"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:342
+#: tilo/src/lib/tilo/Menu_Widgets.py:1078
+#: tilo/src/lib/tilo/Menu_Widgets.py:1089
+#: tilo/src/lib/tilo/Menu_Widgets.py:1118
+#: tilo/src/lib/tilo/Menu_Widgets.py:1149
+#: tilo/src/lib/tilo/Menu_Widgets.py:1334
+#: tilo/src/lib/tilo/Menu_Widgets.py:1338
+msgid "Search"
+msgstr "Търси"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:362
+msgid "Control Panel"
+msgstr "Контрол Панел"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:372
+msgid "Package Manager"
+msgstr "Пакетен Менинджър"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:382
+msgid "Help"
+msgstr "Помощ"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:402
+#: tilo/src/lib/tilo/Menu_Items.py:303
+msgid "Lock Screen"
+msgstr "Заключи Екрана"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:412
+#: tilo/src/lib/tilo/Menu_Items.py:302
+msgid "Logout"
+msgstr "Излизане"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:443
+#: tilo/src/lib/tilo/Menu_Items.py:300
+msgid "Suspend"
+msgstr "Приспиване"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:453
+#: tilo/src/lib/tilo/Menu_Items.py:301
+msgid "Hibernate"
+msgstr "Заспиване"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:464
+msgid "Run"
+msgstr "Изпълни"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:474
+#: tilo/src/lib/tilo/Menu_Items.py:298
+msgid "Shutdown"
+msgstr "Изключване"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:256
+#: tilo/src/lib/tilo/Menu_Widgets.py:549
+#: tilo/src/lib/tilo/Menu_Widgets.py:721
+#: tilo/src/lib/tilo/Menu_Widgets.py:893
+msgid "About Me"
+msgstr "Относно"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:383
+msgid "Home Folder"
+msgstr "Начална Папка"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:384
+msgid "Computer"
+msgstr "Компютър"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:385
+msgid "Network"
+msgstr "Мрежа"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:489
+#: tilo/src/lib/tilo/Menu_Items.py:524
+msgid "System"
+msgstr "Система"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:556
+msgid "Most Used"
+msgstr ""
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:556
+msgid "Recently Used"
+msgstr "Последно Използвани"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:61
+msgid "Tilo Settings"
+msgstr "Tilo Настройки"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:83
+msgid "Ok"
+msgstr "ОК"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:85
+msgid "Apply"
+msgstr "Прилагане"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:87
+msgid "Cancel"
+msgstr "Отказ"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:92
+msgid "Themes"
+msgstr "Теми"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:93
+#: tilo/src/lib/tilo/TiloTray.py:42
+msgid "Preferences"
+msgstr "Редактиране"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:94
+#: tilo/src/lib/tilo/TiloTray.py:43
+msgid "About"
+msgstr "Относно"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:95
+msgid "Commands"
+msgstr "Команди"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:114
+msgid "Menu Selection"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:137
+#: tilo/src/lib/tilo/Tilo-Settings.py:165
+#: tilo/src/lib/tilo/Tilo-Settings.py:195
+#: tilo/src/lib/tilo/Tilo-Settings.py:216
+msgid "Install"
+msgstr "Инсталирай"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:139
+#: tilo/src/lib/tilo/Tilo-Settings.py:167
+#: tilo/src/lib/tilo/Tilo-Settings.py:197
+#: tilo/src/lib/tilo/Tilo-Settings.py:218
+#: tilo/src/lib/tilo/Tilo-Settings.py:771
+msgid "Uninstall"
+msgstr "Дейнсталирай"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:151
+msgid "Button Selection"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:181
+msgid "Icon Selection"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:213
+msgid "Sound theme"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:235
+msgid "Bind keyboad key"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:242
+msgid "Show Internet and Email Buttons"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:244
+msgid "Use Gtk Theme Colors in Program List"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:246
+msgid "Tab Selection on Mouse Hover"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:253
+msgid "Icon Size in Program List"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:255
+msgid "Number of Items in Recent Items List"
+msgstr "Брой елементи в списъка с последно използвани приложения"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:269
+msgid "Listview"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:270
+msgid "Buttons (expanded)"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:271
+msgid "Buttons (fixed)"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:272
+msgid "Iconview (fastest)"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:273
+msgid "Cairo (experimental)"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:276
+msgid "Tab hover effect"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:278
+msgid "None"
+msgstr "Никакво"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:279
+msgid "Grow"
+msgstr "Уголемяване"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:280
+msgid "Black and White"
+msgstr "Черно и бяло"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:281
+msgid "Blur"
+msgstr "Замъгляване"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:282
+msgid "Glow"
+msgstr "Блясък"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:283
+msgid "Saturate"
+msgstr "Насищане"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:286
+msgid "Program list type"
+msgstr "Тип на списъка с програми"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:287
+msgid "Use system icons instead of theme icons"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:289
+msgid "Use distributor logo instead of button theme"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:291
+msgid "Show thumbnails in recent items when available"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:293
+msgid "Show tooltips in program list"
+msgstr "Показване на пояснения в програмния списък"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:296
+msgid "Activate Compiz blur effect on Tilo window"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:303
+msgid "Disable Places and System in program list"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:352
+msgid "Network Config"
+msgstr "Управление на Мрежа"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:392
+msgid "Shutdown Dialog"
+msgstr "Изключи Диалога"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:422
+msgid "Logout Dialog"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:432
+msgid "Restart"
+msgstr "Рестартирай"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:484
+msgid "User about"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:494
+#: tilo/src/lib/tilo/Mate_Me.py:127
+#: tilo/src/lib/tilo/Menu_Items.py:575
+msgid "Open as Administrator"
+msgstr "Отвори като администратор"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:504
+msgid "Menu Editor"
+msgstr "Редактор на менюто"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:544
+msgid "Donate"
+msgstr "Дари"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:547
+msgid "Download More Themes"
+msgstr "Изтегли Още Теми"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:550
+msgid "Tilo Themes Specifications"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:553
+msgid "Report Bug"
+msgstr "Съобщи за Бъг"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:556
+msgid "Help Translate"
+msgstr "Поогни за Превод"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:559
+msgid "Visit Homepage"
+msgstr "Посети Сайта"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:562
+msgid "Credits"
+msgstr "Създатели"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:580
+#: tilo/src/lib/tilo/Tilo.py:149
+#: tilo/src/lib/tilo/Tilo.py:228
+#: tilo/src/lib/tilo/Tilo_rewrite.py:238
+#: tilo/src/lib/tilo/Tilo_rewrite.py:313
+msgid "Menu needs to restart , restart now?"
+msgstr "Менюто трябва да це рестартира, рестартирайте го сега?"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:771
+msgid "theme"
+msgstr "тема"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:788
+msgid "Install a new theme"
+msgstr "Инсталирай нова тема"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:812
+msgid "Error - Theme package is corrupt!"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:833
+#: tilo/src/lib/tilo/Tilo-Settings.py:842
+#: tilo/src/lib/tilo/Tilo-Settings.py:849
+#: tilo/src/lib/tilo/Tilo-Settings.py:865
+msgid ""
+"Error - theme not installed\n"
+"Maybe the Theme was packaged incorrectly\n"
+"Try to install the Theme manually"
+msgstr "ГРЕШКА - Темата не е инсталирана"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:855
+msgid "Theme exists. Continue?"
+msgstr "Съществува тема. Продъжаване?"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:863
+msgid "Theme installed"
+msgstr "Темата е инсталирана"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:874
+#: tilo/src/lib/tilo/Tilo-Settings.py:893
+msgid ""
+"This theme was created for a previous version of Tilo.\n"
+"The theme was automaticly updated in order to work properly."
+msgstr ""
+
+#: tilo/src/lib/tilo/TiloTray.py:44
+msgid "Edit Menus"
+msgstr "Редакция на менютата"
+
+#: tilo/src/lib/tilo/TiloTray.py:45
+msgid "Quit"
+msgstr "Изход"
+
+#: tilo/src/lib/tilo/Mate_Me.py:87
+#: tilo/src/lib/tilo/Menu_Items.py:667
+msgid "added to favorites list"
+msgstr ""
+
+#: tilo/src/lib/tilo/Mate_Me.py:97
+#: tilo/src/lib/tilo/Menu_Items.py:678
+msgid "removed from favorites list"
+msgstr ""
+
+#: tilo/src/lib/tilo/Mate_Me.py:105
+#: tilo/src/lib/tilo/Menu_Items.py:686
+msgid "added to system startup"
+msgstr ""
+
+#: tilo/src/lib/tilo/Mate_Me.py:113
+#: tilo/src/lib/tilo/Menu_Items.py:694
+msgid "removed from system startup"
+msgstr ""
+
+#: tilo/src/lib/tilo/Mate_Me.py:131
+#: tilo/src/lib/tilo/Menu_Items.py:618
+msgid "Add to Favorites"
+msgstr "Добави към Любими"
+
+#: tilo/src/lib/tilo/Mate_Me.py:135
+#: tilo/src/lib/tilo/Menu_Items.py:621
+msgid "Remove from Favorites"
+msgstr "Премахни от Любими"
+
+#: tilo/src/lib/tilo/Mate_Me.py:138
+#: tilo/src/lib/tilo/Menu_Items.py:623
+msgid "Create Desktop Shortcut"
+msgstr "Създай Вързка до Десктопа"
+
+#: tilo/src/lib/tilo/Mate_Me.py:142
+#: tilo/src/lib/tilo/Menu_Items.py:626
+msgid "Remove from System Startup"
+msgstr ""
+
+#: tilo/src/lib/tilo/Mate_Me.py:144
+#: tilo/src/lib/tilo/Menu_Items.py:628
+msgid "Add to System Startup"
+msgstr ""
+
+#: tilo/src/lib/tilo/Menu_Items.py:257
+msgid "Appearance"
+msgstr "Изглед"
+
+#: tilo/src/lib/tilo/Menu_Items.py:258
+msgid "Menu editor"
+msgstr ""
+
+#: tilo/src/lib/tilo/Menu_Items.py:259
+msgid "Screensaver"
+msgstr "Скринсейвър"
+
+#: tilo/src/lib/tilo/Menu_Items.py:260
+msgid "System Monitor"
+msgstr "Диспетчер на Задачи"
+
+#: tilo/src/lib/tilo/Menu_Items.py:261
+msgid "Tilo settings utility"
+msgstr ""
+
+#: tilo/src/lib/tilo/Menu_Items.py:281
+msgid ""
+"No favorites\n"
+"Use the mouse right button\n"
+"to add or remove favorites"
+msgstr "Няма любими"
+
+#: tilo/src/lib/tilo/Menu_Items.py:299
+msgid "Reboot"
+msgstr "Рестартирай"
+
+#: tilo/src/lib/tilo/Menu_Items.py:326
+msgid "Clear recent documents"
+msgstr "Изчисти последни документи"
+
+#: tilo/src/lib/tilo/Menu_Items.py:364
+msgid "File System"
+msgstr "Файлова Система"
+
+#: tilo/src/lib/tilo/Menu_Items.py:386
+#: tilo/src/lib/tilo/Menu_Items.py:613
+msgid "Trash"
+msgstr "Кошче"
+
+#: tilo/src/lib/tilo/Menu_Items.py:434
+msgid "No items matched your search criteria"
+msgstr "Няма елементи, които отговарят на вашето търсене"
+
+#: tilo/src/lib/tilo/Menu_Items.py:438
+msgid "Found %s results to your search"
+msgstr "Намерени са % резултата от вашето търсене"
+
+#: tilo/src/lib/tilo/Menu_Items.py:475
+msgid "Browse Internet"
+msgstr ""
+
+#: tilo/src/lib/tilo/Menu_Items.py:476
+msgid "E-mail"
+msgstr "Имейл"
+
+#: tilo/src/lib/tilo/Menu_Items.py:481
+#: tilo/src/lib/tilo/Menu_Items.py:516
+#: tilo/src/lib/tilo/Menu_Items.py:572
+#: tilo/src/lib/tilo/Menu_Widgets.py:1588
+#: tilo/src/lib/tilo/Menu_Widgets.py:1962
+#: tilo/src/lib/tilo/Menu_Widgets.py:2241
+msgid "Back"
+msgstr "Назад"
+
+#: tilo/src/lib/tilo/Menu_Items.py:485
+#: tilo/src/lib/tilo/Menu_Items.py:527
+msgid "Places"
+msgstr "Места"
+
+#: tilo/src/lib/tilo/Menu_Items.py:602
+msgid "Open with"
+msgstr "Отваряне с"
+
+#: tilo/src/lib/tilo/Menu_Items.py:615
+msgid "Empty Trash"
+msgstr "Изпразване на кошчето"
+
+#: tilo/src/lib/tilo/Menu_Widgets.py:1598
+#: tilo/src/lib/tilo/Menu_Widgets.py:1972
+#: tilo/src/lib/tilo/Menu_Widgets.py:2242
+msgid "Return to last menu"
+msgstr ""
+
+#: tilo/src/lib/tilo/Popup_Menu.py:72
+msgid "XML-Error: %s"
+msgstr "XML-Грешка: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:201
+msgid "Error while creating image from file: %s"
+msgstr "Грешка при създаването на изображение от файл: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:217
+msgid "Error: file %s not found."
+msgstr "Грешка: Не е открит файлът %s."
+
+#: tilo/src/lib/tilo/Popup_Menu.py:271
+msgid "Exception: %s"
+msgstr "Изключение: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:272
+msgid "An error occured with desktop-file: %s"
+msgstr ""

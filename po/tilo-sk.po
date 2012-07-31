@@ -1,0 +1,759 @@
+# Slovak translation for tilo
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the tilo package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: tilo\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-06-16 22:37+0000\n"
+"PO-Revision-Date: 2010-06-01 19:37+0000\n"
+"Last-Translator: milboy <Unknown>\n"
+"Language-Team: Slovak <sk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-07-07 17:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: tilo/src/lib/tilo/Globals.py:73
+msgid ""
+"Tilo detected a malicious script in this theme.\n"
+"The script was blocked!\n"
+"You should uninstall the selected theme and contact the website where you "
+"got it.\n"
+"\n"
+"The script that tried to run was:"
+msgstr ""
+"Tilo zistil v tejto téme škodlivý skript.\n"
+"Skript bol zablokovaný!\n"
+"Mali by ste odinštalovať vybraný motív a kontaktovať stránku, odkiaľ "
+"pochádza.\n"
+"\n"
+"Skript, ktorý sa pokúšal spustiť bol:"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "All Applications"
+msgstr "Všetky aplikácie"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "All Programs"
+msgstr "Všetky programy"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Applications"
+msgstr "Aplikácie"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect"
+msgstr "Pripojiť"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect To"
+msgstr "Pripojiť k"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect To Server"
+msgstr "Pripojiť k Serveru"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect to Server"
+msgstr "Pripojiť k Serveru"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Control Center"
+msgstr "Ovládací Panel"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Distro"
+msgstr "Distro"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Documents"
+msgstr "Dokumenty"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Execute Application"
+msgstr "Spustiť aplikáciu"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Favorites"
+msgstr "Obľúbené"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Games"
+msgstr "Hry"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Hdd"
+msgstr "Hdd"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Help And Support"
+msgstr "Nápoveda a podpora"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Help Center"
+msgstr "Pomocník"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "History"
+msgstr "História"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Home"
+msgstr "Domov"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Install Software"
+msgstr "Inštalovať software"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Leave"
+msgstr "Opustiť"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Lock"
+msgstr "Zamknúť"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Lock Computer"
+msgstr "Zamknúť počítač"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Log Out"
+msgstr "Odhlásiť"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Menu"
+msgstr "Menu"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Music"
+msgstr "Hudba"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "My Computer"
+msgstr "Tento počítač"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Personal Folder"
+msgstr "Osobný priečinok"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Pictures"
+msgstr "Obrázky"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Power"
+msgstr "Výkon"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Programs"
+msgstr "Programy"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent"
+msgstr "Nedávne"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Applications"
+msgstr "Nedávne aplikácie"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Documents"
+msgstr "Nedávne dokumenty"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Items"
+msgstr "Nedávne položky"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Run Application"
+msgstr "Spustiť aplikáciu"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Search for Files"
+msgstr "Vyhľadať súbory"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Show History"
+msgstr "Zobraziť históriu"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shut Down"
+msgstr "Vypnúť"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shut Down..."
+msgstr "Vypnúť..."
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shutdown Computer"
+msgstr "Vypnúť počítač"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Start"
+msgstr "Štart"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Status"
+msgstr "Stav"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Used"
+msgstr "Použitých"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "User"
+msgstr "Používateľ"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Videos"
+msgstr "Videá"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Web Bookmarks"
+msgstr "Webové záložky"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Web Sites"
+msgstr "Webové stránky"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:342
+#: tilo/src/lib/tilo/Menu_Widgets.py:1078
+#: tilo/src/lib/tilo/Menu_Widgets.py:1089
+#: tilo/src/lib/tilo/Menu_Widgets.py:1118
+#: tilo/src/lib/tilo/Menu_Widgets.py:1149
+#: tilo/src/lib/tilo/Menu_Widgets.py:1334
+#: tilo/src/lib/tilo/Menu_Widgets.py:1338
+msgid "Search"
+msgstr "Hľadať"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:362
+msgid "Control Panel"
+msgstr "Ovládací panel"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:372
+msgid "Package Manager"
+msgstr "Správca balíčkov"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:382
+msgid "Help"
+msgstr "Nápoveda"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:402
+#: tilo/src/lib/tilo/Menu_Items.py:303
+msgid "Lock Screen"
+msgstr "Zamknúť obrazovku"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:412
+#: tilo/src/lib/tilo/Menu_Items.py:302
+msgid "Logout"
+msgstr "Odhlásiť"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:443
+#: tilo/src/lib/tilo/Menu_Items.py:300
+msgid "Suspend"
+msgstr "Uspať"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:453
+#: tilo/src/lib/tilo/Menu_Items.py:301
+msgid "Hibernate"
+msgstr "Hibernovať"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:464
+msgid "Run"
+msgstr "Spustiť"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:474
+#: tilo/src/lib/tilo/Menu_Items.py:298
+msgid "Shutdown"
+msgstr "Vypnúť"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:256
+#: tilo/src/lib/tilo/Menu_Widgets.py:549
+#: tilo/src/lib/tilo/Menu_Widgets.py:721
+#: tilo/src/lib/tilo/Menu_Widgets.py:893
+msgid "About Me"
+msgstr "O mne"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:383
+msgid "Home Folder"
+msgstr "Domovský priečinok"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:384
+msgid "Computer"
+msgstr "Počítač"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:385
+msgid "Network"
+msgstr "Sieť"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:489
+#: tilo/src/lib/tilo/Menu_Items.py:524
+msgid "System"
+msgstr "Systém"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:556
+msgid "Most Used"
+msgstr ""
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:556
+msgid "Recently Used"
+msgstr "Nedávno použité"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:61
+msgid "Tilo Settings"
+msgstr "Tilo nastavenia"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:83
+msgid "Ok"
+msgstr "Ok"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:85
+msgid "Apply"
+msgstr "Použiť"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:87
+msgid "Cancel"
+msgstr "Zrušiť"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:92
+msgid "Themes"
+msgstr "Témy"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:93
+#: tilo/src/lib/tilo/TiloTray.py:42
+msgid "Preferences"
+msgstr "Predvoľby"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:94
+#: tilo/src/lib/tilo/TiloTray.py:43
+msgid "About"
+msgstr "O programe"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:95
+msgid "Commands"
+msgstr "Príkazy"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:114
+msgid "Menu Selection"
+msgstr "Výber menu"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:137
+#: tilo/src/lib/tilo/Tilo-Settings.py:165
+#: tilo/src/lib/tilo/Tilo-Settings.py:195
+#: tilo/src/lib/tilo/Tilo-Settings.py:216
+msgid "Install"
+msgstr "Inštalovať"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:139
+#: tilo/src/lib/tilo/Tilo-Settings.py:167
+#: tilo/src/lib/tilo/Tilo-Settings.py:197
+#: tilo/src/lib/tilo/Tilo-Settings.py:218
+#: tilo/src/lib/tilo/Tilo-Settings.py:771
+msgid "Uninstall"
+msgstr "Odinštalovať"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:151
+msgid "Button Selection"
+msgstr "Výber tlačítka"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:181
+msgid "Icon Selection"
+msgstr "Výber ikony"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:213
+msgid "Sound theme"
+msgstr "Téma zvuku"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:235
+msgid "Bind keyboad key"
+msgstr "Naviazaná klávesa"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:242
+msgid "Show Internet and Email Buttons"
+msgstr "Zobraziť internetové a emailové tlačítka"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:244
+msgid "Use Gtk Theme Colors in Program List"
+msgstr "Použiť Gtk farebnú tému v zozname programov"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:246
+msgid "Tab Selection on Mouse Hover"
+msgstr "Výber karty po prejdení myšou"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:253
+msgid "Icon Size in Program List"
+msgstr "Veľkosť ikon c zozname programov"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:255
+msgid "Number of Items in Recent Items List"
+msgstr "Počet položiek v zozname nedávno použitých položiek"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:269
+msgid "Listview"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:270
+msgid "Buttons (expanded)"
+msgstr "Tlačítka (roztiahnuté)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:271
+msgid "Buttons (fixed)"
+msgstr "Tlačítka (pevné)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:272
+msgid "Iconview (fastest)"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:273
+msgid "Cairo (experimental)"
+msgstr "Cairo (experimentálne)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:276
+msgid "Tab hover effect"
+msgstr "Efekt vznášania štítku"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:278
+msgid "None"
+msgstr "Nič"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:279
+msgid "Grow"
+msgstr "Zväčšiť"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:280
+msgid "Black and White"
+msgstr "Čiernobiele"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:281
+msgid "Blur"
+msgstr "Rozostrené"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:282
+msgid "Glow"
+msgstr "Rozjasnené"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:283
+msgid "Saturate"
+msgstr "Nasítené"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:286
+msgid "Program list type"
+msgstr "Typ zoznamu programov"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:287
+msgid "Use system icons instead of theme icons"
+msgstr "Použiť systémové ikony namiesto ikon témy"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:289
+msgid "Use distributor logo instead of button theme"
+msgstr "Použiť logo distribútora namiesto tlačítka témy"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:291
+msgid "Show thumbnails in recent items when available"
+msgstr "Zobraziť náhľady v nedávnych položkách ak sú dostupné"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:293
+msgid "Show tooltips in program list"
+msgstr "Zobrazovať nápovedu v zozname programov"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:296
+msgid "Activate Compiz blur effect on Tilo window"
+msgstr "Aktivovať Compiz efekt rozmazania na okno Tilo"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:303
+msgid "Disable Places and System in program list"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:352
+msgid "Network Config"
+msgstr "Nastavenie siete"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:392
+msgid "Shutdown Dialog"
+msgstr "Dialóg vypnutia"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:422
+msgid "Logout Dialog"
+msgstr "Dialóg odhlásenia"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:432
+msgid "Restart"
+msgstr "Reštartovať"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:484
+msgid "User about"
+msgstr "O používateľovi"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:494
+#: tilo/src/lib/tilo/Mate_Me.py:127
+#: tilo/src/lib/tilo/Menu_Items.py:575
+msgid "Open as Administrator"
+msgstr "Otvoriť ako administrátor"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:504
+msgid "Menu Editor"
+msgstr "Editor ponuky"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:544
+msgid "Donate"
+msgstr "Prispieť"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:547
+msgid "Download More Themes"
+msgstr "Stiahnuť viac tém"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:550
+msgid "Tilo Themes Specifications"
+msgstr "Špecifikácie tém Tilo"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:553
+msgid "Report Bug"
+msgstr "Nahlásiť chybu"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:556
+msgid "Help Translate"
+msgstr "Preložiť nápovedu"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:559
+msgid "Visit Homepage"
+msgstr "Navštíviť domovskú stránku"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:562
+msgid "Credits"
+msgstr "Autori"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:580
+#: tilo/src/lib/tilo/Tilo.py:149
+#: tilo/src/lib/tilo/Tilo.py:228
+#: tilo/src/lib/tilo/Tilo_rewrite.py:238
+#: tilo/src/lib/tilo/Tilo_rewrite.py:313
+msgid "Menu needs to restart , restart now?"
+msgstr "Menu potrebuje reštartovať , reštartovať teraz?"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:771
+msgid "theme"
+msgstr "téma"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:788
+msgid "Install a new theme"
+msgstr "Inštalovať novú tému"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:812
+msgid "Error - Theme package is corrupt!"
+msgstr "Chyba - Balíček témy je poškodený!"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:833
+#: tilo/src/lib/tilo/Tilo-Settings.py:842
+#: tilo/src/lib/tilo/Tilo-Settings.py:849
+#: tilo/src/lib/tilo/Tilo-Settings.py:865
+msgid ""
+"Error - theme not installed\n"
+"Maybe the Theme was packaged incorrectly\n"
+"Try to install the Theme manually"
+msgstr ""
+"Chyba - téma nieje nainštalovaná\n"
+"Možno bol balíček témy nekorektný\n"
+"Skúste nainštalovať tému manuálne"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:855
+msgid "Theme exists. Continue?"
+msgstr "Téma existuje. Pokračovať?"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:863
+msgid "Theme installed"
+msgstr "Téma nainštalovaná"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:874
+#: tilo/src/lib/tilo/Tilo-Settings.py:893
+msgid ""
+"This theme was created for a previous version of Tilo.\n"
+"The theme was automaticly updated in order to work properly."
+msgstr ""
+"Táto téma bola vytvorená pre predchádzajúcu verziu Tilo.\n"
+"Téma bola automaticky aktualizovaná, aby fungovala správne."
+
+#: tilo/src/lib/tilo/TiloTray.py:44
+msgid "Edit Menus"
+msgstr "Upraviť ponuky"
+
+#: tilo/src/lib/tilo/TiloTray.py:45
+msgid "Quit"
+msgstr "Koniec"
+
+#: tilo/src/lib/tilo/Mate_Me.py:87
+#: tilo/src/lib/tilo/Menu_Items.py:667
+msgid "added to favorites list"
+msgstr "pridané do zoznamu obľúbené"
+
+#: tilo/src/lib/tilo/Mate_Me.py:97
+#: tilo/src/lib/tilo/Menu_Items.py:678
+msgid "removed from favorites list"
+msgstr "odstránené zo zoznamu obľúbené"
+
+#: tilo/src/lib/tilo/Mate_Me.py:105
+#: tilo/src/lib/tilo/Menu_Items.py:686
+msgid "added to system startup"
+msgstr "pridané do programov pri spustení"
+
+#: tilo/src/lib/tilo/Mate_Me.py:113
+#: tilo/src/lib/tilo/Menu_Items.py:694
+msgid "removed from system startup"
+msgstr "odstránené z programov pri spustení"
+
+#: tilo/src/lib/tilo/Mate_Me.py:131
+#: tilo/src/lib/tilo/Menu_Items.py:618
+msgid "Add to Favorites"
+msgstr "Pridať k obľúbeným"
+
+#: tilo/src/lib/tilo/Mate_Me.py:135
+#: tilo/src/lib/tilo/Menu_Items.py:621
+msgid "Remove from Favorites"
+msgstr "Odstrániť z obľúbených"
+
+#: tilo/src/lib/tilo/Mate_Me.py:138
+#: tilo/src/lib/tilo/Menu_Items.py:623
+msgid "Create Desktop Shortcut"
+msgstr "Vytvoriť odkaz na ploche"
+
+#: tilo/src/lib/tilo/Mate_Me.py:142
+#: tilo/src/lib/tilo/Menu_Items.py:626
+msgid "Remove from System Startup"
+msgstr "Odstrániť zo štartu systému"
+
+#: tilo/src/lib/tilo/Mate_Me.py:144
+#: tilo/src/lib/tilo/Menu_Items.py:628
+msgid "Add to System Startup"
+msgstr "Pridať do štartu systému"
+
+#: tilo/src/lib/tilo/Menu_Items.py:257
+msgid "Appearance"
+msgstr "Vzhľad"
+
+#: tilo/src/lib/tilo/Menu_Items.py:258
+msgid "Menu editor"
+msgstr "Editor menu"
+
+#: tilo/src/lib/tilo/Menu_Items.py:259
+msgid "Screensaver"
+msgstr "Šetrič obrazovky"
+
+#: tilo/src/lib/tilo/Menu_Items.py:260
+msgid "System Monitor"
+msgstr "Monitor systému"
+
+#: tilo/src/lib/tilo/Menu_Items.py:261
+msgid "Tilo settings utility"
+msgstr "Tilo nastavovacia pomôcka"
+
+#: tilo/src/lib/tilo/Menu_Items.py:281
+msgid ""
+"No favorites\n"
+"Use the mouse right button\n"
+"to add or remove favorites"
+msgstr ""
+"Niesu obľúbené\n"
+"Použi pravé tlačítko myši\n"
+"na pridanie alebo odobratie obľúbených"
+
+#: tilo/src/lib/tilo/Menu_Items.py:299
+msgid "Reboot"
+msgstr "Reštartovať"
+
+#: tilo/src/lib/tilo/Menu_Items.py:326
+msgid "Clear recent documents"
+msgstr "Vyčistiť nedávne dokumenty"
+
+#: tilo/src/lib/tilo/Menu_Items.py:364
+msgid "File System"
+msgstr "Súborový systém"
+
+#: tilo/src/lib/tilo/Menu_Items.py:386
+#: tilo/src/lib/tilo/Menu_Items.py:613
+msgid "Trash"
+msgstr "Kôš"
+
+#: tilo/src/lib/tilo/Menu_Items.py:434
+msgid "No items matched your search criteria"
+msgstr "Žiadne položky nespĺňaji kritéria vášho hľadania"
+
+#: tilo/src/lib/tilo/Menu_Items.py:438
+msgid "Found %s results to your search"
+msgstr "Nájdených %s výsledkov vášho hľadania"
+
+#: tilo/src/lib/tilo/Menu_Items.py:475
+msgid "Browse Internet"
+msgstr "Prehliadať internet"
+
+#: tilo/src/lib/tilo/Menu_Items.py:476
+msgid "E-mail"
+msgstr "E-mail"
+
+#: tilo/src/lib/tilo/Menu_Items.py:481
+#: tilo/src/lib/tilo/Menu_Items.py:516
+#: tilo/src/lib/tilo/Menu_Items.py:572
+#: tilo/src/lib/tilo/Menu_Widgets.py:1588
+#: tilo/src/lib/tilo/Menu_Widgets.py:1962
+#: tilo/src/lib/tilo/Menu_Widgets.py:2241
+msgid "Back"
+msgstr "Späť"
+
+#: tilo/src/lib/tilo/Menu_Items.py:485
+#: tilo/src/lib/tilo/Menu_Items.py:527
+msgid "Places"
+msgstr "Miesta"
+
+#: tilo/src/lib/tilo/Menu_Items.py:602
+msgid "Open with"
+msgstr ""
+
+#: tilo/src/lib/tilo/Menu_Items.py:615
+msgid "Empty Trash"
+msgstr ""
+
+#: tilo/src/lib/tilo/Menu_Widgets.py:1598
+#: tilo/src/lib/tilo/Menu_Widgets.py:1972
+#: tilo/src/lib/tilo/Menu_Widgets.py:2242
+msgid "Return to last menu"
+msgstr "Vrátiť do posledného menu"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:72
+msgid "XML-Error: %s"
+msgstr "XML-Chyba: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:201
+msgid "Error while creating image from file: %s"
+msgstr "Chyba pri vytváraní obrazu zo súboru: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:217
+msgid "Error: file %s not found."
+msgstr "Chyba: súbor %s nebol nájdený"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:271
+msgid "Exception: %s"
+msgstr "Výnimka: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:272
+msgid "An error occured with desktop-file: %s"
+msgstr "Došlo k chybe s desktop-súborom: %s"

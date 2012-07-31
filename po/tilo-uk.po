@@ -1,0 +1,758 @@
+# Ukrainian translation for tilo
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the tilo package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: tilo\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-06-16 22:37+0000\n"
+"PO-Revision-Date: 2010-05-15 21:09+0000\n"
+"Last-Translator: Maks Lyashuk aka Ma)(imuM <Unknown>\n"
+"Language-Team: Ukrainian <uk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-07-07 17:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: tilo/src/lib/tilo/Globals.py:73
+msgid ""
+"Tilo detected a malicious script in this theme.\n"
+"The script was blocked!\n"
+"You should uninstall the selected theme and contact the website where you "
+"got it.\n"
+"\n"
+"The script that tried to run was:"
+msgstr ""
+"Tilo виявив шкідливий скрипт, що міститься в цій темі.\n"
+"Скрипт блоковано!\n"
+"Видаліть вибрану вами тему та зверніться по допомогу на сайт, з якого ви її "
+"завантажили.\n"
+"Скрипт спробував виконати наступні дії:"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "All Applications"
+msgstr "Всі програми"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "All Programs"
+msgstr "Всі програми"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Applications"
+msgstr "Додатки"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect"
+msgstr "З'єднання"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect To"
+msgstr "З'єднатися з"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect To Server"
+msgstr "З'єднатися з сервером"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect to Server"
+msgstr "Встановити з'єднання з сервером"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Control Center"
+msgstr "Центр управління"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Distro"
+msgstr "Дистрибутив"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Documents"
+msgstr "Документи"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Execute Application"
+msgstr "Виконати"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Favorites"
+msgstr "Улюблені"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Games"
+msgstr "Ігри"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Hdd"
+msgstr "Жорсткий диск"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Help And Support"
+msgstr "Довідка та підтримка"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Help Center"
+msgstr "Центр довідки"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "History"
+msgstr "Історія"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Home"
+msgstr "Домашній каталог"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Install Software"
+msgstr "Встановити програмне забезпечення"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Leave"
+msgstr "Вийти"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Lock"
+msgstr "Заблокувати"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Lock Computer"
+msgstr "Заблокувати комп’ютер"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Log Out"
+msgstr "Завершити сеанс"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Menu"
+msgstr "Меню"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Music"
+msgstr "Музика"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "My Computer"
+msgstr "Мій комп’ютер"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Personal Folder"
+msgstr "Особиста тека"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Pictures"
+msgstr "Зображення"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Power"
+msgstr "Вимкнути"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Programs"
+msgstr "Програми"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent"
+msgstr "Нещодавні"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Applications"
+msgstr "Нещодавні програми"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Documents"
+msgstr "Нещодавні документи"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Items"
+msgstr "Нещодавні елементи"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Run Application"
+msgstr "Виконати програму"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Search for Files"
+msgstr "Пошук файлів"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Show History"
+msgstr "Показати  історію"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shut Down"
+msgstr "Вимкнути"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shut Down..."
+msgstr "Вимкнути..."
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shutdown Computer"
+msgstr "Вимкнути комп'ютер"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Start"
+msgstr "Старт"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Status"
+msgstr "Стан"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Used"
+msgstr "Використані"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "User"
+msgstr "Користувач"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Videos"
+msgstr "Відео"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Web Bookmarks"
+msgstr "Закладки веб-браузера"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Web Sites"
+msgstr "Веб-сайти"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:342
+#: tilo/src/lib/tilo/Menu_Widgets.py:1078
+#: tilo/src/lib/tilo/Menu_Widgets.py:1089
+#: tilo/src/lib/tilo/Menu_Widgets.py:1118
+#: tilo/src/lib/tilo/Menu_Widgets.py:1149
+#: tilo/src/lib/tilo/Menu_Widgets.py:1334
+#: tilo/src/lib/tilo/Menu_Widgets.py:1338
+msgid "Search"
+msgstr "Пошук"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:362
+msgid "Control Panel"
+msgstr "Панель керування"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:372
+msgid "Package Manager"
+msgstr "Менеджер пакунків"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:382
+msgid "Help"
+msgstr "Довідка"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:402
+#: tilo/src/lib/tilo/Menu_Items.py:303
+msgid "Lock Screen"
+msgstr "Заблокувати екран"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:412
+#: tilo/src/lib/tilo/Menu_Items.py:302
+msgid "Logout"
+msgstr "Завершити сеанс"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:443
+#: tilo/src/lib/tilo/Menu_Items.py:300
+msgid "Suspend"
+msgstr "Призупинити"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:453
+#: tilo/src/lib/tilo/Menu_Items.py:301
+msgid "Hibernate"
+msgstr "Режим сну"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:464
+msgid "Run"
+msgstr "Виконати"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:474
+#: tilo/src/lib/tilo/Menu_Items.py:298
+msgid "Shutdown"
+msgstr "Вимкнути"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:256
+#: tilo/src/lib/tilo/Menu_Widgets.py:549
+#: tilo/src/lib/tilo/Menu_Widgets.py:721
+#: tilo/src/lib/tilo/Menu_Widgets.py:893
+msgid "About Me"
+msgstr "Про мене"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:383
+msgid "Home Folder"
+msgstr "Домашня тека"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:384
+msgid "Computer"
+msgstr "Комп'ютер"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:385
+msgid "Network"
+msgstr "Мережа"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:489
+#: tilo/src/lib/tilo/Menu_Items.py:524
+msgid "System"
+msgstr "Система"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:556
+msgid "Most Used"
+msgstr ""
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:556
+msgid "Recently Used"
+msgstr "Нещодавно використані"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:61
+msgid "Tilo Settings"
+msgstr "Налаштування Tilo"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:83
+msgid "Ok"
+msgstr "Гаразд"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:85
+msgid "Apply"
+msgstr "Застосувати"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:87
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:92
+msgid "Themes"
+msgstr "Теми"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:93
+#: tilo/src/lib/tilo/TiloTray.py:42
+msgid "Preferences"
+msgstr "Уподобання"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:94
+#: tilo/src/lib/tilo/TiloTray.py:43
+msgid "About"
+msgstr "Про"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:95
+msgid "Commands"
+msgstr "Команди"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:114
+msgid "Menu Selection"
+msgstr "Тема меню"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:137
+#: tilo/src/lib/tilo/Tilo-Settings.py:165
+#: tilo/src/lib/tilo/Tilo-Settings.py:195
+#: tilo/src/lib/tilo/Tilo-Settings.py:216
+msgid "Install"
+msgstr "Встановити"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:139
+#: tilo/src/lib/tilo/Tilo-Settings.py:167
+#: tilo/src/lib/tilo/Tilo-Settings.py:197
+#: tilo/src/lib/tilo/Tilo-Settings.py:218
+#: tilo/src/lib/tilo/Tilo-Settings.py:771
+msgid "Uninstall"
+msgstr "Вилучити"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:151
+msgid "Button Selection"
+msgstr "Тема кнопки"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:181
+msgid "Icon Selection"
+msgstr "Тема піктограм"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:213
+msgid "Sound theme"
+msgstr "Звукова тема"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:235
+msgid "Bind keyboad key"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:242
+msgid "Show Internet and Email Buttons"
+msgstr "Показувати пункти Інтернет та Електронна пошта"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:244
+msgid "Use Gtk Theme Colors in Program List"
+msgstr "Використовувати в списку програм кольори теми Gtk"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:246
+msgid "Tab Selection on Mouse Hover"
+msgstr "Вибір вкладок під час наведення вказівника"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:253
+msgid "Icon Size in Program List"
+msgstr "Розмір піктограм в списку програм"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:255
+msgid "Number of Items in Recent Items List"
+msgstr "Кількість елементів у списку нещодавніх документів"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:269
+msgid "Listview"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:270
+msgid "Buttons (expanded)"
+msgstr "Кнопки (розтягнуті)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:271
+msgid "Buttons (fixed)"
+msgstr "Кнопки (фіксовані)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:272
+msgid "Iconview (fastest)"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:273
+msgid "Cairo (experimental)"
+msgstr "Cairo (пробний)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:276
+msgid "Tab hover effect"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:278
+msgid "None"
+msgstr "Немає"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:279
+msgid "Grow"
+msgstr "Збільшити"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:280
+msgid "Black and White"
+msgstr "Чорно-білий"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:281
+msgid "Blur"
+msgstr "Розмивання"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:282
+msgid "Glow"
+msgstr "Сяйво"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:283
+msgid "Saturate"
+msgstr "Насиченість"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:286
+msgid "Program list type"
+msgstr "Вигляд списку програм"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:287
+msgid "Use system icons instead of theme icons"
+msgstr "Використовувати системні піктограми замість піктограм теми"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:289
+msgid "Use distributor logo instead of button theme"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:291
+msgid "Show thumbnails in recent items when available"
+msgstr "Показувати мініатюри для нещодавніх документів, якщо можливо"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:293
+msgid "Show tooltips in program list"
+msgstr "Показувати підказки в списку програм"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:296
+msgid "Activate Compiz blur effect on Tilo window"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:303
+msgid "Disable Places and System in program list"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:352
+msgid "Network Config"
+msgstr "Налаштування мережі"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:392
+msgid "Shutdown Dialog"
+msgstr "Діалогове вікно завершення роботи"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:422
+msgid "Logout Dialog"
+msgstr "Діалогове вікно виходу з сеансу"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:432
+msgid "Restart"
+msgstr "Перезавантажити"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:484
+msgid "User about"
+msgstr "Про користувача"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:494
+#: tilo/src/lib/tilo/Mate_Me.py:127
+#: tilo/src/lib/tilo/Menu_Items.py:575
+msgid "Open as Administrator"
+msgstr "Відкрити як адміністратор"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:504
+msgid "Menu Editor"
+msgstr "Редактор меню"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:544
+msgid "Donate"
+msgstr "Пожертви"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:547
+msgid "Download More Themes"
+msgstr "Завантажити більше тем"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:550
+msgid "Tilo Themes Specifications"
+msgstr "Налаштування тем Tilo"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:553
+msgid "Report Bug"
+msgstr "Надіслати звіт про помилку"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:556
+msgid "Help Translate"
+msgstr "Допомогти з перекладом"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:559
+msgid "Visit Homepage"
+msgstr "Відвідати домашню сторінку"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:562
+msgid "Credits"
+msgstr "Подяки"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:580
+#: tilo/src/lib/tilo/Tilo.py:149
+#: tilo/src/lib/tilo/Tilo.py:228
+#: tilo/src/lib/tilo/Tilo_rewrite.py:238
+#: tilo/src/lib/tilo/Tilo_rewrite.py:313
+msgid "Menu needs to restart , restart now?"
+msgstr "Меню необхідно перезавантажити, перезавантажити зараз?"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:771
+msgid "theme"
+msgstr "тема"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:788
+msgid "Install a new theme"
+msgstr "Встановити нову тему"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:812
+msgid "Error - Theme package is corrupt!"
+msgstr "Помилка - зіпсований пакунок теми"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:833
+#: tilo/src/lib/tilo/Tilo-Settings.py:842
+#: tilo/src/lib/tilo/Tilo-Settings.py:849
+#: tilo/src/lib/tilo/Tilo-Settings.py:865
+msgid ""
+"Error - theme not installed\n"
+"Maybe the Theme was packaged incorrectly\n"
+"Try to install the Theme manually"
+msgstr ""
+"Помилка - тема не встановлена!\n"
+"Можливо тема запакована некоректно.\n"
+"Спробуйте встановити її вручну."
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:855
+msgid "Theme exists. Continue?"
+msgstr "Тема існує. Продовжити?"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:863
+msgid "Theme installed"
+msgstr "Тема встановлена"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:874
+#: tilo/src/lib/tilo/Tilo-Settings.py:893
+msgid ""
+"This theme was created for a previous version of Tilo.\n"
+"The theme was automaticly updated in order to work properly."
+msgstr ""
+"Ця тема була створена для попередньої версії Tilo.\n"
+"Для того, щоб вона працювала належним чином, її було автоматично оновлено."
+
+#: tilo/src/lib/tilo/TiloTray.py:44
+msgid "Edit Menus"
+msgstr "Правка меню"
+
+#: tilo/src/lib/tilo/TiloTray.py:45
+msgid "Quit"
+msgstr "Вихід"
+
+#: tilo/src/lib/tilo/Mate_Me.py:87
+#: tilo/src/lib/tilo/Menu_Items.py:667
+msgid "added to favorites list"
+msgstr "Додати до списку улюблених"
+
+#: tilo/src/lib/tilo/Mate_Me.py:97
+#: tilo/src/lib/tilo/Menu_Items.py:678
+msgid "removed from favorites list"
+msgstr "Видалити зі списку улюблених"
+
+#: tilo/src/lib/tilo/Mate_Me.py:105
+#: tilo/src/lib/tilo/Menu_Items.py:686
+msgid "added to system startup"
+msgstr "Додати до автозавантаження системи"
+
+#: tilo/src/lib/tilo/Mate_Me.py:113
+#: tilo/src/lib/tilo/Menu_Items.py:694
+msgid "removed from system startup"
+msgstr "Видалити до автозавантаження системи"
+
+#: tilo/src/lib/tilo/Mate_Me.py:131
+#: tilo/src/lib/tilo/Menu_Items.py:618
+msgid "Add to Favorites"
+msgstr "Долучити до улюблених"
+
+#: tilo/src/lib/tilo/Mate_Me.py:135
+#: tilo/src/lib/tilo/Menu_Items.py:621
+msgid "Remove from Favorites"
+msgstr "Вилучити з улюблених"
+
+#: tilo/src/lib/tilo/Mate_Me.py:138
+#: tilo/src/lib/tilo/Menu_Items.py:623
+msgid "Create Desktop Shortcut"
+msgstr "Створити ярлик на стільниці"
+
+#: tilo/src/lib/tilo/Mate_Me.py:142
+#: tilo/src/lib/tilo/Menu_Items.py:626
+msgid "Remove from System Startup"
+msgstr "Вилучити з автозапуску"
+
+#: tilo/src/lib/tilo/Mate_Me.py:144
+#: tilo/src/lib/tilo/Menu_Items.py:628
+msgid "Add to System Startup"
+msgstr "Долучити до автозапуску"
+
+#: tilo/src/lib/tilo/Menu_Items.py:257
+msgid "Appearance"
+msgstr "Зовнішній вигляд"
+
+#: tilo/src/lib/tilo/Menu_Items.py:258
+msgid "Menu editor"
+msgstr "Редактор меню"
+
+#: tilo/src/lib/tilo/Menu_Items.py:259
+msgid "Screensaver"
+msgstr "Зберігач екрану"
+
+#: tilo/src/lib/tilo/Menu_Items.py:260
+msgid "System Monitor"
+msgstr "Системний монітор"
+
+#: tilo/src/lib/tilo/Menu_Items.py:261
+msgid "Tilo settings utility"
+msgstr "Налаштування Tilo"
+
+#: tilo/src/lib/tilo/Menu_Items.py:281
+msgid ""
+"No favorites\n"
+"Use the mouse right button\n"
+"to add or remove favorites"
+msgstr ""
+"В улюблених жодного елемента\n"
+"Використовуйте праву кнопку миші,\n"
+"щоб додати або вилучити елементи"
+
+#: tilo/src/lib/tilo/Menu_Items.py:299
+msgid "Reboot"
+msgstr "Перезавантажити"
+
+#: tilo/src/lib/tilo/Menu_Items.py:326
+msgid "Clear recent documents"
+msgstr "Очистити список нещодавніх документів"
+
+#: tilo/src/lib/tilo/Menu_Items.py:364
+msgid "File System"
+msgstr "Файлова система"
+
+#: tilo/src/lib/tilo/Menu_Items.py:386
+#: tilo/src/lib/tilo/Menu_Items.py:613
+msgid "Trash"
+msgstr "Смітник"
+
+#: tilo/src/lib/tilo/Menu_Items.py:434
+msgid "No items matched your search criteria"
+msgstr "Немає елементів відповідних запиту"
+
+#: tilo/src/lib/tilo/Menu_Items.py:438
+msgid "Found %s results to your search"
+msgstr "Знайдено %s результатів пошуку"
+
+#: tilo/src/lib/tilo/Menu_Items.py:475
+msgid "Browse Internet"
+msgstr "Огляд інтернету"
+
+#: tilo/src/lib/tilo/Menu_Items.py:476
+msgid "E-mail"
+msgstr "Електронна пошта"
+
+#: tilo/src/lib/tilo/Menu_Items.py:481
+#: tilo/src/lib/tilo/Menu_Items.py:516
+#: tilo/src/lib/tilo/Menu_Items.py:572
+#: tilo/src/lib/tilo/Menu_Widgets.py:1588
+#: tilo/src/lib/tilo/Menu_Widgets.py:1962
+#: tilo/src/lib/tilo/Menu_Widgets.py:2241
+msgid "Back"
+msgstr "Назад"
+
+#: tilo/src/lib/tilo/Menu_Items.py:485
+#: tilo/src/lib/tilo/Menu_Items.py:527
+msgid "Places"
+msgstr "Місця"
+
+#: tilo/src/lib/tilo/Menu_Items.py:602
+msgid "Open with"
+msgstr ""
+
+#: tilo/src/lib/tilo/Menu_Items.py:615
+msgid "Empty Trash"
+msgstr ""
+
+#: tilo/src/lib/tilo/Menu_Widgets.py:1598
+#: tilo/src/lib/tilo/Menu_Widgets.py:1972
+#: tilo/src/lib/tilo/Menu_Widgets.py:2242
+msgid "Return to last menu"
+msgstr "Повернутись до попереднього меню"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:72
+msgid "XML-Error: %s"
+msgstr "Помилка XML: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:201
+msgid "Error while creating image from file: %s"
+msgstr "Помилка при створенні образу з файла: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:217
+msgid "Error: file %s not found."
+msgstr "Помилка: файл %s не знайдено."
+
+#: tilo/src/lib/tilo/Popup_Menu.py:271
+msgid "Exception: %s"
+msgstr "Виняток: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:272
+msgid "An error occured with desktop-file: %s"
+msgstr "Виникла помилка з desktop-file: %s"

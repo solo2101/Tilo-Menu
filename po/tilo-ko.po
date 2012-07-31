@@ -1,0 +1,758 @@
+# Korean translation for tilo
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the tilo package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: tilo\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-06-16 22:37+0000\n"
+"PO-Revision-Date: 2010-03-30 08:07+0000\n"
+"Last-Translator: Bundo <bundo@bundo.biz>\n"
+"Language-Team: Korean <ko@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-07-07 17:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: tilo/src/lib/tilo/Globals.py:73
+msgid ""
+"Tilo detected a malicious script in this theme.\n"
+"The script was blocked!\n"
+"You should uninstall the selected theme and contact the website where you "
+"got it.\n"
+"\n"
+"The script that tried to run was:"
+msgstr ""
+"악의적인 스크립트를 발견 했습니다.\n"
+"스크립트를 차단합니다!\n"
+"선택한 테마를 제거하고 그것을 가져온 웹사이트에 연락 하십시오.\n"
+"\n"
+"이 테마를 실행하려 했습니다:"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "All Applications"
+msgstr "모든 프로그램"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "All Programs"
+msgstr "모든 프로그램"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Applications"
+msgstr "프로그램"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect"
+msgstr "연결"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect To"
+msgstr "연결"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect To Server"
+msgstr "서버에 연결"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect to Server"
+msgstr "서버에 연결"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Control Center"
+msgstr "제어판"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Distro"
+msgstr "배포판"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Documents"
+msgstr "문서"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Execute Application"
+msgstr "프로그램 실행"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Favorites"
+msgstr "즐겨찾기"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Games"
+msgstr "게임"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Hdd"
+msgstr "하드디스크"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Help And Support"
+msgstr "도움 밑 지원"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Help Center"
+msgstr "도움말 센터"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "History"
+msgstr "사용기록"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Home"
+msgstr "홈 디렉토리"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Install Software"
+msgstr "소프트웨어 설치"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Leave"
+msgstr "떠나기"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Lock"
+msgstr "잠금"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Lock Computer"
+msgstr "컴퓨터 잠금"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Log Out"
+msgstr "로그아웃"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Menu"
+msgstr "메뉴"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Music"
+msgstr "음악"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "My Computer"
+msgstr "내 컴퓨터"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Personal Folder"
+msgstr "개인 폴더"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Pictures"
+msgstr "사진"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Power"
+msgstr "전원"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Programs"
+msgstr "프로그램"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent"
+msgstr "최근 목록"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Applications"
+msgstr "최근에 사용한 프로그램"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Documents"
+msgstr "최근 문서"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Items"
+msgstr "최근 항목"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Run Application"
+msgstr "프로그램 실행"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Search for Files"
+msgstr "파일 검색"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Show History"
+msgstr "기록 보기"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shut Down"
+msgstr "컴퓨터 끄기"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shut Down..."
+msgstr "컴퓨터 끄기..."
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shutdown Computer"
+msgstr "컴퓨터 끄기"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Start"
+msgstr "시작"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Status"
+msgstr "상태"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Used"
+msgstr "사용 중"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "User"
+msgstr "사용자"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Videos"
+msgstr "비디오"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Web Bookmarks"
+msgstr "웹 책갈피"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Web Sites"
+msgstr "웹 사이트"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:342
+#: tilo/src/lib/tilo/Menu_Widgets.py:1078
+#: tilo/src/lib/tilo/Menu_Widgets.py:1089
+#: tilo/src/lib/tilo/Menu_Widgets.py:1118
+#: tilo/src/lib/tilo/Menu_Widgets.py:1149
+#: tilo/src/lib/tilo/Menu_Widgets.py:1334
+#: tilo/src/lib/tilo/Menu_Widgets.py:1338
+msgid "Search"
+msgstr "찾기"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:362
+msgid "Control Panel"
+msgstr "제어판"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:372
+msgid "Package Manager"
+msgstr "패키지 관리자"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:382
+msgid "Help"
+msgstr "도움말"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:402
+#: tilo/src/lib/tilo/Menu_Items.py:303
+msgid "Lock Screen"
+msgstr "화면 잠그기"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:412
+#: tilo/src/lib/tilo/Menu_Items.py:302
+msgid "Logout"
+msgstr "로그아웃"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:443
+#: tilo/src/lib/tilo/Menu_Items.py:300
+msgid "Suspend"
+msgstr "절전 모드"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:453
+#: tilo/src/lib/tilo/Menu_Items.py:301
+msgid "Hibernate"
+msgstr "최대 절전 모드"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:464
+msgid "Run"
+msgstr "실행"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:474
+#: tilo/src/lib/tilo/Menu_Items.py:298
+msgid "Shutdown"
+msgstr "종료"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:256
+#: tilo/src/lib/tilo/Menu_Widgets.py:549
+#: tilo/src/lib/tilo/Menu_Widgets.py:721
+#: tilo/src/lib/tilo/Menu_Widgets.py:893
+msgid "About Me"
+msgstr "내 정보"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:383
+msgid "Home Folder"
+msgstr "홈 폴더"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:384
+msgid "Computer"
+msgstr "컴퓨터"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:385
+msgid "Network"
+msgstr "네트워크"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:489
+#: tilo/src/lib/tilo/Menu_Items.py:524
+msgid "System"
+msgstr "시스템 설정"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:556
+msgid "Most Used"
+msgstr ""
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:556
+msgid "Recently Used"
+msgstr "최근 항목"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:61
+msgid "Tilo Settings"
+msgstr "Tilo 설정"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:83
+msgid "Ok"
+msgstr "확인"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:85
+msgid "Apply"
+msgstr "적용"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:87
+msgid "Cancel"
+msgstr "취소"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:92
+msgid "Themes"
+msgstr "테마"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:93
+#: tilo/src/lib/tilo/TiloTray.py:42
+msgid "Preferences"
+msgstr "환경설정"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:94
+#: tilo/src/lib/tilo/TiloTray.py:43
+msgid "About"
+msgstr "프로그램 정보"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:95
+msgid "Commands"
+msgstr "명령"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:114
+msgid "Menu Selection"
+msgstr "메뉴 선택"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:137
+#: tilo/src/lib/tilo/Tilo-Settings.py:165
+#: tilo/src/lib/tilo/Tilo-Settings.py:195
+#: tilo/src/lib/tilo/Tilo-Settings.py:216
+msgid "Install"
+msgstr "설치"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:139
+#: tilo/src/lib/tilo/Tilo-Settings.py:167
+#: tilo/src/lib/tilo/Tilo-Settings.py:197
+#: tilo/src/lib/tilo/Tilo-Settings.py:218
+#: tilo/src/lib/tilo/Tilo-Settings.py:771
+msgid "Uninstall"
+msgstr "제거"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:151
+msgid "Button Selection"
+msgstr "버튼 선택"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:181
+msgid "Icon Selection"
+msgstr "아이콘 선택"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:213
+msgid "Sound theme"
+msgstr "사운드 테마"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:235
+msgid "Bind keyboad key"
+msgstr "키보드 키 맺기"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:242
+msgid "Show Internet and Email Buttons"
+msgstr "인터넷과 이메일 버튼 보여주기"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:244
+msgid "Use Gtk Theme Colors in Program List"
+msgstr "프로그램 목록의 Gtk 테마 색상 사용"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:246
+msgid "Tab Selection on Mouse Hover"
+msgstr "마우스 움직임에 탭을 선택"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:253
+msgid "Icon Size in Program List"
+msgstr "프로그램 목록의 아이콘 크기"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:255
+msgid "Number of Items in Recent Items List"
+msgstr "최근 실행 목록의 목록 수"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:269
+msgid "Listview"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:270
+msgid "Buttons (expanded)"
+msgstr "버튼 (확장)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:271
+msgid "Buttons (fixed)"
+msgstr "버튼 (고정)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:272
+msgid "Iconview (fastest)"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:273
+msgid "Cairo (experimental)"
+msgstr "Cairo (실험적)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:276
+msgid "Tab hover effect"
+msgstr "탭 움직임 효과"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:278
+msgid "None"
+msgstr "없음"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:279
+msgid "Grow"
+msgstr "늘리기"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:280
+msgid "Black and White"
+msgstr "흑백"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:281
+msgid "Blur"
+msgstr "흐리게"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:282
+msgid "Glow"
+msgstr "반짝임"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:283
+msgid "Saturate"
+msgstr "채도"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:286
+msgid "Program list type"
+msgstr "프로그램 목록 형식"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:287
+msgid "Use system icons instead of theme icons"
+msgstr "테마 아이콘 대신 시스템 아이콘 사용"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:289
+msgid "Use distributor logo instead of button theme"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:291
+msgid "Show thumbnails in recent items when available"
+msgstr "가능한 경우 최근 항목 이미지 표시"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:293
+msgid "Show tooltips in program list"
+msgstr "항목에 대한 설명 보기"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:296
+msgid "Activate Compiz blur effect on Tilo window"
+msgstr "Tilo 창에 컴피즈 흐림 효과 활성화"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:303
+msgid "Disable Places and System in program list"
+msgstr ""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:352
+msgid "Network Config"
+msgstr "네트워크 설정"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:392
+msgid "Shutdown Dialog"
+msgstr "컴퓨터 끄기 대화상자"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:422
+msgid "Logout Dialog"
+msgstr "로그아웃 대화상자"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:432
+msgid "Restart"
+msgstr "다시 시작"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:484
+msgid "User about"
+msgstr "사용자 정보"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:494
+#: tilo/src/lib/tilo/Mate_Me.py:127
+#: tilo/src/lib/tilo/Menu_Items.py:575
+msgid "Open as Administrator"
+msgstr "관리자권한으로 열기"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:504
+msgid "Menu Editor"
+msgstr "메뉴 편집기"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:544
+msgid "Donate"
+msgstr "기부하기"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:547
+msgid "Download More Themes"
+msgstr "더 많은 테마 다운로드"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:550
+msgid "Tilo Themes Specifications"
+msgstr "Tilo 테마 사양"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:553
+msgid "Report Bug"
+msgstr "버그 보고"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:556
+msgid "Help Translate"
+msgstr "번역 돕기"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:559
+msgid "Visit Homepage"
+msgstr "홈페이지 방문"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:562
+msgid "Credits"
+msgstr "만든 사람"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:580
+#: tilo/src/lib/tilo/Tilo.py:149
+#: tilo/src/lib/tilo/Tilo.py:228
+#: tilo/src/lib/tilo/Tilo_rewrite.py:238
+#: tilo/src/lib/tilo/Tilo_rewrite.py:313
+msgid "Menu needs to restart , restart now?"
+msgstr "메뉴를 재실행해야 합니다, 지금 재시작 할까요?"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:771
+msgid "theme"
+msgstr "테마"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:788
+msgid "Install a new theme"
+msgstr "새 테마 설치"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:812
+msgid "Error - Theme package is corrupt!"
+msgstr "오류 - 테마 패키지가 손상되었습니다!"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:833
+#: tilo/src/lib/tilo/Tilo-Settings.py:842
+#: tilo/src/lib/tilo/Tilo-Settings.py:849
+#: tilo/src/lib/tilo/Tilo-Settings.py:865
+msgid ""
+"Error - theme not installed\n"
+"Maybe the Theme was packaged incorrectly\n"
+"Try to install the Theme manually"
+msgstr ""
+"오류 - 테마가 설치되지 않았음\n"
+"테마가 잘못 패키징되었을 수 있습니다\n"
+"테마를 수동으로 설치해 보십시오"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:855
+msgid "Theme exists. Continue?"
+msgstr "테마가 이미 존재합니다. 계속하시겠습니까?"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:863
+msgid "Theme installed"
+msgstr "테마 설치됨"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:874
+#: tilo/src/lib/tilo/Tilo-Settings.py:893
+msgid ""
+"This theme was created for a previous version of Tilo.\n"
+"The theme was automaticly updated in order to work properly."
+msgstr ""
+"이 테마는 Tilo의 이전 버전을 위해 만들어 졌습니다.\n"
+"테마가 제대로 작동하기 위해 자동으로 업데이트합니다."
+
+#: tilo/src/lib/tilo/TiloTray.py:44
+msgid "Edit Menus"
+msgstr "메뉴 편집"
+
+#: tilo/src/lib/tilo/TiloTray.py:45
+msgid "Quit"
+msgstr "종료"
+
+#: tilo/src/lib/tilo/Mate_Me.py:87
+#: tilo/src/lib/tilo/Menu_Items.py:667
+msgid "added to favorites list"
+msgstr "즐겨찾기 목록이 추가됨"
+
+#: tilo/src/lib/tilo/Mate_Me.py:97
+#: tilo/src/lib/tilo/Menu_Items.py:678
+msgid "removed from favorites list"
+msgstr "즐겨찾기 목록이 제거됨"
+
+#: tilo/src/lib/tilo/Mate_Me.py:105
+#: tilo/src/lib/tilo/Menu_Items.py:686
+msgid "added to system startup"
+msgstr "시스탬 시작에 추가됨"
+
+#: tilo/src/lib/tilo/Mate_Me.py:113
+#: tilo/src/lib/tilo/Menu_Items.py:694
+msgid "removed from system startup"
+msgstr "시스탬 시작에서 제거됨"
+
+#: tilo/src/lib/tilo/Mate_Me.py:131
+#: tilo/src/lib/tilo/Menu_Items.py:618
+msgid "Add to Favorites"
+msgstr "즐겨찾기에 추가"
+
+#: tilo/src/lib/tilo/Mate_Me.py:135
+#: tilo/src/lib/tilo/Menu_Items.py:621
+msgid "Remove from Favorites"
+msgstr "즐겨찾기에서 제거"
+
+#: tilo/src/lib/tilo/Mate_Me.py:138
+#: tilo/src/lib/tilo/Menu_Items.py:623
+msgid "Create Desktop Shortcut"
+msgstr "바탕화면 바로가기 만들기"
+
+#: tilo/src/lib/tilo/Mate_Me.py:142
+#: tilo/src/lib/tilo/Menu_Items.py:626
+msgid "Remove from System Startup"
+msgstr "시작메뉴에서 제거"
+
+#: tilo/src/lib/tilo/Mate_Me.py:144
+#: tilo/src/lib/tilo/Menu_Items.py:628
+msgid "Add to System Startup"
+msgstr "시작메뉴에 추가"
+
+#: tilo/src/lib/tilo/Menu_Items.py:257
+msgid "Appearance"
+msgstr "모양"
+
+#: tilo/src/lib/tilo/Menu_Items.py:258
+msgid "Menu editor"
+msgstr "메뉴 편집기"
+
+#: tilo/src/lib/tilo/Menu_Items.py:259
+msgid "Screensaver"
+msgstr "화면 보호기"
+
+#: tilo/src/lib/tilo/Menu_Items.py:260
+msgid "System Monitor"
+msgstr "시스템 모니터"
+
+#: tilo/src/lib/tilo/Menu_Items.py:261
+msgid "Tilo settings utility"
+msgstr "Tilo 설정 도구"
+
+#: tilo/src/lib/tilo/Menu_Items.py:281
+msgid ""
+"No favorites\n"
+"Use the mouse right button\n"
+"to add or remove favorites"
+msgstr ""
+"즐겨찾기가 없습니다\n"
+"오른쪽 마우스 버튼을 이용하여\n"
+"즐겨찾기에 추가 또는 제거할 수 있습니다"
+
+#: tilo/src/lib/tilo/Menu_Items.py:299
+msgid "Reboot"
+msgstr "재시작"
+
+#: tilo/src/lib/tilo/Menu_Items.py:326
+msgid "Clear recent documents"
+msgstr "최근 문서목록 정리"
+
+#: tilo/src/lib/tilo/Menu_Items.py:364
+msgid "File System"
+msgstr "파일 시스템"
+
+#: tilo/src/lib/tilo/Menu_Items.py:386
+#: tilo/src/lib/tilo/Menu_Items.py:613
+msgid "Trash"
+msgstr "휴지통"
+
+#: tilo/src/lib/tilo/Menu_Items.py:434
+msgid "No items matched your search criteria"
+msgstr "검색 기준에 일치하는 항목이 없습니다"
+
+#: tilo/src/lib/tilo/Menu_Items.py:438
+msgid "Found %s results to your search"
+msgstr "검색결과 %s 발견됨"
+
+#: tilo/src/lib/tilo/Menu_Items.py:475
+msgid "Browse Internet"
+msgstr "인터넷 브라우저"
+
+#: tilo/src/lib/tilo/Menu_Items.py:476
+msgid "E-mail"
+msgstr "E-mail"
+
+#: tilo/src/lib/tilo/Menu_Items.py:481
+#: tilo/src/lib/tilo/Menu_Items.py:516
+#: tilo/src/lib/tilo/Menu_Items.py:572
+#: tilo/src/lib/tilo/Menu_Widgets.py:1588
+#: tilo/src/lib/tilo/Menu_Widgets.py:1962
+#: tilo/src/lib/tilo/Menu_Widgets.py:2241
+msgid "Back"
+msgstr "뒤로"
+
+#: tilo/src/lib/tilo/Menu_Items.py:485
+#: tilo/src/lib/tilo/Menu_Items.py:527
+msgid "Places"
+msgstr "장소"
+
+#: tilo/src/lib/tilo/Menu_Items.py:602
+msgid "Open with"
+msgstr ""
+
+#: tilo/src/lib/tilo/Menu_Items.py:615
+msgid "Empty Trash"
+msgstr ""
+
+#: tilo/src/lib/tilo/Menu_Widgets.py:1598
+#: tilo/src/lib/tilo/Menu_Widgets.py:1972
+#: tilo/src/lib/tilo/Menu_Widgets.py:2242
+msgid "Return to last menu"
+msgstr "마지막 메뉴로 돌아가기"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:72
+msgid "XML-Error: %s"
+msgstr "XML-오류: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:201
+msgid "Error while creating image from file: %s"
+msgstr "파일로부터 이미지를 만드는 도중 오류발생: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:217
+msgid "Error: file %s not found."
+msgstr "오류: 파일 %s 를 찾을 수 없음."
+
+#: tilo/src/lib/tilo/Popup_Menu.py:271
+msgid "Exception: %s"
+msgstr "예외: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:272
+msgid "An error occured with desktop-file: %s"
+msgstr "데스크탑 파일 오류 발생: %s"

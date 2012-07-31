@@ -1,0 +1,758 @@
+# Hebrew translation for tilo
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the tilo package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: tilo\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-06-16 22:37+0000\n"
+"PO-Revision-Date: 2010-06-29 10:09+0000\n"
+"Last-Translator: Yaron <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-07-07 17:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: tilo/src/lib/tilo/Globals.py:73
+msgid ""
+"Tilo detected a malicious script in this theme.\n"
+"The script was blocked!\n"
+"You should uninstall the selected theme and contact the website where you "
+"got it.\n"
+"\n"
+"The script that tried to run was:"
+msgstr ""
+"Tilo איתר תסריט זדוני בערכת הנושא הזו.\n"
+"התסריט נחסם!\n"
+"יש להסיר את ערכת הנושא שנבחרה וליצור קשר עם האתר שממנו הורדת אותה.\n"
+"\n"
+"התסריט שניסה לרוץ היה:"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "All Applications"
+msgstr "כל היישומים"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "All Programs"
+msgstr "כל התוכנות"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Applications"
+msgstr "יישומים"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect"
+msgstr "חיבור"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect To"
+msgstr "חיבור אל"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect To Server"
+msgstr "חיבור לשרת"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Connect to Server"
+msgstr "חיבור לשרת"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Control Center"
+msgstr "מרכז הבקרה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Distro"
+msgstr "הפצה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Documents"
+msgstr "מסמכים"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Execute Application"
+msgstr "הרצת יישום"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Favorites"
+msgstr "מועדפים"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Games"
+msgstr "משחקים"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Hdd"
+msgstr "התקן כונן קשיח"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Help And Support"
+msgstr "עזרה ותמיכה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Help Center"
+msgstr "מרכז העזרה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "History"
+msgstr "היסטוריה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Home"
+msgstr "בית"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Install Software"
+msgstr "התקנת תוכנות"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Leave"
+msgstr "יציאה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Lock"
+msgstr "נעילה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Lock Computer"
+msgstr "נעילת המחשב"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Log Out"
+msgstr "ניתוק"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Menu"
+msgstr "תפריט"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Music"
+msgstr "מוזיקה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "My Computer"
+msgstr "המחשב שלי"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Personal Folder"
+msgstr "תיקייה אישית"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Pictures"
+msgstr "תמונות"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Power"
+msgstr "חשמל"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Programs"
+msgstr "תוכנות"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent"
+msgstr "אחרון"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Applications"
+msgstr "יישומים אחרונים"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Documents"
+msgstr "מסמכים אחרונים"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Recent Items"
+msgstr "פריטים אחרונים"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Run Application"
+msgstr "הפעלת יישום"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Search for Files"
+msgstr "חפש קבצים"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Show History"
+msgstr "הצג היסטוריה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shut Down"
+msgstr "כיבוי"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shut Down..."
+msgstr "כיבוי..."
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Shutdown Computer"
+msgstr "כיבוי המחשב"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Start"
+msgstr "התחל"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Status"
+msgstr "מצב"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Used"
+msgstr "בשימוש"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "User"
+msgstr "משתמש"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Videos"
+msgstr "וידאו"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Web Bookmarks"
+msgstr "סימניות רשת"
+
+#: tilo/src/lib/tilo/Globals.py:565
+msgid "Web Sites"
+msgstr "אתרי אינטרנט"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:342
+#: tilo/src/lib/tilo/Menu_Widgets.py:1078
+#: tilo/src/lib/tilo/Menu_Widgets.py:1089
+#: tilo/src/lib/tilo/Menu_Widgets.py:1118
+#: tilo/src/lib/tilo/Menu_Widgets.py:1149
+#: tilo/src/lib/tilo/Menu_Widgets.py:1334
+#: tilo/src/lib/tilo/Menu_Widgets.py:1338
+msgid "Search"
+msgstr "חיפוש"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:362
+msgid "Control Panel"
+msgstr "לוח בקרה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:372
+msgid "Package Manager"
+msgstr "מנהל חבילות"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:382
+msgid "Help"
+msgstr "עזרה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:402
+#: tilo/src/lib/tilo/Menu_Items.py:303
+msgid "Lock Screen"
+msgstr "נעילת המסך"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:412
+#: tilo/src/lib/tilo/Menu_Items.py:302
+msgid "Logout"
+msgstr "ניתוק"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:443
+#: tilo/src/lib/tilo/Menu_Items.py:300
+msgid "Suspend"
+msgstr "השהיה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:453
+#: tilo/src/lib/tilo/Menu_Items.py:301
+msgid "Hibernate"
+msgstr "מצב שינה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:464
+msgid "Run"
+msgstr "הפעלה"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Tilo-Settings.py:474
+#: tilo/src/lib/tilo/Menu_Items.py:298
+msgid "Shutdown"
+msgstr "כיבוי"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:256
+#: tilo/src/lib/tilo/Menu_Widgets.py:549
+#: tilo/src/lib/tilo/Menu_Widgets.py:721
+#: tilo/src/lib/tilo/Menu_Widgets.py:893
+msgid "About Me"
+msgstr "אודותיי"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:383
+msgid "Home Folder"
+msgstr "תיקיית הבית"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:384
+msgid "Computer"
+msgstr "מחשב"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:385
+msgid "Network"
+msgstr "רשת"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:489
+#: tilo/src/lib/tilo/Menu_Items.py:524
+msgid "System"
+msgstr "מערכת"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:556
+msgid "Most Used"
+msgstr "השימושיים ביותר"
+
+#: tilo/src/lib/tilo/Globals.py:565
+#: tilo/src/lib/tilo/Menu_Items.py:556
+msgid "Recently Used"
+msgstr "בשימוש לאחרונה"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:61
+msgid "Tilo Settings"
+msgstr "הגדרות Tilo"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:83
+msgid "Ok"
+msgstr "אישור"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:85
+msgid "Apply"
+msgstr "החל"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:87
+msgid "Cancel"
+msgstr "ביטול"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:92
+msgid "Themes"
+msgstr "ערכות נושא"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:93
+#: tilo/src/lib/tilo/TiloTray.py:42
+msgid "Preferences"
+msgstr "העדפות"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:94
+#: tilo/src/lib/tilo/TiloTray.py:43
+msgid "About"
+msgstr "אודות"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:95
+msgid "Commands"
+msgstr "פקודות"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:114
+msgid "Menu Selection"
+msgstr "בחירת תפריט"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:137
+#: tilo/src/lib/tilo/Tilo-Settings.py:165
+#: tilo/src/lib/tilo/Tilo-Settings.py:195
+#: tilo/src/lib/tilo/Tilo-Settings.py:216
+msgid "Install"
+msgstr "התקנה"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:139
+#: tilo/src/lib/tilo/Tilo-Settings.py:167
+#: tilo/src/lib/tilo/Tilo-Settings.py:197
+#: tilo/src/lib/tilo/Tilo-Settings.py:218
+#: tilo/src/lib/tilo/Tilo-Settings.py:771
+msgid "Uninstall"
+msgstr "הסרה"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:151
+msgid "Button Selection"
+msgstr "בחירת כפתור"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:181
+msgid "Icon Selection"
+msgstr "בחירת צלמית"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:213
+msgid "Sound theme"
+msgstr "ערכת צלילים"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:235
+msgid "Bind keyboad key"
+msgstr "שיוך מקש מקלדת"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:242
+msgid "Show Internet and Email Buttons"
+msgstr "הצגת כפתורי האינטרנט והדוא\"ל"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:244
+msgid "Use Gtk Theme Colors in Program List"
+msgstr "שימוש בצבעי ערכת הנושא של GTK ברשימת התוכנות"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:246
+msgid "Tab Selection on Mouse Hover"
+msgstr "בחירת לשוניות במעבר עכבר"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:253
+msgid "Icon Size in Program List"
+msgstr "גודל צלמית ברשימת התוכנות"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:255
+msgid "Number of Items in Recent Items List"
+msgstr "מספר פריטים ברשימה \"פריטים אחרונים\""
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:269
+msgid "Listview"
+msgstr "תצוגת רשימה"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:270
+msgid "Buttons (expanded)"
+msgstr "כפתורים (מורחב)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:271
+msgid "Buttons (fixed)"
+msgstr "כפתורים (קבוע)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:272
+msgid "Iconview (fastest)"
+msgstr "תוצגת סמלים (מהירה יותר)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:273
+msgid "Cairo (experimental)"
+msgstr "Cairo (לא נתמך טוב)"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:276
+msgid "Tab hover effect"
+msgstr "אפקט לשונית מרחפת"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:278
+msgid "None"
+msgstr "ללא"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:279
+msgid "Grow"
+msgstr "הגדלה"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:280
+msgid "Black and White"
+msgstr "שחור ולבן"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:281
+msgid "Blur"
+msgstr "טשטוש"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:282
+msgid "Glow"
+msgstr "הילה"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:283
+msgid "Saturate"
+msgstr "הרווה"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:286
+msgid "Program list type"
+msgstr "סוג רשימת תוכנות"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:287
+msgid "Use system icons instead of theme icons"
+msgstr "שימוש בצלמיות המערכת במקום באלו המסופקות עם ערכת הנושא"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:289
+msgid "Use distributor logo instead of button theme"
+msgstr "השתמשו בלוגו המפיץ במקום ערכת נושא של לחצן"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:291
+msgid "Show thumbnails in recent items when available"
+msgstr "הצג דוגמיות לפריטים אחרונים כשניתן"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:293
+msgid "Show tooltips in program list"
+msgstr "הצג חלוניות מוקפצות ברשימת התוכנות"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:296
+msgid "Activate Compiz blur effect on Tilo window"
+msgstr "הפעל את אפקט הטשטוש של Compiz בחלון Tilo."
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:303
+msgid "Disable Places and System in program list"
+msgstr "ביטול מקומות ומערכת ברשימת התכניות"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:352
+msgid "Network Config"
+msgstr "תצורת הרשת"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:392
+msgid "Shutdown Dialog"
+msgstr "תיבת דו־שיח הכיבוי"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:422
+msgid "Logout Dialog"
+msgstr "תיבת דו־שיח ההנתקות"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:432
+msgid "Restart"
+msgstr "הפעלה מחדש"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:484
+msgid "User about"
+msgstr "אודות המשתמש"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:494
+#: tilo/src/lib/tilo/Mate_Me.py:127
+#: tilo/src/lib/tilo/Menu_Items.py:575
+msgid "Open as Administrator"
+msgstr "פתיחה כמנהל"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:504
+msgid "Menu Editor"
+msgstr "עורך התפריטים"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:544
+msgid "Donate"
+msgstr "תרומה"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:547
+msgid "Download More Themes"
+msgstr "הורדת ערכות נושא נוספות"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:550
+msgid "Tilo Themes Specifications"
+msgstr "מפרטי ערכות נושא Tilo."
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:553
+msgid "Report Bug"
+msgstr "דיווח על תקלה"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:556
+msgid "Help Translate"
+msgstr "עזרה בתרגום"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:559
+msgid "Visit Homepage"
+msgstr "בקר באתר הבית"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:562
+msgid "Credits"
+msgstr "תודות"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:580
+#: tilo/src/lib/tilo/Tilo.py:149
+#: tilo/src/lib/tilo/Tilo.py:228
+#: tilo/src/lib/tilo/Tilo_rewrite.py:238
+#: tilo/src/lib/tilo/Tilo_rewrite.py:313
+msgid "Menu needs to restart , restart now?"
+msgstr "נדרשת הפעלה מחדש של התפריט. האם לבצע את פעולה זו כעת?"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:771
+msgid "theme"
+msgstr "ערכת נושא"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:788
+msgid "Install a new theme"
+msgstr "התקנת ערכת נושא חדשה"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:812
+msgid "Error - Theme package is corrupt!"
+msgstr "שגיאה -  ערכת נושא פגומה!"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:833
+#: tilo/src/lib/tilo/Tilo-Settings.py:842
+#: tilo/src/lib/tilo/Tilo-Settings.py:849
+#: tilo/src/lib/tilo/Tilo-Settings.py:865
+msgid ""
+"Error - theme not installed\n"
+"Maybe the Theme was packaged incorrectly\n"
+"Try to install the Theme manually"
+msgstr ""
+"שגיאה - ערכת הנושא אינה מותקנת.\n"
+"ייתכן שהיא לא נארזה כראוי.\n"
+"נסה להתקין אותה ידנית."
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:855
+msgid "Theme exists. Continue?"
+msgstr "ערכת הנושא קיימת. להמשיך?"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:863
+msgid "Theme installed"
+msgstr "ערכת הנושא הותקנה"
+
+#: tilo/src/lib/tilo/Tilo-Settings.py:874
+#: tilo/src/lib/tilo/Tilo-Settings.py:893
+msgid ""
+"This theme was created for a previous version of Tilo.\n"
+"The theme was automaticly updated in order to work properly."
+msgstr ""
+"ערכת נושא זו נוצרה בעבור גרסה קודמת של Tilo.\n"
+"הערכה עודכנה באופן אוטומאטי על מנת לעבוד כראוי."
+
+#: tilo/src/lib/tilo/TiloTray.py:44
+msgid "Edit Menus"
+msgstr "ערוך תפריטים"
+
+#: tilo/src/lib/tilo/TiloTray.py:45
+msgid "Quit"
+msgstr "יציאה"
+
+#: tilo/src/lib/tilo/Mate_Me.py:87
+#: tilo/src/lib/tilo/Menu_Items.py:667
+msgid "added to favorites list"
+msgstr "נוסף לרשימת המועדפים"
+
+#: tilo/src/lib/tilo/Mate_Me.py:97
+#: tilo/src/lib/tilo/Menu_Items.py:678
+msgid "removed from favorites list"
+msgstr "הוסר מרשימת המועדפים"
+
+#: tilo/src/lib/tilo/Mate_Me.py:105
+#: tilo/src/lib/tilo/Menu_Items.py:686
+msgid "added to system startup"
+msgstr "נוסף ליישומי הפעלה"
+
+#: tilo/src/lib/tilo/Mate_Me.py:113
+#: tilo/src/lib/tilo/Menu_Items.py:694
+msgid "removed from system startup"
+msgstr "הוסר מיישומי הפעלה"
+
+#: tilo/src/lib/tilo/Mate_Me.py:131
+#: tilo/src/lib/tilo/Menu_Items.py:618
+msgid "Add to Favorites"
+msgstr "הוספה למועדפים"
+
+#: tilo/src/lib/tilo/Mate_Me.py:135
+#: tilo/src/lib/tilo/Menu_Items.py:621
+msgid "Remove from Favorites"
+msgstr "הסרה מהמועדפים"
+
+#: tilo/src/lib/tilo/Mate_Me.py:138
+#: tilo/src/lib/tilo/Menu_Items.py:623
+msgid "Create Desktop Shortcut"
+msgstr "יצירת קיצור דרך על שולחן העבודה"
+
+#: tilo/src/lib/tilo/Mate_Me.py:142
+#: tilo/src/lib/tilo/Menu_Items.py:626
+msgid "Remove from System Startup"
+msgstr "הסר מהליך הפעלת המערכת"
+
+#: tilo/src/lib/tilo/Mate_Me.py:144
+#: tilo/src/lib/tilo/Menu_Items.py:628
+msgid "Add to System Startup"
+msgstr "הוסף להליך הפעלת המערכת"
+
+#: tilo/src/lib/tilo/Menu_Items.py:257
+msgid "Appearance"
+msgstr "חזות"
+
+#: tilo/src/lib/tilo/Menu_Items.py:258
+msgid "Menu editor"
+msgstr "עורך התפריט"
+
+#: tilo/src/lib/tilo/Menu_Items.py:259
+msgid "Screensaver"
+msgstr "שומר מסך"
+
+#: tilo/src/lib/tilo/Menu_Items.py:260
+msgid "System Monitor"
+msgstr "צג המערכת"
+
+#: tilo/src/lib/tilo/Menu_Items.py:261
+msgid "Tilo settings utility"
+msgstr "כלי ההגדרות של Tilo"
+
+#: tilo/src/lib/tilo/Menu_Items.py:281
+msgid ""
+"No favorites\n"
+"Use the mouse right button\n"
+"to add or remove favorites"
+msgstr ""
+"אין מועדפים\n"
+"השתמש בלחצן העכבר הימני\n"
+"כדי להוסיף או להסיר מועדפים"
+
+#: tilo/src/lib/tilo/Menu_Items.py:299
+msgid "Reboot"
+msgstr "הפעלה מחדש"
+
+#: tilo/src/lib/tilo/Menu_Items.py:326
+msgid "Clear recent documents"
+msgstr "ניקוי רשימת המסמכים האחרונים"
+
+#: tilo/src/lib/tilo/Menu_Items.py:364
+msgid "File System"
+msgstr "מערכות קבצים"
+
+#: tilo/src/lib/tilo/Menu_Items.py:386
+#: tilo/src/lib/tilo/Menu_Items.py:613
+msgid "Trash"
+msgstr "אשפה"
+
+#: tilo/src/lib/tilo/Menu_Items.py:434
+msgid "No items matched your search criteria"
+msgstr "לא נמצאו פריטים המתאימים לשאילתת החיפוש שלך"
+
+#: tilo/src/lib/tilo/Menu_Items.py:438
+msgid "Found %s results to your search"
+msgstr "נמצאו %s תוצאות"
+
+#: tilo/src/lib/tilo/Menu_Items.py:475
+msgid "Browse Internet"
+msgstr "גלישה באינטרנט"
+
+#: tilo/src/lib/tilo/Menu_Items.py:476
+msgid "E-mail"
+msgstr "דוא\"ל"
+
+#: tilo/src/lib/tilo/Menu_Items.py:481
+#: tilo/src/lib/tilo/Menu_Items.py:516
+#: tilo/src/lib/tilo/Menu_Items.py:572
+#: tilo/src/lib/tilo/Menu_Widgets.py:1588
+#: tilo/src/lib/tilo/Menu_Widgets.py:1962
+#: tilo/src/lib/tilo/Menu_Widgets.py:2241
+msgid "Back"
+msgstr "חזרה"
+
+#: tilo/src/lib/tilo/Menu_Items.py:485
+#: tilo/src/lib/tilo/Menu_Items.py:527
+msgid "Places"
+msgstr "מקומות"
+
+#: tilo/src/lib/tilo/Menu_Items.py:602
+msgid "Open with"
+msgstr "פתיחה באמצעות"
+
+#: tilo/src/lib/tilo/Menu_Items.py:615
+msgid "Empty Trash"
+msgstr "ריקון האשפה"
+
+#: tilo/src/lib/tilo/Menu_Widgets.py:1598
+#: tilo/src/lib/tilo/Menu_Widgets.py:1972
+#: tilo/src/lib/tilo/Menu_Widgets.py:2242
+msgid "Return to last menu"
+msgstr "חזור אל התפריט הקודם"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:72
+msgid "XML-Error: %s"
+msgstr "שגיאת XML: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:201
+msgid "Error while creating image from file: %s"
+msgstr "תקלה בעת יצירת תמונה מקובץ: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:217
+msgid "Error: file %s not found."
+msgstr "שגיאה: הקובץ %s לא נמצא."
+
+#: tilo/src/lib/tilo/Popup_Menu.py:271
+msgid "Exception: %s"
+msgstr "חריגות: %s"
+
+#: tilo/src/lib/tilo/Popup_Menu.py:272
+msgid "An error occured with desktop-file: %s"
+msgstr "אירעה שגיאה עם קובץ desktop: %s"

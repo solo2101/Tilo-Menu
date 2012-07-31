@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Name=TiloDocky
+Exec=/usr/share/dockmanager/scripts/Tilo/TiloDocky.py
+Type=Application
+StartupNotify=true
+Comment=Tilo consolidated menu for Mate
+Icon=distributor-logo
+X-MATE-Autostart-enabled=true

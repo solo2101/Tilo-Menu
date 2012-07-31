@@ -1,0 +1,13 @@
+----
+0.3 
+----
+User image (you will need Gnome-control-center -> User accounts to change your image)
+Fix problems with AWN and Cairo Dock
+----
+0.2 
+----
+Problem with permission
+----
+0.1 
+----
+Testing

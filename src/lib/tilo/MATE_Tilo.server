@@ -1,0 +1,27 @@
+<oaf_info>
+	<oaf_server iid="OAFIID:MATE_Tilo_Factory" type="exe" location="/usr/lib/tilo/Tilo.py">
+		<oaf_attribute name="repo_ids" type="stringv">
+			<item value="IDL:MateComponent/GenericFactory:1.0"/>
+			<item value="IDL:MateComponent/Unknown:1.0"/>
+		</oaf_attribute>
+		<oaf_attribute name="name" type="string" value="Tilo Factory"/>
+		<oaf_attribute name="description" type="string" value="Customizable Start Menu for the MATE Desktop"/>
+	</oaf_server>
+
+	<oaf_server iid="OAFIID:MATE_Tilo" type="factory" location="OAFIID:MATE_Tilo_Factory">
+		<oaf_attribute name="repo_ids" type="stringv">
+			<item value="IDL:MATE/Vertigo/MatePanelAppletShell:1.0"/>
+			<item value="IDL:MateComponent/Control:1.0"/>
+			<item value="IDL:MateComponent/Unknown:1.0"/>
+		</oaf_attribute>
+		<oaf_attribute name="name" type="string" value="Tilo"/>
+		<oaf_attribute name="description" type="string" value="Customizable Start Menu for the MATE Desktop"/>
+		<oaf_attribute name="panel:category" type="string" value="Utilities"/>
+		<oaf_attribute name="panel:icon" type="string" value="/usr/lib/tilo/graphics/logo.png"/>
+		<oaf_attribute name="bugzilla:bugzilla" type="string" value="MATE"/>
+	        <oaf_attribute name="bugzilla:product" type="string" value="mate-panel"/>
+	        <oaf_attribute name="bugzilla:component" type="string" value="menu"/>
+		<oaf_attribute name="bugzilla:version" type="string" value="2.20.0.1"/>
+	        <oaf_attribute name="bugzilla:other_binaries" type="string" value="Tilo"/>
+	</oaf_server>
+</oaf_info>

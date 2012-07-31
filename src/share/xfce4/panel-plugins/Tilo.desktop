@@ -1,0 +1,8 @@
+[Xfce Panel]
+Encoding=UTF-8
+Name=Tilo
+Comment=Controls Exaile from the panel
+Icon=distributor-logo
+Type=Panel
+X-XFCE-Unique=true
+X-XFCE-Exec=/usr/lib/tilo/exaile-xfce.py
