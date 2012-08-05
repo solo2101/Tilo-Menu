@@ -16,7 +16,7 @@ Dependencies:
 Depends:
 
 python
-python-mate*		To run on the Mate-Panel
+python-mate*  	To run on the Mate-Panel
 python-numpy 		or numpy in some distros
 
 * Recomends:
@@ -54,4 +54,9 @@ Uninstall:
 --------------
 
 sudo make uninstall
+
+
+For KDE
+Try a manual install by runing the command "-plasmapkg -i src/share/plasma/plasmoids/Tilo.zip" as normal user.
+
 
