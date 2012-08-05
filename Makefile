@@ -46,11 +46,8 @@ install:
 	#-cp -r src/share/cairo-dock ~/.config/
 	-install src/bin/Tilo.py $(DESTDIR)$(PREFIX)/bin/
 	-install src/lib/matecomponent/MATE_Tilo.server $(DESTDIR)$(LIBDIR)/matecomponent/servers
-	-plasmapkg -i src/share/plasma/plasmoids/Tilo.zip -p $(DESTDIR)$(PREFIX)/share/kde4/apps/plasma/plasmoids
+	#-plasmapkg -i src/share/plasma/plasmoids/Tilo.zip -p $(DESTDIR)$(PREFIX)/share/kde4/apps/plasma/plasmoids # Try running the "-plasmapkg -i src/share/plasma/plasmoids/Tilo.zip" as normal user
 	@echo "Makefile: Tilo installed."
-	@echo "Setting Permission"
-	chmod -R 755 /usr/lib/tilo/
-	chmod -R 755 /usr/share/tilo/
 
 
 # uninstall
@@ -62,13 +59,15 @@ uninstall:
 	rm -rf $(PREFIX)/share/avant-window-navigator/applets/Tilo
 	#rm -rf $(PREFIX)/share/xfce4/panel-plugins/Tilo.desktop
 	rm -rf $(PREFIX)/bin/Tilo.py
-	rm -rf $(PREFIX)/share/kde4/apps/plasma/plasmoids/Tilo
+	#rm -rf $(PREFIX)/share/kde4/apps/plasma/plasmoids/Tilo
 	rm -rf $(LIBDIR)/matecomponent/servers/MATE_Tilo.server
 	rm -rf /etc/tilo/prefix
 	rm -rf ~/.tilo
 	rm -rf ~/.config/cairo-dock/third-party/Tilo
 	rm -rf $(PREFIX)/share/dockmanager/scripts/Tilo
 	rm -rf $(PREFIX)/share/dockmanager/scripts/Tilo.py
-	plasmapkg -r Tilo
+	#plasmapkg -r Tilo
+
+
 
 
