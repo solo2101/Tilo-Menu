@@ -12,9 +12,6 @@ Installing Tilo-Menu:
 Dependencies:
 -----------------
 
-
-Depends:
-
 python
 python-mate*  	To run on the Mate-Panel
 python-numpy 		or numpy in some distros
