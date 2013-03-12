@@ -14,22 +14,17 @@
 # This is free software made available under the GNU public license.
 # Use 'run-in-window' command switch for development testing
 
-import gtk
-import pygtk
-pygtk.require('2.0')
-import commands
-import sys
-import gobject
-try:
-	import mateapplet 
-except:
-	from gi.repository import MatePanelApplet as mateapplet
+import gi
+gi.require_version("Gtk", "2.0")
+ 
+from gi.repository import Gtk
+from gi.repository import MatePanelApplet as mateapplet
+from gi.repository import Gio
+
 import os
 
 if not os.path.exists(os.path.expanduser("~") + '/.tilo') or not os.path.isdir(os.path.expanduser("~") + '/.tilo'):
 	os.system('mkdir ~/.tilo')
-
-import mateconf
 
 try:
 	INSTALL_PREFIX = open("/etc/tilo/prefix").read()[:-1] 
@@ -52,7 +47,7 @@ gettext.bindtextdomain('tilo', INSTALL_PREFIX +  '/share/locale')
 def _(s):
 	return gettext.gettext(s)
 
-class Tilo(mateapplet.Applet):
+class Tilo(mateapplet.applet):
 
 	def __init__(self,applet,iid):
 		self.panel_size = 24
