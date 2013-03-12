@@ -10,7 +10,6 @@
 #(c) QB89Dragon 2007/8 <hughescih@hotmail.com>
 #(c) Whise 2008,2009,2010 <helderfraga@gmail.com>
 #
-# Consolidated Gnome Menu
 # This is free software made available under the GNU public license.
 # Use 'run-in-window' command switch for development testing
 
