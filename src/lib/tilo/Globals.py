@@ -20,10 +20,7 @@ import os
 import xml.dom.minidom
 import backend
 import sys
-# To get UserIcon
-import getpass
-import fileinput
-import re
+
 try:
 	INSTALL_PREFIX = open("/etc/tilo/prefix").read()[:-1] 
 except:
@@ -606,12 +603,7 @@ MenuCairoSystemIcon = {'m_webbookmarks':'applications-internet','m_recentapps':'
 #User Image
 UserImageFrame = ImageDirectory+"user-image-frame.png"
 DefaultUserImage = IconDirectory+"gtk-missing-image.png"
-useraccount="/var/lib/AccountsService/users/"+getpass.getuser()
-for line in fileinput.input(useraccount):
-	if "Icon" in line:
-		TempUserIcon = re.sub(r'\Icon=\s?','',line)
-TempUserIcon = os.linesep.join([s for s in TempUserIcon.splitlines() if s])
-UserImage = TempUserIcon
+UserImage = HomeDirectory + "/.face"
 if os.path.isfile(UserImage) == 0 or os.path.exists(UserImage) == 0:
     UserImage=DefaultUserImage
 
