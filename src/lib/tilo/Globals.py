@@ -11,8 +11,6 @@
 #(c) Whise 2008,2009 <helderfraga@gmail.com>
 #
 # Global menu settings
-# Part of the GnoMenu
-
 
 import gtk
 import gc
