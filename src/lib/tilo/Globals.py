@@ -11,14 +11,16 @@
 #(c) Whise 2008,2009 <helderfraga@gmail.com>
 #
 # Global menu settings
+# Part of the Tilo
+import gi
+gi.require_version("Gtk", "2.0")
 
-import gtk
+from gi.repository import Gtk, Gdk, GdkPixbuf
 import gc
 import os
 import xml.dom.minidom
 import backend
 import sys
-
 try:
 	INSTALL_PREFIX = open("/etc/tilo/prefix").read()[:-1] 
 except:
@@ -40,7 +42,7 @@ def _(s):
 
 global name,version,appdirname 
 name = "Tilo"
-version = "0.3"
+version = "0.3.1"
 appdirname="tilo"
 print '%s %s' % (name, version)
 ############ Set up global directories #########################
@@ -56,7 +58,7 @@ GraphicsDirectory = "%s/lib/%s/graphics/"  % (INSTALL_PREFIX,appdirname)
 ########### Definitions ########################################
 ################################################################
 ThemeCategories = ["Menu","Icon","Button"]
-mateconf_app_key = '/apps/%s' % appdirname
+gconf_app_key = '/apps/%s' % appdirname
 TransitionS = 	25 #step update speed in miliseconds
 TransitionQ = 0.05 #step update transparency 0 to 1
 FirstUse = False
@@ -95,11 +97,11 @@ def ReloadSettings():
 # Loads the main configuration and settings file to their respective values
 	global orientation, panel_size, flip, MenuActions, MenuCommands, ImageDirectory, Actions, IconDirectory, MenuButtonDirectory, ThemeColor, ShowTop, FirstUse, Hibernate, StartMenuTemplate, ThemeColorCode,ThemeColorHtml, NegativeThemeColorCode, MenuWidth, MenuHeight, IconW, IconH, IconInX, IconInY, IconInW, IconInH, SearchX, SearchY, SearchW, SearchH, SearchIX, SearchIY, SearchInitialText,SearchTextColor, SearchBackground, SearchWidget, SearchWidgetPath, UserIconFrameOffsetX, UserIconFrameOffsetY, UserIconFrameOffsetH, UserIconFrameOffsetW, PG_buttonframe, PG_buttonframedimensions, MenuHasSearch, MenuHasIcon, MenuHasFade , OnlyShowFavs, OnlyShowRecentApps, CairoSearchTextColor, CairoSearchBackColor, CairoSearchBorderColor, CairoSearchRoundAngle, PG_iconsize,RI_numberofitems, MenuButtonCount, MenuButtonNames, MenuButtonMarkup, MenuButtonNameOffsetX, MenuButtonNameOffsetY, MenuButtonCommands, MenuButtonX,MenuButtonY, MenuButtonImage, MenuButtonImageBack, MenuButtonIcon, MenuButtonIconSel, MenuButtonIconX,MenuButtonIconY,MenuButtonIconSize,MenuButtonExecOnHover, MenuButtonSub,MenuButtonClose, MenuCairoIconButton, MenuLabelCount, MenuLabelNames, MenuLabelMarkup, MenuLabelX, MenuLabelY, MenuLabelCommands, MenuTabCount, MenuTabNames, MenuTabMarkup, MenuTabNameOffsetX, MenuTabNameOffsetY, MenuTabCommands,MenuTabX,MenuTabY,MenuTabImage, MenuTabIcon, MenuTabImageSel, MenuTabSub,MenuTabClose, MenuCairoIconTab, MenuCairoIcontabX, MenuCairoIcontabY,MenuCairoIcontabSize, MenuTabInvertTextColorSel, MenuImageCount, MenuImageNames, MenuImageX, MenuImageY, MenuImage, ButtonHasTop, ButtonLabelCount, ButtonBackground, ButtonTop, StartButton, StartButtonTop, ButtonHasBottom, ButtonLabelName, ButtonLabelMarkup, ButtonLabelX, ButtonLabelY, MenuButtonNameAlignment, MenuTabNameAlignment,MenuLabelNameAlignment, GtkColorCode
 
-	menubar = gtk.MenuBar()
+	menubar = Gtk.MenuBar()
 	try:
-		GtkColorCode = menubar.rc_get_style().bg[gtk.STATE_NORMAL]
+		GtkColorCode = Gtk.RcStyle()
 	except:
-		GtkColorCode = menubar.get_style().bg[gtk.STATE_NORMAL]
+		GtkColorCode = menubar.get_style().bg[Gtk.StateType.NORMAL]
 	orientation = None
 	panel_size = 30
 	flip = None
@@ -167,12 +169,12 @@ def ReloadSettings():
 		if node.attributes["color"].value == ThemeColor or node.attributes["color"].value == "All":
 			XBase = node
 			ThemeColorHtml = node.attributes["colorvalue"].value
-			ThemeColorCode = gtk.gdk.color_parse(ThemeColorHtml)
+			ThemeColorCode = Gdk.color_parse(ThemeColorHtml)
 			color = ThemeColorCode
 			color_r = 65535 - int(color.red)
 			color_g = 65535 - int(color.green)
 			color_b = 65535 - int(color.blue)
-			NegativeThemeColorCode = gtk.gdk.Color(color_r,color_g,color_b,0)
+			NegativeThemeColorCode = Gdk.Color(color_r,color_g,color_b)
 			Found = 1
 			break
 	if Found==0:
@@ -187,7 +189,7 @@ def ReloadSettings():
 	StartMenuTemplate = SBase[0].attributes["Image"].value
 	
 	try:
-		im = gtk.gdk.pixbuf_new_from_file('%s%s' % (ImageDirectory, StartMenuTemplate))
+		im = GdkPixbuf.Pixbuf.new_from_file('%s%s' % (ImageDirectory, StartMenuTemplate))
 		MenuWidth = im.get_width()
 		MenuHeight = im.get_height()
 	except:
@@ -303,7 +305,7 @@ def ReloadSettings():
 
 	for node in MenuButtons:
 		try:
-			im = gtk.gdk.pixbuf_new_from_file(ImageDirectory + node.attributes["Image"].value)
+			im = GdkPixbuf.Pixbuf.new_from_file(ImageDirectory + node.attributes["Image"].value)
 		except:
 			print 'Warning - Error loading theme, reverting to defaults'
 			SetDefaultSettings()
@@ -410,10 +412,10 @@ def ReloadSettings():
 	for node in MenuTabs:
 
 		try:
-			im = gtk.gdk.pixbuf_new_from_file(ImageDirectory + node.attributes["Image"].value)
+			im = GdkPixbuf.Pixbuf.new_from_file(ImageDirectory + node.attributes["Image"].value)
 			h = im.get_height()
 		except:
-			im = gtk.gdk.pixbuf_new_from_file(ImageDirectory + node.attributes["ImageSel"].value)
+			im = GdkPixbuf.Pixbuf.new_from_file(ImageDirectory + node.attributes["ImageSel"].value)
 			h = im.get_height()		
 		MenuTabNames.append(node.attributes["Name"].value)
 		MenuTabMarkup.append(node.attributes["Markup"].value)
@@ -485,7 +487,7 @@ def ReloadSettings():
 	MenuImage = []
 	for node in MenuImages:
 
-		im = gtk.gdk.pixbuf_new_from_file(ImageDirectory + node.attributes["Image"].value)
+		im = GdkPixbuf.Pixbuf.new_from_file(ImageDirectory + node.attributes["Image"].value)
 		h = im.get_height()
 		
 		MenuImageNames.append(node.attributes["Name"].value)
@@ -575,17 +577,17 @@ except:
 #logging.debug('Globals - 10')
 
 #Screen width/height
-__screen = gtk.gdk.screen_get_default()
-geom = gtk.gdk.Screen.get_monitor_geometry(__screen, 0)
-screenwidth = geom.width
-screenheight = geom.height
+#__screen = Gdk.Screen.get_default()
+#geom = Gdk.Screen.get_monitor_geometry(__screen, 0)
+screenwidth = Gdk.Screen.width()
+screenheight = Gdk.Screen.height() 
 
 # Obtain OS default icon theme
-DefaultIconTheme = gtk.settings_get_default().get_property("gtk-icon-theme-name")
-GtkIconTheme = gtk.icon_theme_get_default()
+DefaultIconTheme = Gtk.Settings.get_default().get_property("gtk-icon-theme-name")
+GtkIconTheme = Gtk.IconTheme.get_default()
 #logging.debug('Globals - 11')
 
-distro_logo = gtk.icon_theme_get_default().lookup_icon('distributor-logo',48,gtk.ICON_LOOKUP_FORCE_SVG).get_filename()
+distro_logo = Gtk.IconTheme.get_default().lookup_icon('distributor-logo',48,Gtk.IconLookupFlags.FORCE_SVG).get_filename()
 #Main Start Button
 #States:
 # 0 = Normal

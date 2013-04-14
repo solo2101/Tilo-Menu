@@ -10,20 +10,26 @@
 #(c) QB89Dragon 2007/8 <hughescih@hotmail.com>
 #(c) Whise 2008,2009,2010 <helderfraga@gmail.com>
 #
+# Consolidated Mate Menu
 # This is free software made available under the GNU public license.
 # Use 'run-in-window' command switch for development testing
-
 import gi
 gi.require_version("Gtk", "2.0")
- 
-from gi.repository import Gtk
-from gi.repository import MatePanelApplet as mateapplet
-from gi.repository import Gio
 
+from gi.repository import Gtk
+import commands
+import sys
+from gi.repository import GObject
+try:
+	import mateapplet 
+except:
+	from gi.repository import MatePanelApplet as mateapplet
 import os
 
 if not os.path.exists(os.path.expanduser("~") + '/.tilo') or not os.path.isdir(os.path.expanduser("~") + '/.tilo'):
 	os.system('mkdir ~/.tilo')
+
+from gi.repository import GConf
 
 try:
 	INSTALL_PREFIX = open("/etc/tilo/prefix").read()[:-1] 
@@ -46,7 +52,7 @@ gettext.bindtextdomain('tilo', INSTALL_PREFIX +  '/share/locale')
 def _(s):
 	return gettext.gettext(s)
 
-class Tilo(mateapplet.applet):
+class Tilo(mateapplet.Applet):
 
 	def __init__(self,applet,iid):
 		self.panel_size = 24
@@ -67,8 +73,8 @@ class Tilo(mateapplet.applet):
 		else:
 			self.orientation = 'bottom'
 
-		self.mateconf_client = mateconf.client_get_default()
-		self.mateconfkey = self.applet.get_preferences_key()
+		self.gconf_client = GConf.Client.get_default()
+		self.gconfkey = self.applet.get_preferences_key()
 		if self.orientation == 'top':
 			Globals.flip = False
 		elif self.orientation == 'bottom':
@@ -76,8 +82,8 @@ class Tilo(mateapplet.applet):
 		else : self.size = 30
 		self.size = self.get_panel_size()
 		self.store_settings()
-		self.Fixed = gtk.Fixed()
-		self.EBox = gtk.EventBox()
+		self.Fixed = Gtk.Fixed()
+		self.EBox = Gtk.EventBox()
 		self.EBox.set_tooltip_text(Globals.name)
 		self.Fixed.put(self.EBox,0,0)
 		self.applet.add(self.Fixed)
@@ -85,9 +91,9 @@ class Tilo(mateapplet.applet):
 		self.EBox.set_visible_window(0)
 		self.Fixed.set_border_width(0)
 		self.size = self.get_panel_size()
-		self.Image = gtk.Image()
+		self.Image = Gtk.Image()
 		if Globals.Settings["Distributor_Logo"] == 1:
-			im = gtk.gdk.pixbuf_new_from_file_at_size(Globals.distro_logo,self.size,self.size)
+			im = GdkPixbuf.Pixbuf.new_from_file_at_size(Globals.distro_logo,self.size,self.size)
 			if self.Button_state == 1:
 				im.saturate_and_pixelate(im, 1.5, False)
 			elif self.Button_state == 2:
@@ -95,7 +101,7 @@ class Tilo(mateapplet.applet):
 			pixmap = im
 
 		else:			
-			im = gtk.gdk.pixbuf_new_from_file(Globals.StartButton[self.Button_state])
+			im = GdkPixbuf.Pixbuf.new_from_file(Globals.StartButton[self.Button_state])
 
 		w = im.get_width()
 		h = im.get_height()
@@ -103,7 +109,7 @@ class Tilo(mateapplet.applet):
 		if Globals.ButtonLabelCount == 1 and Globals.Settings["Distributor_Logo"] == 0:
 			self.set_button_label()
 
-		pixmap = im.scale_simple(int(w*self.scale),int(self.size),gtk.gdk.INTERP_HYPER)
+		pixmap = im.scale_simple(int(w*self.scale),int(self.size),GdkPixbuf.InterpType.HYPER)
 		im = None
 		if Globals.flip == False and Globals.ButtonHasTop == 1:
 			pixmap = pixmap.flip(Globals.flip)
@@ -111,7 +117,7 @@ class Tilo(mateapplet.applet):
 		self.Image.set_from_pixbuf(pixmap)
 		self.EBox.add(self.Image)
 		self.applet.set_background_widget(self.applet)
-		self.applet.set_events(gtk.gdk.ALL_EVENTS_MASK)
+		self.applet.set_events(Gdk.EventMask.ALL_EVENTS_MASK)
 		self.applet.connect("destroy",self.cleanup)
 	        self.applet.connect("destroy-event",self.cleanup)
 	        self.applet.connect("delete-event",self.cleanup)
@@ -129,7 +135,7 @@ class Tilo(mateapplet.applet):
 		self.applet.show_all()
 		self.applet.realize()
 		self.EBox.realize()
-		#self.callback = gobject.timeout_add(1000,self.timeout_callback)
+		#self.callback = GObject.timeout_add(1000,self.timeout_callback)
 		self.EBox.set_size_request(-1,self.size)
 		self.Fixed.set_size_request(-1,self.size )
 		self.Image.set_size_request(-1,self.size)
@@ -154,14 +160,14 @@ class Tilo(mateapplet.applet):
 
 
 	def get_panel_size(self):
-		if self.mateconfkey != None:
-			self.mateconfkey = str(self.mateconfkey).replace('/prefs','')
-			self.panel_id = self.mateconf_client.get_string(self.mateconfkey + "/toplevel_id")			
+		if self.gconfkey != None:
+			self.gconfkey = str(self.gconfkey).replace('/prefs','')
+			self.panel_id = self.gconf_client.get_string(self.gconfkey + "/toplevel_id")			
 
 		if self.panel_id != None:				
-			self.size = int(self.mateconf_client.get_int("/apps/panel/toplevels/" + self.panel_id + "/size"))
-			self.mateconf_client.add_dir("/apps/panel/toplevels/" + self.panel_id + "/size",mateconf.CLIENT_PRELOAD_NONE)
-			self.mateconf_client.notify_add("/apps/panel/toplevels/" + self.panel_id + "/size", self.update_panel_size) 
+			self.size = int(self.gconf_client.get_int("/apps/panel/toplevels/" + self.panel_id + "/size"))
+			self.gconf_client.add_dir("/apps/panel/toplevels/" + self.panel_id + "/size",GConf.ClientPreloadType.PRELOAD_NONE)
+			self.gconf_client.notify_add("/apps/panel/toplevels/" + self.panel_id + "/size", self.update_panel_size) 
 			return int(self.size)
 		else: 
 
@@ -173,7 +179,7 @@ class Tilo(mateapplet.applet):
 
 
 	def set_button_label(self):
-		self.Label = gtk.Label()
+		self.Label = Gtk.Label()
 		self.txt = Globals.ButtonLabelMarkup
 		try:
 			self.txt = self.txt.replace(Globals.ButtonLabelName,_(Globals.ButtonLabelName))
@@ -183,7 +189,7 @@ class Tilo(mateapplet.applet):
 
 	def set_button_label_size(self):
 		if Globals.Settings["Distributor_Logo"] == 0:
-			im = gtk.gdk.pixbuf_new_from_file(Globals.StartButton[self.Button_state])
+			im = GdkPixbuf.Pixbuf.new_from_file(Globals.StartButton[self.Button_state])
 			w = im.get_width()
 			h = im.get_height()
 			im = None
@@ -201,7 +207,7 @@ class Tilo(mateapplet.applet):
 			self.Label.set_markup(self.txt)	
 
 	def remove_applet_border(self):
-      		gtk.rc_parse_string ("""
+      		Gtk.rc_parse_string ("""
 	               style \"Tilo-style\"
 	               {
 	                 GtkWidget::focus-line-width = 0
@@ -377,7 +383,7 @@ class Tilo(mateapplet.applet):
 		if Globals.ShowTop == 1:
 			Globals.ShowTop = 0
 			self.aux.destroy()
-		#gtk.main_quit()
+		#Gtk.main_quit()
 		del self.applet
 	
 	def ShowMenu(self):
@@ -390,8 +396,8 @@ class Tilo(mateapplet.applet):
 		if self.hwg:
 			self.hwg.show_window()
 		try:
-			self.aux.aux_window.window.set_transient_for(self.hwg.window)
-			self.hwg.window.window.set_transient_for(self.applet.window)
+			self.aux.aux_window.set_transient_for(self.hwg.window)
+			self.hwg.window.set_transient_for(self.applet.window)
 		except:pass
 
 	def HideMenu(self):
@@ -408,7 +414,7 @@ class Tilo(mateapplet.applet):
 		self.EBox.set_size_request(-1,self.size)
 		self.Image.set_size_request(-1,self.EBox.allocation.height)
 		if Globals.Settings["Distributor_Logo"] == 1:
-			im = gtk.gdk.pixbuf_new_from_file_at_size(Globals.distro_logo,self.size,self.size)
+			im = GdkPixbuf.Pixbuf.new_from_file_at_size(Globals.distro_logo,self.size,self.size)
 			if self.Button_state == 1:
 				im.saturate_and_pixelate(im, 1.5, False)
 			elif self.Button_state == 2:
@@ -416,11 +422,11 @@ class Tilo(mateapplet.applet):
 			pixmap = im
 
 		else:
-			im = gtk.gdk.pixbuf_new_from_file(Globals.StartButton[self.Button_state])
+			im = GdkPixbuf.Pixbuf.new_from_file(Globals.StartButton[self.Button_state])
 			w = im.get_width()
 			h = im.get_height()
 			self.scale = float(self.size)/float(h)
-			pixmap = im.scale_simple(int(w*self.scale),self.size,gtk.gdk.INTERP_HYPER)
+			pixmap = im.scale_simple(int(w*self.scale),self.size,GdkPixbuf.InterpType.HYPER)
 
 		if Globals.flip == False and Globals.ButtonHasTop == 1:
 			pixmap = pixmap.flip(Globals.flip)
@@ -436,7 +442,7 @@ class Tilo(mateapplet.applet):
 		if Globals.ShowTop == 1 and self.aux != None and Globals.Settings["Distributor_Logo"] == 0:
 			self.aux.updateimage(Globals.StartButtonTop[self.Button_state ])
 			self.applet.queue_draw()
-			self.aux.aux_window.window.set_transient_for(self.applet.window)
+			self.aux.aux_window.set_transient_for(self.applet.window)
 			if self.scale:
 				self.aux.set_scale(self.scale)
 			StartButtonTopHeight = self.aux.get_height()
@@ -452,7 +458,7 @@ class Tilo(mateapplet.applet):
 			self.aux.move(Window_x,Window_y)
 		
 try:
-	gobject.type_register(Tilo)
+	GObject.type_register(Tilo)
 except:pass
 
 # MateComponent factory of Menu
@@ -469,15 +475,15 @@ if len(sys.argv) == 2:
 
 	if sys.argv[1] == "run-in-window" or sys.argv[1] == "run-in-console":
 		# Start the applet in windowed mode
-		main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		main_window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
 		main_window.set_decorated(1)
 		main_window.set_title("Tilo Testing Sandpit")
-		main_window.connect("destroy", gtk.main_quit) 
+		main_window.connect("destroy", Gtk.main_quit) 
 		app = mateapplet.Applet()
 		Tilo(app,"")
 		app.reparent(main_window)
 		main_window.show_all()
-		gtk.main()
+		Gtk.main()
 		sys.exit()
 
 

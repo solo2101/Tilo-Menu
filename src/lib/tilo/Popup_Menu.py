@@ -12,8 +12,11 @@
 #       It should be either improved (and become a OOP-system ) or removed
 #       once there is a suitable alternative ...
 #
+import gi
+gi.require_version("Gtk", "2.0")
+from gi.repository import Gtk, Gdk
 
-import glob, gtk
+import glob
 import xml.dom.minidom
 from xml.dom.minidom import Node
 import os
@@ -38,9 +41,9 @@ def add_menuitem (menu, label, callback=None, cb_data=None,*args):
 	"""Convenience function to create a menuitem, connect
 	a callback, and	add the menuitem to menu."""
 	if label == "-":
-		item = gtk.SeparatorMenuItem()
+		item = Gtk.SeparatorMenuItem()
 	else:
-		item = gtk.MenuItem(label)
+		item = Gtk.MenuItem(label)
 	return add_menuitem_with_item(menu, item, callback, cb_data,*args)
 
 def add_image_menuitem (menu, stock, label=None, callback=None, cb_data=None,*args):
@@ -74,8 +77,8 @@ def create_menu_from_file (filename, callback):
 	return create_menu_from_xml(doc.firstChild, callback)
 
 def create_menu_from_xml (node, callback, icon_size=22):
-	"""Create a gtk.Menu by an XML-Node"""
-	menu = gtk.Menu()
+	"""Create a Gtk.Menu by an XML-Node"""
+	menu = Gtk.Menu()
 	for node in node.childNodes:
 		#print node
 		type = node.nodeType
@@ -84,22 +87,22 @@ def create_menu_from_xml (node, callback, icon_size=22):
 			id = node.getAttribute("id")
 			item = None
 			is_check = False
-			# <item> gtk.MenuItem
+			# <item> Gtk.MenuItem
 			if node.nodeName == "item":
-				item = gtk.MenuItem(label)
-			# <checkitem> gtk.CheckMenuItem
+				item = Gtk.MenuItem(label)
+			# <checkitem> Gtk.CheckMenuItem
 			elif node.nodeName == "checkitem":
-				item = gtk.CheckMenuItem(label)
+				item = Gtk.CheckMenuItem(label)
 				is_check = True
 				if node.hasAttribute("checked"):
 					item.set_active(True)
-			# <imageitem> gtk.ImageMenuItem
+			# <imageitem> Gtk.ImageMenuItem
 			elif node.nodeName == "imageitem":
 				icon = node.getAttribute("icon")
 				item = imageitem_from_name(icon, label, icon_size)
-			# <separator> gtk.SeparatorMenuItem
+			# <separator> Gtk.SeparatorMenuItem
 			elif node.nodeName == "separator":
-				item = gtk.SeparatorMenuItem()
+				item = Gtk.SeparatorMenuItem()
 			# <appdir> 
 			elif node.nodeName == "appdir":
 				# create menu from dir with desktop-files
@@ -107,7 +110,7 @@ def create_menu_from_xml (node, callback, icon_size=22):
 				appmenu = ApplicationMenu(path)
 				cats = node.getAttribute("cats").split(",")
 				for cat in cats:
-					item = gtk.MenuItem(cat)
+					item = Gtk.MenuItem(cat)
 					#item = imageitem_from_name('games', cat)
 					submenu = appmenu.get_menu_for_category(cat, callback)
 					item.set_submenu(submenu)
@@ -173,17 +176,17 @@ def fill_menu_from_directory (dirname, menu, callback, filter='*',
 			id = id_prefix + fname + id_suffix
 			#print "NAME: "+fname
 			# create menuitem 
-			item = gtk.MenuItem(fname)
+			item = Gtk.MenuItem(fname)
 			item.connect("activate", callback, id)
 			item.show()
 			menu.append(item)
 
 def imageitem_from_name (filename, label, icon_size=32):
-	"""Creates a new gtk.ImageMenuItem from a given icon/filename.
+	"""Creates a new Gtk.ImageMenuItem from a given icon/filename.
 	If an absolute path is not given, the function checks for the name
 	of the icon within the current gtk-theme."""
-	item = gtk.ImageMenuItem(label)
-	image = gtk.Image()
+	item = Gtk.ImageMenuItem(label)
+	image = Gtk.Image()
 	if filename and filename[0]=='/':
 		# load from file
 		try:
@@ -193,7 +196,7 @@ def imageitem_from_name (filename, label, icon_size=32):
 			if pb.get_width() > icon_size :
 				pb2 = pb.scale_simple(
 					icon_size, icon_size, 
-					gtk.gdk.INTERP_HYPER)
+					GdkPixbuf.InterpType.HYPER)
 				image.set_from_pixbuf(pb2)
 			else:
 				image.set_from_pixbuf(pb)
@@ -229,10 +232,10 @@ def read_desktop_file (filename):
 #-----------------------------------------------
 
 class ApplicationMenu:
-	"""A utility-class to simplify the creation of gtk.Menus from directories with 
+	"""A utility-class to simplify the creation of Gtk.Menus from directories with 
 	desktop-files. Reads all files in one or multiple directories into its internal list 
-	and offers an easy way to create entire categories as complete gtk.Menu 
-	with gtk.ImageMenuItems. """
+	and offers an easy way to create entire categories as complete Gtk.Menu 
+	with Gtk.ImageMenuItems. """
 	
 	# the path to read files from
 	__path = ""
@@ -272,7 +275,7 @@ class ApplicationMenu:
 					print _("An error occured with desktop-file: %s") % file
 	
 	def get_menu_for_category (self, cat_name, callback):
-		"""returns a gtk.Menu with all apps in the given category"""
+		"""returns a Gtk.Menu with all apps in the given category"""
 		# get apps in the category
 		applist = []
 		for app in self.__applications:
@@ -289,7 +292,7 @@ class ApplicationMenu:
 		# sort list
 		applist.sort()
 		# create menu from list
-		menu = gtk.Menu()
+		menu = Gtk.Menu()
 		for app in applist:
 			item = imageitem_from_name(app['Icon'], app['Name'], 24)
 			if item:
@@ -321,18 +324,18 @@ class DefaultMenuItem:
 
 import Globals
 
-class ImageMenuItem(gtk.ImageMenuItem):
+class ImageMenuItem(Gtk.ImageMenuItem):
 	"""A menuitem with a custom image and label.
 	To set the image to a non-stock image, just
 	create the menuitem without an image and then
 	set the image with the appropriate method."""
 	
-	def __init__ (self, stock=gtk.STOCK_MISSING_IMAGE, label=None):
+	def __init__ (self, stock=Gtk.STOCK_MISSING_IMAGE, label=None):
 		"""stock: a stock image or 'none'.
 		label: text to set as the label or None."""
 		# call the superclass
 		super(ImageMenuItem, self).__init__(stock)
-		self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+		self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
 		self.connect("expose_event", self.expose)
 
 
@@ -342,10 +345,10 @@ class ImageMenuItem(gtk.ImageMenuItem):
 		if Globals.Settings['GtkColors'] == 0:
 			theme_color = Globals.ThemeColorCode
 			color = Globals.NegativeThemeColorCode
-			self.label.modify_fg(gtk.STATE_NORMAL, color)
-			self.label.modify_base(gtk.STATE_NORMAL, color)
-			self.label.modify_text(gtk.STATE_NORMAL, color)
-		self.image = self.get_image()
+			self.label.modify_fg(Gtk.StateType.NORMAL, color)
+			self.label.modify_base(Gtk.StateType.NORMAL, color)
+			self.label.modify_text(Gtk.StateType.NORMAL, color)
+		#self.image = self.get_image()
 		
 		# set the label to custom text
 		if label is not None:
@@ -357,7 +360,7 @@ class ImageMenuItem(gtk.ImageMenuItem):
 	def expose(self,widget, event):
 		if not self.once:
 			if Globals.Settings['GtkColors'] == 0:
-				self.get_parent().modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
+				self.get_parent().modify_bg(Gtk.StateType.NORMAL, Globals.ThemeColorCode)
 			self.once = True
 	
 	def set_image_from_file (self, filename):
@@ -370,7 +373,7 @@ class ImageMenuItem(gtk.ImageMenuItem):
 		
 	def set_image_from_stock(self, name):
 		"""Set the image from a stock image."""
-		self.image.set_from_stock(name, gtk.ICON_SIZE_MENU)
+		self.image.set_from_stock(name, Gtk.IconSize.MENU)
 		
 	def set_label(self, text):
 		"""Set the label's text."""

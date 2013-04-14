@@ -10,14 +10,14 @@
 #(c) Whise 2008,2009 <helderfraga@gmail.com>
 #
 # utils
-# Part of the GnoMenu
+# Part of the Tilo
+import gi
+gi.require_version("Gtk", "2.0")
 
 
+from gi.repository import Gtk
+from gi.repository import GObject
 
-import gtk
-import pygtk
-pygtk.require('2.0')
-import gobject
 import os
 import dbus
 BUS = dbus.SessionBus()
@@ -33,8 +33,8 @@ except:pass
 		
 def show_message (message, title='Tilo'):
 
-	md = gtk.MessageDialog(None, type=gtk.MESSAGE_INFO, 
-			buttons=gtk.BUTTONS_OK)
+	md = Gtk.MessageDialog(None, type=Gtk.MessageType.INFO, 
+			buttons=Gtk.ButtonsType.OK)
 	md.set_title(title)
 	md.set_markup(str(message))
 	md.run()
@@ -42,8 +42,8 @@ def show_message (message, title='Tilo'):
 
 def show_warning (message, title='Tilo'):
 
-	md = gtk.MessageDialog(None, type=gtk.MESSAGE_WARNING, 
-			buttons=gtk.BUTTONS_OK)
+	md = Gtk.MessageDialog(None, type=Gtk.MessageType.WARNING, 
+			buttons=Gtk.ButtonsType.OK)
 	md.set_title(title)
 	print message
 	md.set_markup(str(message))
@@ -52,13 +52,13 @@ def show_warning (message, title='Tilo'):
 
 
 def show_question (message, title='Tilo'):
-	md = gtk.MessageDialog(None, type=gtk.MESSAGE_QUESTION, 
-			buttons=gtk.BUTTONS_YES_NO)
+	md = Gtk.MessageDialog(None, type=Gtk.MessageType.QUESTION, 
+			buttons=Gtk.ButtonsType.YES_NO)
 	md.set_title(title)
 	md.set_markup(message)
 	response = md.run()
 	md.destroy()
-	if response == gtk.RESPONSE_YES:
+	if response == Gtk.ResponseType.YES:
 		return True
 	return False
 
@@ -73,10 +73,10 @@ def emit_notification(title,message):
 
 def sys_get_window_manager():
 	"""Returns window manager name"""
-	root = gtk.gdk.get_default_root_window()
+	root = Gdk.get_default_root_window()
 	try:
 		ident = root.property_get("_NET_SUPPORTING_WM_CHECK", "WINDOW")[2]
-		_WM_NAME_WIN = gtk.gdk.window_foreign_new(long(ident[0]))
+		_WM_NAME_WIN = Gdk.window_foreign_new(long(ident[0]))
 	except TypeError, exc:
 		_WM_NAME_WIN = ""
 	
@@ -93,7 +93,7 @@ def sys_get_window_manager():
 
 def get_image_size(pix):
 	"""Gets a picture width and height"""
-	pixbuf = gtk.gdk.pixbuf_new_from_file(pix)
+	pixbuf = GdkPixbuf.Pixbuf.new_from_file(pix)
 	iw = pixbuf.get_width()
 	ih = pixbuf.get_height()
 	puxbuf = None
@@ -171,12 +171,12 @@ class Notifier(object):
 			return False
 		except:pass
 
-class thumbnailengine(gobject.GObject):
-	__gsignals__ = {"thumbnail-finished" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
-					"worklist-finished" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())}
+class thumbnailengine(GObject.GObject):
+	__gsignals__ = {"thumbnail-finished" : (GObject.SignalFlags.RUN_LAST, None, [GObject.TYPE_STRING]),
+					"worklist-finished" : (GObject.SignalFlags.RUN_LAST, None, ())}
 
 	def __init__(self,icon_size):
-		gobject.GObject.__init__(self)
+		GObject.GObject.__init__(self)
 		if not MATEUI: return None
 		self.icon_size = icon_size
 		self.thumbFactory = mate.ui.ThumbnailFactory(mate.ui.THUMBNAIL_SIZE_LARGE)
@@ -235,5 +235,5 @@ class thumbnailengine(gobject.GObject):
 			return
 		self.WorkList.append([uri,mime_type])
 		if not self.Timer:
-			self.Timer = gobject.timeout_add(50, self.ProcessWorkList)
+			self.Timer = GObject.timeout_add(50, self.ProcessWorkList)
 

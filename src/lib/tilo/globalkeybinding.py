@@ -23,23 +23,23 @@
 
 from Xlib.display import Display
 from Xlib import X
-import gobject
-import gtk.gdk
+from gi.repository import GObject
+import Gtk.gdk
 import threading
 
-class GlobalKeyBinding (gobject.GObject, threading.Thread):
+class GlobalKeyBinding (GObject.GObject, threading.Thread):
     __gsignals__ = {
-        'activate': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        'activate': (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 
     def __init__ (self,  key):
-        gobject.GObject.__init__ (self)
+        GObject.GObject.__init__ (self)
         threading.Thread.__init__ (self)
         self.setDaemon (True)
 
         self.key = key
 
-        self.keymap = gtk.gdk.keymap_get_default ()
+        self.keymap = Gdk.keymap_get_default ()
         self.display = Display ()
         self.screen = self.display.screen ()
         self.root = self.screen.root
@@ -47,14 +47,14 @@ class GlobalKeyBinding (gobject.GObject, threading.Thread):
         self.map_modifiers ()
 
     def map_modifiers (self):
-        gdk_modifiers = (gtk.gdk.CONTROL_MASK, gtk.gdk.SHIFT_MASK, gtk.gdk.MOD1_MASK,
-                         gtk.gdk.MOD2_MASK, gtk.gdk.MOD3_MASK, gtk.gdk.MOD4_MASK, gtk.gdk.MOD5_MASK,
-                         gtk.gdk.SUPER_MASK, gtk.gdk.HYPER_MASK,gtk.gdk.LOCK_MASK)
+        gdk_modifiers = (Gdk.ModifierType.CONTROL_MASK, Gdk.ModifierType.SHIFT_MASK, Gdk.ModifierType.MOD1_MASK,
+                         Gdk.ModifierType.MOD2_MASK, Gdk.ModifierType.MOD3_MASK, Gdk.ModifierType.MOD4_MASK, Gdk.ModifierType.MOD5_MASK,
+                         Gdk.EventMask.SUPER_MASK, Gdk.EventMask.HYPER_MASK,Gdk.ModifierType.LOCK_MASK)
         self.known_modifiers_mask = 0
         for modifier in gdk_modifiers:
             # Do you know how to handle unknown "Mod*" keys?
             # They are usually Locks and something like that
-            if "Mod" not in gtk.accelerator_name (0, modifier):
+            if "Mod" not in Gtk.accelerator_name (0, modifier):
                 self.known_modifiers_mask |= modifier
 
     def on_key_changed (self, *args):
@@ -67,7 +67,7 @@ class GlobalKeyBinding (gobject.GObject, threading.Thread):
     def grab (self):
 	
         accelerator = (self.key)
-        keyval, modifiers = gtk.accelerator_parse (accelerator)
+        keyval, modifiers = Gtk.accelerator_parse (accelerator)
         if not accelerator or (not keyval and not modifiers):
             self.keycode = None
             self.modifiers = None
@@ -83,14 +83,14 @@ class GlobalKeyBinding (gobject.GObject, threading.Thread):
         
     def idle (self):
         # Clipboard requests will hang without locking the GDK thread
-        gtk.gdk.threads_enter ()
+        Gdk.threads_enter ()
 	# Workarround to only send signal every 2 times needed by tilo
 	if self.e == True: 
 	        self.emit ("activate")
 		self.e = False
 	elif self.e == False:
 		self.e = True
-        gtk.gdk.threads_leave ()
+        Gdk.threads_leave ()
         return False
 
     def run (self):
@@ -99,7 +99,7 @@ class GlobalKeyBinding (gobject.GObject, threading.Thread):
         while self.running:
             event = self.display.next_event ()
             if event.detail == self.keycode and event.type == X.KeyPress and not wait_for_release:
-                modifiers = event.state & self.known_modifiers_mask
+                modifiers = event.get_state() & self.known_modifiers_mask
                 if modifiers == self.modifiers:
                     wait_for_release = True
                     self.display.allow_events (X.AsyncKeyboard, event.time)
@@ -108,7 +108,7 @@ class GlobalKeyBinding (gobject.GObject, threading.Thread):
             elif event.detail == self.keycode and wait_for_release:
                 if event.type == X.KeyRelease:
                     wait_for_release = False
-                    gobject.idle_add (self.idle)
+                    GObject.idle_add (self.idle)
                 self.display.allow_events (X.AsyncKeyboard, event.time)
             else:
                 self.display.allow_events (X.ReplayKeyboard, event.time)

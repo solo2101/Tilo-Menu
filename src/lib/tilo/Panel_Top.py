@@ -11,22 +11,22 @@
 #(c) Whise 2008,2009,2010 <helderfraga@gmail.com>
 #
 # Cairo Transparent Window
-# Part of the GnoMenu
+# Part of the Tilo
 
-import pygtk
-pygtk.require('2.0')
+import gi
+gi.require_version("Gtk", "2.0")
 import cairo
-#import pango
-import gtk
-import gobject
+#from gi.repository import Pango
+from gi.repository import Gtk
+from gi.repository import GObject
 import cairo_drawing
 
 class PanelTopWindow():
 	def __init__(self):
 		#Initialise Button Top
 		# Create the window itself
-		self.aux_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-		#self.aux_window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_MENU)
+		self.aux_window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+		#self.aux_window.set_type_hint(Gdk.WindowTypeHint.MENU)
 		#Set window properties
 		self.scale = 1
 		self.aux_window.set_skip_taskbar_hint(1)
@@ -43,7 +43,7 @@ class PanelTopWindow():
 		self.aux_window.connect('destroy', self.undestroy)
 		#self.aux_window.connect("enter-notify-event", parent.select_box)
 		#self.aux_window.connect("leave-notify-event", parent.deselect_box)
-		self.eventbox = gtk.EventBox()
+		self.eventbox = Gtk.EventBox()
 		#self.ev_box2.connect("button-press-event",parent.button_press)
 		self.eventbox.set_above_child (0)
 		self.eventbox.set_visible_window(0)
@@ -51,7 +51,7 @@ class PanelTopWindow():
 		#Set up cairo image objects
 		self.icon = None #cairo.ImageSurface
 		self.screen_changed(self.aux_window)
-		self.aux_window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DOCK)
+		self.aux_window.set_type_hint(Gdk.WindowTypeHint.DOCK)
 		
 		#Show all gtk widgets
 		self.aux_window.resize(1,1)
@@ -97,7 +97,7 @@ class PanelTopWindow():
 		pass #FIXME
 
 	def Aux_win_screenchange(self,widget, event):
-		self.timer = gobject.timeout_add(100,self.fade)
+		self.timer = GObject.timeout_add(100,self.fade)
 		if self.icon:
 			self.draw_win()
 				
@@ -136,7 +136,7 @@ class PanelTopWindow():
 	def updateimage(self,image):
 		
 		# Update the graphic being displayed (first image has size priority)
-		self.icon = gtk.gdk.pixbuf_new_from_file(image)
+		self.icon = GdkPixbuf.Pixbuf.new_from_file(image)
 		self.image = image
 		self.w = self.icon.get_width()
 		self.h = self.icon.get_height()

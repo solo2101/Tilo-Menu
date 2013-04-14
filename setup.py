@@ -11,7 +11,7 @@
 #
 
 # Install translation files
-# Part of the Gnomenu
+# Part of the Tilo
 
 import os
 try:

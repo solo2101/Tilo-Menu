@@ -10,20 +10,20 @@
 #(c) Whise 2009 <helderfraga@gmail.com>
 #
 # Cairo drawing helpers
-# Part of the GnoMenu
+# Part of the Tilo
+import gi
+gi.require_version("Gtk", "2.0")
+from gi.repository import Gtk
 
-import pygtk
-pygtk.require('2.0')
 import Globals
 import cairo
-import gtk
 
 
 def draw_scaled_image(ctx,x,y, pix, w, h):
 	"""Draws a picture from specified path with a certain width and height"""
 	ctx.save()
 	ctx.translate(x, y)		
-	pixbuf = gtk.gdk.pixbuf_new_from_file(pix).scale_simple(w,h,gtk.gdk.INTERP_BILINEAR)
+	pixbuf = GdkPixbuf.Pixbuf.new_from_file(pix).scale_simple(w,h,GdkPixbuf.InterpType.BILINEAR)
 	if Globals.flip != None:
 		pixbuf = pixbuf.flip(Globals.flip)
 
@@ -38,7 +38,7 @@ def draw_image(ctx,x,y, pix,flip=True):
 
 	ctx.save()
 	ctx.translate(x, y)		
-	pixbuf = gtk.gdk.pixbuf_new_from_file(pix)
+	pixbuf = GdkPixbuf.Pixbuf.new_from_file(pix)
 	if Globals.flip != None and flip is True:
 		pixbuf = pixbuf.flip(Globals.flip)
 	image = ctx.set_source_pixbuf(pixbuf, 0, 0)
@@ -61,14 +61,14 @@ def draw_enhanced_image(ctx,x,y, pix):
 
 	ctx.save()
 	ctx.translate(x, y)	
-	pixbuf = gtk.gdk.pixbuf_new_from_file(pix)
+	pixbuf = GdkPixbuf.Pixbuf.new_from_file(pix)
 	if Globals.flip != None:
 		pixbuf = pixbuf.flip(Globals.flip)
 	iw = pixbuf.get_width()
 	ih = pixbuf.get_height()
 	#We do this so the themes with fully transparent background are still clickable
-	pixbuf.composite(pixbuf, 0, 0, iw, ih, 0, 0, 1, 1, gtk.gdk.INTERP_NEAREST, 255)
-	pixbuf.composite(pixbuf, 0, 0, iw, ih, 0, 0, 1, 1, gtk.gdk.INTERP_NEAREST, 255)
+	pixbuf.composite(pixbuf, 0, 0, iw, ih, 0, 0, 1, 1, GdkPixbuf.InterpType.NEAREST, 255)
+	pixbuf.composite(pixbuf, 0, 0, iw, ih, 0, 0, 1, 1, GdkPixbuf.InterpType.NEAREST, 255)
 	image = ctx.set_source_pixbuf(pixbuf, 0, 0)
 	ctx.paint()
 	pixbuf = None
@@ -80,7 +80,7 @@ def draw_image_gtk(ctx,x,y, pix,w,h,bgcolor,colorpb=None,flip=True):
 		
 	ctx.save()
 	ctx.translate(x, y)	
-	pixbuf = gtk.gdk.pixbuf_new_from_file(pix)
+	pixbuf = GdkPixbuf.Pixbuf.new_from_file(pix)
 	if Globals.Has_Numpy:
 		if not colorpb:
 			
@@ -94,7 +94,7 @@ def draw_image_gtk(ctx,x,y, pix,w,h,bgcolor,colorpb=None,flip=True):
 			                pix[1] = g
 	                		pix[2] = b
 	
-			pixbuf.composite(colorpb, 0, 0, w, h, 0,0, 1, 1, gtk.gdk.INTERP_BILINEAR, 70)
+			pixbuf.composite(colorpb, 0, 0, w, h, 0,0, 1, 1, GdkPixbuf.InterpType.BILINEAR, 70)
 
 		pixbuf = colorpb
 	else:print 'Error - Gtk colors required Numpy installed'

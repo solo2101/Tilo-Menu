@@ -10,9 +10,11 @@
 #(c) Whise 2008,2009 <helderfraga@gmail.com>
 #
 # Tilo tray loader
-# Part of the GnoMenu
+# Part of the Tilo
+import gi
+gi.require_version("Gtk", "2.0")
 
-import gtk
+from gi.repository import Gtk
 import sys
 from Popup_Menu import add_image_menuitem
 import os
@@ -31,18 +33,18 @@ class Tilo():
 
 
 	def __init__(self):
-		self.tray = gtk.StatusIcon()
+		self.tray = Gtk.StatusIcon()
 
 		#app = mateapplet.Applet()
 		#g = Tilo(app,"")
 		self.tray.connect("activate", self.ShowMenu)
 		self.tray.connect("popup-menu", self.show_menu)
-		self.menu = gtk.Menu()
-		self.m = gtk.Menu()
-		add_image_menuitem(self.menu, gtk.STOCK_PROPERTIES, _("Preferences"), self.properties)
-		add_image_menuitem(self.menu, gtk.STOCK_ABOUT, _("About"), self.about_info)
-		add_image_menuitem(self.menu, gtk.STOCK_EDIT, _("Edit Menus"), self.edit_menus)
-		add_image_menuitem(self.menu, gtk.STOCK_QUIT, _("Quit"), self.end)
+		self.menu = Gtk.Menu()
+		self.m = Gtk.Menu()
+		add_image_menuitem(self.menu, Gtk.STOCK_PROPERTIES, _("Preferences"), self.properties)
+		add_image_menuitem(self.menu, Gtk.STOCK_ABOUT, _("About"), self.about_info)
+		add_image_menuitem(self.menu, Gtk.STOCK_EDIT, _("Edit Menus"), self.edit_menus)
+		add_image_menuitem(self.menu, Gtk.STOCK_QUIT, _("Quit"), self.end)
 
 		self.tray.set_tooltip("Tilo")
 		self.tray.set_visible(True)
@@ -56,16 +58,16 @@ class Tilo():
 			self.iconfactory = iconfactory
 			self.applet_button = self.iconfactory.GetSystemIcon('distributor-logo')
 		else: self.applet_button = self.Globals.Applogo
-		pixbuf = gtk.gdk.pixbuf_new_from_file(self.applet_button)
+		pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.applet_button)
 		self.tray.set_from_pixbuf(pixbuf)
 		self.show = False
-		gtk.main()		
+		Gtk.main()		
 		#app.reparent(main_window)
 
 
 	def end(self,widget,event=None):
 		self.hwg.destroy()
-		gtk.main_quit()
+		Gtk.main_quit()
 
 	def edit_menus(self,event, data=None):
 		os.system(self.Globals.Settings['MenuEditor'] + ' &')
@@ -91,10 +93,10 @@ class Tilo():
 
 			#rootwin = self.hwg.window.get_screen().get_root_window()
 			#x, y, mods = rootwin.get_pointer()
-			x,y,z = gtk.status_icon_position_menu(self.m, self.tray)
+			x,y,z = Gtk.status_icon_position_menu(self.m, self.tray)
 			if self.hwg:
 				if not self.hwg.window.window:
-					if y < gtk.gdk.screen_height()/2:
+					if y < Gdk.Screen.height()/2:
 						backend.save_setting('orientation', 'top')
 					else:
 						backend.save_setting('orientation', 'bottom')				

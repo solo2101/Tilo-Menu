@@ -10,7 +10,7 @@
 #(c) Whise 2010 <helderfraga@gmail.com>
 #
 # Menu parser
-# Part of the GnoMenu
+# Part of the Tilo
 
 try:
 	import matemenu
@@ -21,11 +21,11 @@ except:
 	import xdg.Menu
 	print 'xdg found, using it as default menu parser'
 
-import gobject
+from gi.repository import GObject
 import xdg.BaseDirectory as bd
 
 try:
-	import gio
+	from gi.repository import Gio
 	isgio = True
 except:
 	print 'gio not found'
@@ -35,13 +35,13 @@ import Globals
 
 import gc
 
-class MenuParser(gobject.GObject):
+class MenuParser(GObject.GObject):
 	__gsignals__ = {
-        'menu-changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        'menu-changed': (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 
 	def __init__(self):
-		gobject.GObject.__init__(self)
+		GObject.GObject.__init__(self)
 		self.has_matemenu = has_matemenu
 		if has_matemenu:
 			self.MenuInstance = matemenu.Directory
@@ -117,10 +117,10 @@ class MenuParser(gobject.GObject):
 				for d in dirs:
 					self.parentfile = d + '/applications'
 					if os.path.isdir(self.parentfile) and os.path.exists(self.parentfile):
-						self.current_file1 = gio.File(self.parentfile).monitor_directory()
+						self.current_file1 = Gio.File(self.parentfile).monitor_directory()
 						self.current_file1.connect_after("changed", self.monitor_callback)
 	
-				self.current_file = gio.File(self.AppsFile).monitor_file()
+				self.current_file = Gio.File(self.AppsFile).monitor_file()
 				self.current_file.connect_after("changed", self.monitor_callback)
 
 			self.MenuInstance = xdg.Menu.Menu
@@ -171,7 +171,7 @@ class MenuParser(gobject.GObject):
 		
 		if not self.updating:
 			self.updating = True
-			self.timeout = gobject.timeout_add(1000,self.MenuChanged)
+			self.timeout = GObject.timeout_add(1000,self.MenuChanged)
 
 	def MenuChanged(self):
 		"""Called 1 second after menu changes"""

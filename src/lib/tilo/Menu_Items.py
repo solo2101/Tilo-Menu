@@ -11,14 +11,16 @@
 #(c) Whise 2008,2009 <helderfraga@gmail.com>
 #
 # XDG Menu Functions
-# Part of the GnoMenu
+# Part of the Tilo
+import gi
+gi.require_version("Gtk", "2.0")
+from gi.repository import Gtk
+from gi.repository import GObject
 
-import gtk
 import backend
 import os
 import urllib
 import utils
-import gobject
 from Popup_Menu import add_menuitem, add_image_menuitem
 import gc
 import Globals
@@ -29,10 +31,11 @@ import Launcher
 
 try:
 	import bookmarks
+	
 except:print 'error importing webbookmarks'
 
 try:
-	import gio
+	from gi.repository import Gio
 	isgio = True
 except:
 	print 'gio not found'
@@ -57,13 +60,13 @@ def _(s):
 	return gettext.gettext(s)
 
 
-class XDMateMenu(gobject.GObject):
+class XDMateMenu(GObject.GObject):
 
 	__gsignals__ = {
-        'changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        'changed': (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 	def __init__(self):
-		gobject.GObject.__init__ (self)
+		GObject.GObject.__init__ (self)
 		if not os.path.isdir(Globals.AutoStartDirectory):
 			os.system('mkdir %s' % Globals.AutoStartDirectory)
 		self.notifier = utils.Notifier()
@@ -86,12 +89,12 @@ class XDMateMenu(gobject.GObject):
 			self.menuparser.ParseMenus()
 			self.BaseMenu = self.menuparser.CacheApplications
 		if isgio:
-			self.monitor=gio.volume_monitor_get()
+			self.monitor=Gio.volume_monitor_get()
 			self.monitor.connect("drive-changed",self.on_drive_changed)
-			self.allgio =  gio.app_info_get_all()
+			self.allgio =  Gio.app_info_get_all()
 		else:self.allgio = None
 		self.Launcher = Launcher.Launcher()
-		self.recent_manager = gtk.recent_manager_get_default()
+		self.recent_manager = Gtk.recent_manager_get_default()
 		self.recent_manager.connect("changed", self.onRecentChanged)
 		self.recents_changed = True
 		self.recents = None
@@ -181,7 +184,7 @@ class XDMateMenu(gobject.GObject):
 
 	def addtomenu(self,names,icons,types,paths,execs):
 		"""adds item to menu"""
-		if icons is None: icons = gtk.STOCK_MISSING_IMAGE
+		if icons is None: icons = Gtk.STOCK_MISSING_IMAGE
 		self.L_Names.append(names)
 		self.L_Icons.append(self.IconFactory.geticonfile(icons))
 		self.L_Icons_menu.append(icons)
@@ -281,7 +284,7 @@ class XDMateMenu(gobject.GObject):
 				except:backend.save_setting("favorites",[])
 				
 			if client == []:
-				self.addtomenu(_('No favorites\nUse the mouse right button\nto add or remove favorites'),gtk.STOCK_MISSING_IMAGE,9,"","")
+				self.addtomenu(_('No favorites\nUse the mouse right button\nto add or remove favorites'),Gtk.STOCK_MISSING_IMAGE,9,"","")
 		#==============================================================
 		#WEB BOOKMARKS MENU
 		#==============================================================
@@ -326,7 +329,7 @@ class XDMateMenu(gobject.GObject):
 				#self.addtomenu(item.get_short_name(),self.IconFactory.getthumb(item),3,"",item.get_uri())
 				x = x +1
 				if x == Globals.RI_numberofitems:break			
-			self.addtomenu(_('Clear recent documents'),gtk.STOCK_CLEAR,10,"","")
+			self.addtomenu(_('Clear recent documents'),Gtk.STOCK_CLEAR,10,"","")
 			self.sorted_list = []
 			
 		#==============================================================
@@ -343,7 +346,7 @@ class XDMateMenu(gobject.GObject):
 			for item in self.recent:
 				if isgio:
 					mime = item.get_mime_type()
-					app = gio.app_info_get_default_for_type(mime, 0)
+					app = Gio.app_info_get_default_for_type(mime, 0)
 					if app:
 						if app.get_name() not in self.L_Names:
 							self.addtomenu(app.get_name(),self.IconFactory.getgicon(app.get_icon()),1,"",app.get_executable())
@@ -402,7 +405,7 @@ class XDMateMenu(gobject.GObject):
 						self.name = urllib.url2pathname(str(self.bm).split("/").pop()) 
 					try:
 						if isgio:
-							Gfile = gio.File(self.folder)
+							Gfile = Gio.File(self.folder)
 							tuble = [Gfile, Gfile.query_info("standard::*"), []]
 							ico = tuble[1].get_icon()
 							self.addtomenu(self.name,self.IconFactory.getgicon(ico),3,"",self.folder)
@@ -500,9 +503,9 @@ class XDMateMenu(gobject.GObject):
 		self.etype = self.L_Types[index]
 		if event == 0:event_button = 1
 		else:
-			if event.type == gtk.gdk.KEY_PRESS:event_button = 1
-			elif event.type == gtk.gdk.BUTTON_PRESS:event_button = event.button
-			elif event.type == gtk.gdk.BUTTON_RELEASE:event_button = event.button
+			if event.type == Gdk.KEY_PRESS:event_button = 1
+			elif event.type == Gdk.EventType.BUTTON_PRESS:event_button = event.button
+			elif event.type == Gdk.BUTTON_RELEASE:event_button = event.button
 		if event_button == 1:	
 			if self.etype == 0:     				#Subfolder
 				self.PrevMenu.append(self.Menu)			
@@ -539,7 +542,7 @@ class XDMateMenu(gobject.GObject):
 				self.recent_manager.purge_items()
 				self.Restart('previous')
 		elif event_button == 3:
-			self.m = gtk.Menu()
+			self.m = Gtk.Menu()
 			name = self.L_Names[index]
 			favlist = backend.load_setting("favorites")
 			try:
@@ -558,15 +561,15 @@ class XDMateMenu(gobject.GObject):
 					self.menuitem = add_menuitem(self.m, "-")
 				for files, menu_name in ((self.recent_files, _('Recently Used')), (self.most_used_files, _('Most Used'))):
 					if files:
-						self.submenu = gtk.Menu()
-						menu_item = gtk.MenuItem(menu_name)
+						self.submenu = Gtk.Menu()
+						menu_item = Gtk.MenuItem(menu_name)
 						menu_item.set_submenu(self.submenu)
 						self.m.append(menu_item)
 						menu_item.show()
 						for ev in files:
 							for subject in ev.get_subjects():
 								label = subject.text or subject.uri
-								submenu_item = gtk.MenuItem(label, use_underline=False)
+								submenu_item = Gtk.MenuItem(label, use_underline=False)
 								self.submenu.append(submenu_item)
 								# "activate" doesn't seem to work on sub menus
 								# so "button-press-event" is used instead.
@@ -575,7 +578,7 @@ class XDMateMenu(gobject.GObject):
 			if self.etype != 0 and name != _('Back'):
 				if self.etype != 3:
 					self.menuitem = add_menuitem(self.m, "-")
-					self.menuitem = add_image_menuitem(self.m, gtk.STOCK_DIALOG_AUTHENTICATION, _("Open as Administrator"), self.runasadmin,name, self.L_Execs[index],self.L_Icons_menu[index],self.L_Types[index])
+					self.menuitem = add_image_menuitem(self.m, Gtk.STOCK_DIALOG_AUTHENTICATION, _("Open as Administrator"), self.runasadmin,name, self.L_Execs[index],self.L_Icons_menu[index],self.L_Types[index])
 				else:
 
 					def searchfolder(folder,me):
@@ -584,9 +587,9 @@ class XDMateMenu(gobject.GObject):
 						for item in dirs:
 							if not item.startswith('.'):
 								if os.path.isdir(os.path.abspath(folder) + '/'+item):
-									add_image_menuitem(me,gtk.STOCK_DIRECTORY, item,self.launch_item, 	'"'+os.path.abspath(folder.replace('file://','')) + '/'+item +'"')
+									add_image_menuitem(me,Gtk.STOCK_DIRECTORY, item,self.launch_item, 	'"'+os.path.abspath(folder.replace('file://','')) + '/'+item +'"')
 								else:
-									submenu_item = gtk.MenuItem(item, use_underline=False)
+									submenu_item = Gtk.MenuItem(item, use_underline=False)
 									me.append(submenu_item)
 									# "activate" doesn't seem to work on sub menus
 									# so "button-press-event" is used instead.
@@ -595,40 +598,40 @@ class XDMateMenu(gobject.GObject):
 					f = os.path.abspath(urllib.url2pathname(self.L_Execs[index]).replace('file://',''))
 					if os.path.exists(f):
 						if os.path.isdir(f):
-							self.submenu = gtk.Menu()
+							self.submenu = Gtk.Menu()
 							thismenu.set_submenu(self.submenu)
 							
 							searchfolder(f,self.submenu)
 						elif os.path.isfile(f):
 							if isgio:
 								add_menuitem(self.m, "-")
-								self.openwith = add_image_menuitem(self.m,gtk.STOCK_OPEN, _("Open with"))
-								Gfile = gio.File(f)
+								self.openwith = add_image_menuitem(self.m,Gtk.STOCK_OPEN, _("Open with"))
+								Gfile = Gio.File(f)
 								tuble = [Gfile, Gfile.query_info("standard::*"), []]
 								name = tuble[1].get_name()
-								#ff =  gio.file_parse_name(f)
-								apps = gio.app_info_get_all_for_type(tuble[1].get_content_type())
-								self.submenu = gtk.Menu()
+								#ff =  Gio.file_parse_name(f)
+								apps = Gio.app_info_get_all_for_type(tuble[1].get_content_type())
+								self.submenu = Gtk.Menu()
 								self.openwith.set_submenu(self.submenu)
 								for app in apps:
 									self.menuitem = add_menuitem(self.submenu, app.get_name(),self.custom_launch, "'" +f+ "'",app.get_executable())								
 
 					if name == _('Trash'):
 						self.menuitem = add_menuitem(self.m, "-")
-						self.menuitem = add_image_menuitem(self.m, gtk.STOCK_CLEAR, _("Empty Trash"), self.emptytrash)
+						self.menuitem = add_image_menuitem(self.m, Gtk.STOCK_CLEAR, _("Empty Trash"), self.emptytrash)
 				if '%s::%s::%s::%s' % (name,self.L_Execs[index],self.L_Icons_menu[index],str(self.L_Types[index])) not in favlist:
 					self.menuitem = add_menuitem(self.m, "-")
-					self.menuitem = add_image_menuitem(self.m, gtk.STOCK_ADD, _("Add to Favorites"), self.addfav,name,self.L_Execs[index], self.L_Icons_menu[index], self.L_Types[index])
+					self.menuitem = add_image_menuitem(self.m, Gtk.STOCK_ADD, _("Add to Favorites"), self.addfav,name,self.L_Execs[index], self.L_Icons_menu[index], self.L_Types[index])
 				else:
 					self.menuitem = add_menuitem(self.m, "-")
-					self.menuitem = add_image_menuitem(self.m, gtk.STOCK_REMOVE, _("Remove from Favorites"), self.removefav,name, self.L_Execs[index], self.L_Icons_menu[index], self.L_Types[index])
+					self.menuitem = add_image_menuitem(self.m, Gtk.STOCK_REMOVE, _("Remove from Favorites"), self.removefav,name, self.L_Execs[index], self.L_Icons_menu[index], self.L_Types[index])
 				self.menuitem = add_menuitem(self.m, "-")
-				self.menuitem = add_image_menuitem(self.m, gtk.STOCK_HOME, _("Create Desktop Shortcut"), self.addshort,name, self.L_Execs[index], self.L_Icons_menu[index], self.L_Types[index])
+				self.menuitem = add_image_menuitem(self.m, Gtk.STOCK_HOME, _("Create Desktop Shortcut"), self.addshort,name, self.L_Execs[index], self.L_Icons_menu[index], self.L_Types[index])
 				self.menuitem = add_menuitem(self.m, "-")
 				if ('%s.desktop' % name) in os.listdir(Globals.AutoStartDirectory):
-					self.menuitem = add_image_menuitem(self.m, gtk.STOCK_REMOVE, _("Remove from System Startup"), self.remove_autostarter,name,  self.L_Execs[index], self.L_Icons_menu[index], self.L_Types[index])
+					self.menuitem = add_image_menuitem(self.m, Gtk.STOCK_REMOVE, _("Remove from System Startup"), self.remove_autostarter,name,  self.L_Execs[index], self.L_Icons_menu[index], self.L_Types[index])
 				else:
-					self.menuitem = add_image_menuitem(self.m, gtk.STOCK_ADD, _("Add to System Startup"), self.create_autostarter,name, self.L_Execs[index], self.L_Icons_menu[index], self.L_Types[index])
+					self.menuitem = add_image_menuitem(self.m, Gtk.STOCK_ADD, _("Add to System Startup"), self.create_autostarter,name, self.L_Execs[index], self.L_Icons_menu[index], self.L_Types[index])
 			self.m.show_all()
 			self.m.popup(None, None, None, event.button, event.time)
 			self.submenu = None
