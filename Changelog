@@ -1,0 +1,98 @@
+1.7 and above:
+
+	The changelod is now stored in http://bazaar.launchpad.net/~gnomenu-team/gnomenu/trunk/changes
+
+1.6
+
+	The menu now updates when apps are installed uninstalled
+	New system menu
+	It now updates the gtk icon themes
+	Better gtk theme in searchbox
+	It can run any command now , not only predifined ones ,new buttons should apear
+
+1.5
+
+	Added back button to always show
+	Super_L is now binded to the menu
+
+1.4
+	Instaling themes now works
+	Consolidated button themes
+
+1.3
+	Added support for menu on top panels(experimental)
+
+
+1.2
+	Localization bug fixed
+
+
+1.1
+	Full composite support
+	Adaptable applet background
+	Applet and cairo button window now adjust to panel position and height
+	Added localization no need for menu translations
+	Changed program name
+	Consolidated menu themes
+	fixed cairo button window always showing 1 +x and 1+y
+	Added some themes
+	changed some things in settings menu
+	Added install theme / remove theme
+	Fixed startup bug due to dbus
+	metacity/non composite bugs fixed
+
+1.10:
+	This project is now called GnoMenu, developed by Helder Fraga (aka Whise).
+
+1.09:
+	Full Czech translation added.
+
+1.08:
+	Fixed jpg loading in user icon
+	Fixed icon size in new theme
+	Navigation of the menu via the up, down, left and right arrow keys.
+	Insertable separator objects, plain background
+	Fast load times
+	Aux function hold menu in wait state until completed
+	Icon caching now fully implamented
+	Versatile XML Layout, made easier for theme creators and more robust
+	Menu commands now text based, not index based
+	DBus Activation of menu for global menu shortcut key
+	Right hand menu buttons sometimes do not act if clicked very quickly
+	'Tap to click' on touchpad wont activate right hand menu buttons
+	Implament file keys instead of just removing them, e.g. %s or %u, etc..
+	Multiple language support
+	Set aux-window(cario/orb-top) type-hint to panel so that compiz wont show it on expo/cube rotate, etcnames directly from XGD python backend
+	Unrendered menu shadows on vista theme have been removed
+	Transparency around the corners of buttons to aid new theme creation, redesigned button backend
+	First use welcome screen
+	Set in backend (any) & !(type=Menu) for focus stealing prevention of windows to exclude menus. (Correct focus prevention methods?)
+	Update new xml profile for settings and rework menus and tabs in settings
+	Implement compiz detection for button top + rendering features etc
+	The key is /desktop/gnome/applications/window_manager/default
+
+1.07:
+	Fixed file name space bug
+	Fixed file name launching with specifiers, e.g. %s %u etc. This brings it fully into line with gnome/XDG specifications and can now launch anything correctly
+	Fixed linked threaded applications from auxiliary function menu (ptype=5)
+
+1.06:
+	Grey squares around icons (cairo bug workaround)
+	XDG menu folder absolute address parsing bug
+	No more zombie processes, applications are launched seperately from the menu process
+	Fixed bug that stopped loading a menu if it hit a dead link to an icon file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	

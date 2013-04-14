@@ -1,0 +1,5 @@
+In order to package gnomenu for your distribution you must be aware of:
+
+The /src/lib/bonobo/GNOME_GnoMenu.server is replaced by the /src/lib/gnomenu/GNOME_GnoMenu.server in the setup.py after some modifications.
+
+This is done to ensure the GNOME_GnoMenu.server has a proper PREFIX.
