@@ -10,11 +10,15 @@
 #(c) Whise 2008,2009 <helderfraga@gmail.com>
 #
 # Tilo tray loader
-# Part of the Tilo
+# Part of the GnoMenu
+
 import gi
 gi.require_version("Gtk", "2.0")
 
 from gi.repository import Gtk
+from gi.repository import MatePanelApplet
+
+#import gtk
 import sys
 from Popup_Menu import add_image_menuitem
 import os
@@ -58,16 +62,16 @@ class Tilo():
 			self.iconfactory = iconfactory
 			self.applet_button = self.iconfactory.GetSystemIcon('distributor-logo')
 		else: self.applet_button = self.Globals.Applogo
-		pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.applet_button)
+		pixbuf = gtk.gdk.pixbuf_new_from_file(self.applet_button)
 		self.tray.set_from_pixbuf(pixbuf)
 		self.show = False
-		Gtk.main()		
+		gtk.main()		
 		#app.reparent(main_window)
 
 
 	def end(self,widget,event=None):
 		self.hwg.destroy()
-		Gtk.main_quit()
+		gtk.main_quit()
 
 	def edit_menus(self,event, data=None):
 		os.system(self.Globals.Settings['MenuEditor'] + ' &')
@@ -93,10 +97,10 @@ class Tilo():
 
 			#rootwin = self.hwg.window.get_screen().get_root_window()
 			#x, y, mods = rootwin.get_pointer()
-			x,y,z = Gtk.status_icon_position_menu(self.m, self.tray)
+			x,y,z = gtk.status_icon_position_menu(self.m, self.tray)
 			if self.hwg:
 				if not self.hwg.window.window:
-					if y < Gdk.Screen.height()/2:
+					if y < gtk.gdk.screen_height()/2:
 						backend.save_setting('orientation', 'top')
 					else:
 						backend.save_setting('orientation', 'bottom')				

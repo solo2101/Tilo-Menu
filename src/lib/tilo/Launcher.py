@@ -11,22 +11,25 @@
 #(c) Whise 2008,2009 <helderfraga@gmail.com>
 #
 # Menu window
-# Part of the Tilo
+# Part of the GnoMenu
+
 import gi
 gi.require_version("Gtk", "2.0")
+ 
 from gi.repository import GObject
+
 
 import utils
 import Globals
 import string
 import os
 import urllib
-
+#import gobject
 
 
 class Launcher(GObject.GObject):
 	__gsignals__ = {
-        'special-command': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'special-command': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, ()),
         }
 
 	def __init__(self):

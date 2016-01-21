@@ -12,15 +12,13 @@
 #(c) Whise 2008,2009 <helderfraga@gmail.com>
 #
 # Bookmarks
-# Part of the Tilo
+# Part of the GnoMenu
 
 # Supports konkeror, epiphany, firefox 2 and 3, chromium, opera
 # The support to firefox 3 (json code) , chromium and opera where introduced by whise
-import gi
-gi.require_version("Gtk", "2.0")
-from gi.repository import Gtk
 
-import os, stat, re, fileinput, base64, backend
+
+import os, stat, re, fileinput, base64, backend, gtk
 from ConfigParser import RawConfigParser
 try: 
 	import pysqlite2.dbapi2 as sqlite
@@ -520,11 +518,11 @@ class oldFirefox3FormatBookmarksParser (BrowserSupport):
 						c.execute ("SELECT mime_type, data FROM moz_favicons WHERE id = '%d'" % (favicon_id))
 						mime_type, data = c.fetchone()
 
-						loader = GdkPixbuf.Pixbuf.loader_new_with_mime_type (mime_type)
+						loader = gtk.gdk.pixbuf_loader_new_with_mime_type (mime_type)
 						loader.write (data)
 						loader.close()
 						pixbuf = loader.get_pixbuf()
-						pixbuf = pixbuf.scale_simple (32, 32, GdkPixbuf.InterpType.BILINEAR)
+						pixbuf = pixbuf.scale_simple (32, 32, gtk.gdk.INTERP_BILINEAR)
 						favicon = pixbuf
 
 				if title is None:
@@ -612,11 +610,11 @@ class MozillaFormatBookmarksParser (BrowserSupport):
 					mime_type = data[5:i]
 					i = i+8  # ";base64,"
 					data32 = base64.b64decode (data[i:])
-					loader = GdkPixbuf.Pixbuf.loader_new_with_mime_type (mime_type)
+					loader = gtk.gdk.pixbuf_loader_new_with_mime_type (mime_type)
 					loader.write (data32)
 					loader.close()
 					pixbuf = loader.get_pixbuf()
-					pixbuf = pixbuf.scale_simple (32, 32, GdkPixbuf.InterpType.BILINEAR)
+					pixbuf = pixbuf.scale_simple (32, 32, gtk.gdk.INTERP_BILINEAR)
 					return pixbuf
 				except:
 					return None
@@ -869,7 +867,7 @@ class EpiphanyFormatBookmarksParser (BrowserSupport):
 					elif icon_path and os.path.exists(icon_path):
 						try:
 							pixbuf = icon_path
-						except GObject.GError:
+						except gobject.GError:
 							pass
 					self.path_favicons[icon_path] = pixbuf
 					if pixbuf:

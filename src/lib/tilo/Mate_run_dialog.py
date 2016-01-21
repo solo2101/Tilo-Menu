@@ -11,7 +11,7 @@
 #(c) Whise 2008,2009 <helderfraga@gmail.com>
 #
 # MATE RUN DIALOG
-# Part of the Tilo
+# Part of the GnoMenu
  
 import sys
 try:

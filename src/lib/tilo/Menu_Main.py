@@ -11,30 +11,34 @@
 #(c) Whise 2008,2009,2010 <helderfraga@gmail.com>
 #
 # Menu window
-# Part of the Tilo
+# Part of the GnoMenu
+
 import gi
 gi.require_version("Gtk", "2.0")
-from gi.repository import Gtk, Gdk
-from gi.repository import GObject
-from gi.repository import Pango
 
+#from gi.repository import Gtk, GObject
+from gi.repository import Gtk, Gdk, GObject
+
+import sys
+import pygtk
+pygtk.require("2.0")
+#import gtk
+#import gobject
 import cairo
 import os
-import sys
-import commands
-
+#import pango
 from Menu_Widgets import MenuButton , Separator, ImageFrame, ProgramList, IconProgramList,MenuTab, MenuLabel, MenuImage,TreeProgramList, CairoProgramList
 import Globals
 import cairo_drawing
 import utils
 import Launcher
+import commands
 import IconFactory
 
 
 try:
 	has_gst = True
 	import gst
-	
 except:
 	has_gst = False
 
@@ -64,19 +68,18 @@ import time
 
 class Main_Menu(GObject.GObject):
 	__gsignals__ = {
-        'state-changed': (GObject.SignalFlags.RUN_LAST, None,(GObject.TYPE_INT,GObject.TYPE_INT)),
+        'state-changed': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE,(GObject.TYPE_INT,GObject.TYPE_INT)),
         }
 
 	first_time = True
 	def __init__(self, hide_method):
-		
 		GObject.GObject.__init__(self)
 		print 'start'
 		self.searchitem = ''
 		self.hide_method = hide_method
 		#Set the main working directory to home
 		os.chdir(Globals.HomeDirectory)
-		self.window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+		self.window = Gtk.Window()
 		self.window.set_title('Tilo')
 		self.window.set_focus_on_map(1)
 		self.window.set_app_paintable(1)
@@ -86,7 +89,7 @@ class Main_Menu(GObject.GObject):
 		self.window.set_keep_above(0) #Make this always above other windows
 		self.window.stick() #Make this appear on all desktops
 		self.window.set_default_size(Globals.MenuWidth,Globals.MenuHeight)
-		self.window.set_events(Gdk.EventMask.ALL_EVENTS_MASK)
+		#self.window.set_events(Gdk.ALL_EVENTS_MASK)
                 try:    # Workaround for Ubuntu Natty
                         self.window.set_property('has-resize-grip', False)
                 except TypeError:
@@ -96,7 +99,7 @@ class Main_Menu(GObject.GObject):
 		self.setup()
 		self.window.connect("composited-changed", self.composite_changed)
 		self.window.connect("expose_event", self.expose)
-		self.window.connect("destroy", Gtk.main_quit)	#Fixme?
+		self.window.connect("destroy", gtk.main_quit)	#Fixme?
 		self.window.connect("focus-out-event", self.lose_focus)
 		self.window.connect("key-press-event", self.key_down)
 		self.gtk_screen = self.window.get_screen()
@@ -105,7 +108,7 @@ class Main_Menu(GObject.GObject):
 		colormap = self.gtk_screen.get_rgba_colormap()
 		if colormap is None:
 			colormap = self.gtk_screen.get_rgb_colormap()
-		Gtk.widget_set_default_colormap(colormap)  
+		gtk.widget_set_default_colormap(colormap)  
 		if not self.window.is_composited():
 
 			self.supports_alpha = False
@@ -114,7 +117,7 @@ class Main_Menu(GObject.GObject):
 		#print self.sys_get_window_manager()
 		#try:
 		#	if self.sys_get_window_manager() == 'compiz':
-		#		pass#self.set_type_hint(Gdk.WindowTypeHint.MENU)
+		#		pass#self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_MENU)
 		#except:pass
 		self.w,self.h = self.window.get_size()
 		self.leave_focus = True
@@ -131,7 +134,7 @@ class Main_Menu(GObject.GObject):
 			self.MateMenu.connect_after('unmap',self.MateMenu_unmap)
 		self.leave_focus = False
 		self.MateMenu.showmenu()
-		self.callback = GObject.timeout_add(1500,self.timeout_callback)
+		self.callback = gobject.timeout_add(1500,self.timeout_callback)
 
 	def MateMenu_unmap(self,event):
 		if not self.window.is_active():
@@ -149,7 +152,7 @@ class Main_Menu(GObject.GObject):
 		#if Globals.MenuHasIcon==1:
 			#self.usericon.destroy(None)
 		#self.window.destroy()
-		#Gtk.main_quit()
+		#gtk.main_quit()
 		
 	def internal_destroy(self,widget,event):
 		# Internal Obliterator (event driven)
@@ -158,7 +161,7 @@ class Main_Menu(GObject.GObject):
 		#if Globals.MenuHasIcon==1:
 		 #   self.usericon.destroy(None)
 		#self.window.destroy()
-		#Gtk.main_quit()
+		#gtk.main_quit()
 
 
 	def ToggleMenu(self):
@@ -224,7 +227,7 @@ class Main_Menu(GObject.GObject):
 			from Xlib.display import Display
 			from Xlib import X
 			from globalkeybinding import GlobalKeyBinding
-			Gdk.threads_init ()
+			gtk.gdk.threads_init ()
 			keybinding = GlobalKeyBinding (Globals.Settings['Bind_Key'])
 			keybinding.connect ('activate', self.bindkey_callback)
 			keybinding.grab ()
@@ -262,9 +265,9 @@ class Main_Menu(GObject.GObject):
 		if h==0: h = 100
 		self.w = w
 		self.h = h
-		self.pixmap = Gdk.Pixmap (None, w, h, 1)
+		self.pixmap = Gdk.Pixmap()
 		ctx = self.pixmap.cairo_create()
-		self.bgpb = GdkPixbuf.Pixbuf.new_from_file(Globals.ImageDirectory + Globals.StartMenuTemplate)
+		self.bgpb = gtk.gdk.pixbuf_new_from_file(Globals.ImageDirectory + Globals.StartMenuTemplate)
 		if Globals.Settings['GtkColors'] == 1 and Globals.Has_Numpy:
 			if not self.colorpb:
 				bgcolor = Globals.GtkColorCode
@@ -277,7 +280,7 @@ class Main_Menu(GObject.GObject):
 						pix[0] = r
 						pix[1] = g
 				  		pix[2] = b
-				self.bgpb.composite(self.colorpb, 0, 0, self.w, self.h, 0, 0, 1, 1, GdkPixbuf.InterpType.BILINEAR, 70)
+				self.bgpb.composite(self.colorpb, 0, 0, self.w, self.h, 0, 0, 1, 1, gtk.gdk.INTERP_BILINEAR, 70)
 			self.bgpb = self.colorpb
 
 		ctx.save()
@@ -296,11 +299,7 @@ class Main_Menu(GObject.GObject):
 		else:
 			self.window.shape_combine_mask(self.pixmap, 0, 0)
 
-#############
-##############33
-################
-###############
-###############
+
 	def setup(self):
 		self.menuframe = Gtk.Fixed()
 		self.window.add (self.menuframe)
@@ -364,14 +363,14 @@ class Main_Menu(GObject.GObject):
 			if Globals.SearchWidget.upper() == "CUSTOM":
 				if Globals.SearchBackground:
 					from Menu_Widgets import  CustomSearchBar
-					GObject.type_register(CustomSearchBar)
+					gobject.type_register(CustomSearchBar)
 					self.SearchBar =  CustomSearchBar(Globals.ImageDirectory + Globals.SearchBackground,Globals.SearchInitialText,Globals.SearchTextColor,Globals.SearchX,Globals.SearchY,Globals.SearchW,Globals.SearchH,Globals.SearchIX,Globals.SearchIY,self.bgpb)
 				else:
 					self.SearchBar =  CustomSearchBar(None,Globals.SearchInitialText,Globals.SearchTextColor,Globals.SearchX,Globals.SearchY,Globals.SearchW,Globals.SearchH,Globals.SearchIX,Globals.SearchIY,self.bgpb)
 
 			elif Globals.SearchWidget.upper() == "GTK":
 				from Menu_Widgets import  GtkSearchBar
-				GObject.type_register(GtkSearchBar)
+				gobject.type_register(GtkSearchBar)
 				self.SearchBar = GtkSearchBar()
 				self.SearchBar.set_text('')
 				self.SearchBar.set_inner_border(None)
@@ -379,7 +378,7 @@ class Main_Menu(GObject.GObject):
 
 			elif Globals.SearchWidget.upper() == "CAIRO":
 				from Menu_Widgets import  CairoSearchBar
-				GObject.type_register(CairoSearchBar)
+				gobject.type_register(CairoSearchBar)
 				self.SearchBar =  CairoSearchBar(Globals.CairoSearchBackColor,Globals.CairoSearchBorderColor,Globals.CairoSearchTextColor)
 				self.SearchBar.set_text('')
 				self.SearchBar.set_inner_border(None)
@@ -424,7 +423,7 @@ class Main_Menu(GObject.GObject):
 		
 		self.leave_focus = False
 		if self.leave_focus == False:
-			self.callback = GObject.timeout_add(500,self.timeout_callback)
+			self.callback = gobject.timeout_add(500,self.timeout_callback)
 
 	def menu_clicked(self,event):
 		self.PlaySound(2)
@@ -433,7 +432,7 @@ class Main_Menu(GObject.GObject):
 	def menu_right_clicked(self,event):
 
 		self.leave_focus = False
-		self.callback = GObject.timeout_add(500,self.timeout_callback)
+		self.callback = gobject.timeout_add(500,self.timeout_callback)
 
 
 	def Adjust_Window_Dimensions(self, win_x, win_y):
@@ -522,7 +521,7 @@ class Main_Menu(GObject.GObject):
 							self.hide_method()
 						#self.PGL.Restart()
 						if self.leave_focus == False:
-							self.callback = GObject.timeout_add(3000,self.timeout_callback)
+							self.callback = gobject.timeout_add(3000,self.timeout_callback)
 					else:
 						self.MenuTabs[i].SetSelectedTab(False)
 
@@ -547,9 +546,9 @@ class Main_Menu(GObject.GObject):
 		if Globals.MenuButtonIconSel[i]:
 			self.MenuButtons[i].SetIcon(Globals.ImageDirectory + Globals.MenuButtonIconSel[i])
 		try:
-			GObject.source_remove(self.timeout_button)
+			gobject.source_remove(self.timeout_button)
 		except:pass
-		self.timeout_button = GObject.timeout_add(300,self.button_has_entered,widget,event,i)
+		self.timeout_button = gobject.timeout_add(300,self.button_has_entered,widget,event,i)
 
 	def button_has_entered(self,widget,event,i):
 		# User Icon Code 
@@ -570,8 +569,8 @@ class Main_Menu(GObject.GObject):
 		self.MenuButtons[i].SetBackground()
 		if Globals.MenuButtonIcon[i]:
 			self.MenuButtons[i].SetIcon(Globals.ImageDirectory + Globals.MenuButtonIcon[i])
-		GObject.source_remove(self.timeout_button)
-		self.timeout_button = GObject.timeout_add(300,self.button_has_leave,widget,event,i)
+		gobject.source_remove(self.timeout_button)
+		self.timeout_button = gobject.timeout_add(300,self.button_has_leave,widget,event,i)
 	
 	def Button_click(self,widget,event,i):
 		# Launch standard menu command
@@ -585,7 +584,7 @@ class Main_Menu(GObject.GObject):
 			self.hide_method()
 		#self.PGL.Restart()
 		if self.leave_focus == False:
-			self.callback = GObject.timeout_add(3000,self.timeout_callback)
+			self.callback = gobject.timeout_add(3000,self.timeout_callback)
 
 		self.PlaySound(2)
 		
@@ -594,15 +593,15 @@ class Main_Menu(GObject.GObject):
 #=================================================================
 	def Tab_enter(self,widget,event,i):
 		try:
-			GObject.source_remove(self.timeout_tab)
+			gobject.source_remove(self.timeout_tab)
 		except:pass
-		self.timeout_tab = GObject.timeout_add(300,self.tab_has_entered,widget,event,i)
+		self.timeout_tab = gobject.timeout_add(300,self.tab_has_entered,widget,event,i)
 
 	def tab_has_entered(self,widget,event,i):
 		self.UpdateUserImage(i,Globals.MenuCairoIconTab[i])
 
 	def Tab_leave(self,widget,event,i):
-		self.timeout_tab = GObject.timeout_add(300,self.tab_has_leave,widget,event,i)
+		self.timeout_tab = gobject.timeout_add(300,self.tab_has_leave,widget,event,i)
 
 	def tab_has_leave(self,widget,event,i):
 		# User Icon code
@@ -625,7 +624,7 @@ class Main_Menu(GObject.GObject):
 			self.hide_method()
 		#self.PGL.Restart()
 		if self.leave_focus == False:
-			self.callback = GObject.timeout_add(3000,self.timeout_callback)
+			self.callback = gobject.timeout_add(3000,self.timeout_callback)
 
 	def Tab_click(self,widget,event,i):
 		for ii in range(0,Globals.MenuTabCount):
@@ -643,7 +642,7 @@ class Main_Menu(GObject.GObject):
 			self.hide_method()
 		#self.PGL.Restart()
 		if self.leave_focus == False:
-			self.callback = GObject.timeout_add(3000,self.timeout_callback)
+			self.callback = gobject.timeout_add(3000,self.timeout_callback)
 		self.PlaySound(3)
 
 	def timeout_callback(self):
@@ -746,8 +745,8 @@ class Main_Menu(GObject.GObject):
 			self.PGL.BanFocusSteal = True
 			self.prevsearchitem = self.searchitem
 			if self.callback_search:
-					GObject.source_remove(self.callback_search)
-			self.callback_search = GObject.timeout_add(500,self.timeout_callback_search)
+					gobject.source_remove(self.callback_search)
+			self.callback_search = gobject.timeout_add(500,self.timeout_callback_search)
 
 	def timeout_callback_search(self):
 		self.PGL.CallSpecialMenu(5,self.searchitem)
@@ -764,7 +763,7 @@ if __name__ == "__main__":
 	hwg = Main_Menu(destroy)
 	hwg.setup()
 	hwg.show_window()
-	Gtk.main()
+	gtk.main()
 	
 
 

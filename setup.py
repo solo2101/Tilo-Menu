@@ -11,21 +11,13 @@
 #
 
 # Install translation files
-# Part of the Tilo
+# Part of the Gnomenu
 
 import os
 try:
 	INSTALL_PREFIX = open("/etc/tilo/prefix").read()[:-1] 
 except:
 	INSTALL_PREFIX = '/usr'
-
-#files = ['src/lib/tilo/MATE_Tilo.server','src/share/mate-do/Tilo.desktop']
-
-f = open('src/lib/tilo/MATE_Tilo.server').read()
-r = f.replace('/usr/lib/tilo/',INSTALL_PREFIX + '/lib/tilo/')
-a = open('src/lib/matecomponent/MATE_Tilo.server','w')
-a.write(r)
-a.close()
 
 print 'Preparing to install translation'
 podir = os.path.join (os.path.realpath ("."), "po")

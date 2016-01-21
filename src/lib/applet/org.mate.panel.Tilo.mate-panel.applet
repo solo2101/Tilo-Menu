@@ -1,0 +1,12 @@
+[Applet Factory]
+Id=TiloMenuAppletFactory
+InProcess=false
+Location=/usr/lib/tilo/Tilo.py
+Name=Tilo Menu Applet Factory
+Description=Customizable Start Menu for the MATE Desktop
+
+[TiloMenu]
+Name=TiloMenu
+Description=Customizable Start Menu for the MATE Desktop
+Icon=mate
+MateComponentId=OAFIID:MATE_TiloMenu;

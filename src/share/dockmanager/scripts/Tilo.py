@@ -13,8 +13,8 @@
 
 
 import atexit
-from gi.repository import GConf
-from gi.repository import GObject
+import mateconf
+import gobject
 import glib
 import sys
 import urllib
@@ -31,9 +31,9 @@ except ImportError, e:
 import dbus
 import dbus.service
 import dbus.mainloop.glib
-from gi.repository import Gtk
+import gtk
 
-gconf_client = GConf.Client.get_default()
+mateconf_client = mateconf.client_get_default()
 try:
 	INSTALL_PREFIX = open("/etc/tilo/prefix").read()[:-1] 
 except:
@@ -46,31 +46,31 @@ gettext.install('tilo', INSTALL_PREFIX +  '/share/locale')
 gettext.bindtextdomain('tilo', INSTALL_PREFIX +  '/share/locale')
 
 
-orient = gconf_client.get_string("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/Position")
-size = gconf_client.get_int("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/IconSize")
-if gconf_client.get_bool("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/ZoomEnabled"):
-	per =  gconf_client.get_float("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/ZoomPercent")
+orient = mateconf_client.get_string("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/Position")
+size = mateconf_client.get_int("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/IconSize")
+if mateconf_client.get_bool("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/ZoomEnabled"):
+	per =  mateconf_client.get_float("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/ZoomPercent")
 else: per = 1
 per = 1
-lista = gconf_client.get_list("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/SortList",1)
+lista = mateconf_client.get_list("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/SortList",1)
 if INSTALL_PREFIX + '/share/dockmanager/scripts/Tilo/TiloDocky.desktop' in lista:
 	pos = lista.index(INSTALL_PREFIX + '/share/dockmanager/scripts/Tilo/TiloDocky.desktop')
 else: 
 	lista.append(INSTALL_PREFIX + '/share/dockmanager/scripts/Tilo/TiloDocky.desktop')
-	gconf_client.set_list("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/SortList",1,lista)
+	mateconf_client.set_list("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/SortList",1,lista)
 	pos = len(lista)
 
 
-lista1 = gconf_client.get_list("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/Launchers",1)
+lista1 = mateconf_client.get_list("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/Launchers",1)
 if not 'file://' + INSTALL_PREFIX + '/share/dockmanager/scripts/Tilo/TiloDocky.desktop' in lista1:
 	lista1.append('file://' + INSTALL_PREFIX + '/share/dockmanager/scripts/Tilo/TiloDocky.desktop')
-	gconf_client.set_list("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/Launchers",1,lista1)
+	mateconf_client.set_list("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/Launchers",1,lista1)
 	# Set the launcher in docky
 	
 
-position = Gdk.get_default_root_window().get_pointer()[0]
+position = gtk.gdk.get_default_root_window().get_pointer()[0]
 
-#Gdk.Screen.width()/2 - (len(lista)*size)/2 + (pos * size)+ size #last size is for the anchor
+#gtk.gdk.screen_width()/2 - (len(lista)*size)/2 + (pos * size)+ size #last size is for the anchor
 print position
 
 if orient == "Top":
@@ -93,9 +93,9 @@ class TestObject(dbus.service.Object):
         # The signal is emitted when this method exits
         # You can have code here if you wish
 	if orient == "Top":
-		self.hwg.Adjust_Window_Dimensions(int(Gdk.get_default_root_window().get_pointer()[0]- (self.Globals.MenuWidth/2)),int(size*per))
+		self.hwg.Adjust_Window_Dimensions(int(gtk.gdk.get_default_root_window().get_pointer()[0]- (self.Globals.MenuWidth/2)),int(size*per))
 	else:
-		self.hwg.Adjust_Window_Dimensions(int(Gdk.get_default_root_window().get_pointer()[0]- (self.Globals.MenuWidth/2)),int(Gdk.Screen.height()-self.Globals.MenuHeight-size*per))
+		self.hwg.Adjust_Window_Dimensions(int(gtk.gdk.get_default_root_window().get_pointer()[0]- (self.Globals.MenuWidth/2)),int(gtk.gdk.screen_height()-self.Globals.MenuHeight-size*per))
 	if not self.hwg.window.window:
 		self.hwg.show_window()
 	else:
@@ -135,9 +135,9 @@ class DockyTiloItem(DockManagerItem):
 			self.iconfactory = iconfactory
 			self.set_icon(self.iconfactory.GetSystemIcon('distributor-logo'))
 		else: self.set_icon(self.Globals.Applogo)
-		self.add_menu_item(_("Preferences"),Gtk.STOCK_PREFERENCES)
-		self.add_menu_item( _("About"),Gtk.STOCK_ABOUT)
-		self.add_menu_item( _("Edit Menus"),Gtk.STOCK_EDIT)
+		self.add_menu_item(_("Preferences"),gtk.STOCK_PREFERENCES)
+		self.add_menu_item( _("About"),gtk.STOCK_ABOUT)
+		self.add_menu_item( _("Edit Menus"),gtk.STOCK_EDIT)
 
 
 
@@ -177,7 +177,7 @@ Tilosink = DockyTiloSink()
 
 def cleanup ():
 	lista.remove(INSTALL_PREFIX + '/share/dockmanager/scripts/Tilo/TiloDocky.desktop')
-	gconf_client.set_list("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/SortList",1,lista)
+	mateconf_client.set_list("/apps/docky-2/Docky/Interface/DockPreferences/Dock1/SortList",1,lista)
 	Tilosink.dispose ()
 	sys.exit()
 
@@ -187,6 +187,6 @@ if __name__ == '__main__':
     signal(SIGTERM, lambda signum, stack_frame: exit(1))
     session_bus = dbus.SessionBus()
     name = dbus.service.BusName('com.tilo.Tilo', session_bus)
-    loop = GObject.MainLoop()
+    loop = gobject.MainLoop()
     object = TestObject(session_bus)
     loop.run()

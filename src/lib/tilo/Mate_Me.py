@@ -9,32 +9,30 @@
 #
 #(c) Whise 2010 <helderfraga@gmail.com>
 #
-# Reimplementation of mate menu
-# Part of the Tilo
-import gi
-gi.require_version("Gtk", "2.0")
+# Reimplementation of gnome menu
+# Part of the GnoMenu
 
 import MenuParser
-from gi.repository import Gtk
+import gtk
 import IconFactory
 import os
 import Globals
 import backend
 import utils
 import gc
-from gi.repository import GObject
+import gobject
 import Launcher
 
 from Popup_Menu import add_menuitem, add_image_menuitem
 
 
-class MateMenu(GObject.GObject):
+class MateMenu(gobject.GObject):
 	__gsignals__ = {
-        'unmap': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'unmap': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
         }
 
 	def __init__(self,scan=False):
-		GObject.GObject.__init__(self)
+		gobject.GObject.__init__(self)
 		self.notifier = utils.Notifier()
 		self.Launcher = Launcher.Launcher()
 		self.menu = MenuParser.MenuParser()
@@ -43,7 +41,7 @@ class MateMenu(GObject.GObject):
 		self.menus = {}
 		#self.widget = widget
 		self.IconFactory = IconFactory.IconFactory()
-		self.m = Gtk.Menu()
+		self.m = gtk.Menu()
 		self.m.connect('unmap',self.unmap)
 		self.menushow(self.menu.CacheApplications,self.m)
 		self.menushow(self.menu.CacheSettings,self.m)
@@ -122,28 +120,28 @@ class MateMenu(GObject.GObject):
 		#try:
 		#add_image_menuitem(menu,ico, name, None,'1')
 		#except:return
-		self.sm =  Gtk.Menu()
+		self.sm =  gtk.Menu()
 		
 		add_menuitem(self.sm,name)
 		add_menuitem(self.sm, "-")
-		add_image_menuitem(self.sm, Gtk.STOCK_DIALOG_AUTHENTICATION, _("Open as Administrator"), self.runasadmin,name, exe,ico,'1')
+		add_image_menuitem(self.sm, gtk.STOCK_DIALOG_AUTHENTICATION, _("Open as Administrator"), self.runasadmin,name, exe,ico,'1')
 	
 		if ('%s::%s::%s::1' %(name, exe, ico)) not in favlist:
 			add_menuitem(self.sm, "-")
-			add_image_menuitem(self.sm, Gtk.STOCK_ADD, _("Add to Favorites"), self.addfav,name,exe, ico, '1')
+			add_image_menuitem(self.sm, gtk.STOCK_ADD, _("Add to Favorites"), self.addfav,name,exe, ico, '1')
 	
 		else:
 			add_menuitem(self.sm, "-")
-			add_image_menuitem(self.sm, Gtk.STOCK_REMOVE, _("Remove from Favorites"), self.removefav,name, exe, ico, '1')
+			add_image_menuitem(self.sm, gtk.STOCK_REMOVE, _("Remove from Favorites"), self.removefav,name, exe, ico, '1')
 
 		add_menuitem(self.sm, "-")
-		add_image_menuitem(self.sm, Gtk.STOCK_HOME, _("Create Desktop Shortcut"), self.addshort,name, exe, ico, '1')
+		add_image_menuitem(self.sm, gtk.STOCK_HOME, _("Create Desktop Shortcut"), self.addshort,name, exe, ico, '1')
 	
 		add_menuitem(self.sm, "-")
 		if ('%s.desktop' % name) in os.listdir(Globals.AutoStartDirectory):
-			add_image_menuitem(self.sm, Gtk.STOCK_REMOVE, _("Remove from System Startup"), self.remove_autostarter,name,  exe, ico, '1')
+			add_image_menuitem(self.sm, gtk.STOCK_REMOVE, _("Remove from System Startup"), self.remove_autostarter,name,  exe, ico, '1')
 		else:
-			add_image_menuitem(self.sm, Gtk.STOCK_ADD, _("Add to System Startup"), self.create_autostarter,name, exe, ico, '1')
+			add_image_menuitem(self.sm, gtk.STOCK_ADD, _("Add to System Startup"), self.create_autostarter,name, exe, ico, '1')
 		self.sm.show_all()
 		
 		self.sm.popup(None, None, None, 0,0)
@@ -169,14 +167,14 @@ class MateMenu(GObject.GObject):
 	def menushow(self,folder,m):
 
 		for entry in self.menu.GetMenuEntries(folder):
-			self.menus[str(entry)] = Gtk.Menu()
+			self.menus[str(entry)] = gtk.Menu()
 			if isinstance(entry, self.menu.MenuInstance):		#Folder
 				name,icon, path ,comment = self.menu.GetDirProps(entry)	
 				
 				item = add_image_menuitem(m, "", name)
 				item.set_submenu(self.menus[str(entry)])
 				item.connect('activate',self.activatemenu,entry)
-				if icon == None: icon = Gtk.STOCK_MISSING_IMAGE
+				if icon == None: icon = gtk.STOCK_MISSING_IMAGE
 				item.set_image_from_pixbuf(self.IconFactory.geticonfile(icon))
 				item.set_tooltip_text(comment)
 				#self.menushow(entry,self.menus[str(entry)])
@@ -185,7 +183,7 @@ class MateMenu(GObject.GObject):
 				name,icon, execute ,comment = self.menu.GetEntryProps(entry)
 				item = add_image_menuitem(m, "", name,self.launch,m,name,icon,execute)
 				item.set_tooltip_text(comment)
-				if icon == None: icon = Gtk.STOCK_MISSING_IMAGE
+				if icon == None: icon = gtk.STOCK_MISSING_IMAGE
 				item.set_image_from_pixbuf(self.IconFactory.geticonfile(icon))
 
 
@@ -196,7 +194,7 @@ class MateMenu(GObject.GObject):
 			self.menushow(menu,widget.get_submenu())
 
 	def MenuChanged(self,event):
-		self.m = Gtk.Menu()
+		self.m = gtk.Menu()
 		self.menushow(self.menu.CacheApplications,self.m)
 		self.menushow(self.menu.CacheSettings,self.m)
 
@@ -217,5 +215,5 @@ if __name__ == "__main__":
 	men = MateMenu()
 	#men.showmenu()
 	
-	#Gtk.main()
+	#gtk.main()
 

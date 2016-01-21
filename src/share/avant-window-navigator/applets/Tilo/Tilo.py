@@ -2,9 +2,9 @@
 
 import sys
 import os
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+import pygtk
+pygtk.require('2.0')
+import gtk
 import awn
 from awn.extras import _
 
@@ -29,15 +29,15 @@ class Tilo ():
 		self.applet.set_tooltip_text("Tilo")
 		#print self.applet.get_size()
 		#print self.applet.get_position()
-		if self.applet.get_pos_type() == Gtk.PositionType.TOP:
+		if self.applet.get_pos_type() == gtk.POS_TOP:
 			backend.save_setting('orientation', 'top')
 		else:
 			backend.save_setting('orientation', 'bottom')
 		#Get the default icon theme
 		import Globals as Globals
 		self.Globals = Globals
-		self.theme = Gtk.IconTheme.get_default()
-		self.icons['stock_folder'] = GdkPixbuf.Pixbuf.new_from_file(Globals.StartButton[0])
+		self.theme = gtk.icon_theme_get_default()
+		self.icons['stock_folder'] = gtk.gdk.pixbuf_new_from_file(Globals.StartButton[0])
 	        self.setup_context_menu()
 
 		if Globals.Settings['Distributor_Logo']:
@@ -88,9 +88,9 @@ class Tilo ():
 	def setup_context_menu(self):
 
 		#Create the items for Preferences and About
-		self.prefs = Gtk.ImageMenuItem(Gtk.STOCK_PREFERENCES)
-		self.about = Gtk.ImageMenuItem(Gtk.STOCK_ABOUT)
-		self.edit = Gtk.ImageMenuItem(Gtk.STOCK_EDIT)
+		self.prefs = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
+		self.about = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
+		self.edit = gtk.ImageMenuItem(gtk.STOCK_EDIT)
 	
 		#Connect the two items to functions when clicked
 		self.prefs.connect("activate", self.properties)

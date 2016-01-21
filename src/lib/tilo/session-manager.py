@@ -10,7 +10,7 @@
 #(c) Whise 2009,2010 <helderfraga@gmail.com>
 #
 # Handles session Shutdown, Logout, Suspend and Hibernate.
-# Part of Tilo
+# Part of GnoMenu
 
 import sys,os
 

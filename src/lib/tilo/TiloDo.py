@@ -2,10 +2,10 @@
 
 import sys
 import os
-import gi
-gi.require_version("Gtk", "2.0")
-from gi.repository import Gtk
-from gi.repository import GConf
+import pygtk
+pygtk.require('2.0')
+import gtk
+import mateconf
 
 try:
 	INSTALL_PREFIX = open("/etc/tilo/prefix").read()[:-1] 
@@ -21,28 +21,28 @@ class Tilo ():
 	def __init__(self, applet):
 		self.applet = applet
 		self.applet.set_tooltip_text("Tilo")
-		gconf_app_key = '/apps/tilo'
+		mateconf_app_key = '/apps/tilo'
 		self.dokey = '/apps/mate-do/Docky/Utilities/DockPreferences'
-		self.gconf_client = GConf.Client.get_default()
+		self.mateconf_client = mateconf.client_get_default()
 		#print self.applet.get_size()
 		#print self.applet.get_position()
-		self.orient = self.gconf_client.get_string(gconf_app_key + '/Orientation')
+		self.orient = self.mateconf_client.get_string(mateconf_app_key + '/Orientation')
 		if self.orient == 'Top':
-			self.gconf_client.set_string(gconf_app_key + '/orientation', 'top')
+			self.mateconf_client.set_string(mateconf_app_key + '/orientation', 'top')
 		else:
-			self.gconf_client.set_string(gconf_app_key + '/orientation', 'bottom')
+			self.mateconf_client.set_string(mateconf_app_key + '/orientation', 'bottom')
 		proc = os.popen("""ps axo "%p,%a" | grep "Tilo.py" | grep -v grep|cut -d',' -f1""").read()
 		procs = proc.split('\n')
 		if len(procs) > 2:
-			from gi.repository import Wnck
+			import wnck
 			try:
-				Wnck.set_client_type(Wnck.CLIENT_TYPE_PAGER)
+				wnck.set_client_type(wnck.CLIENT_TYPE_PAGER)
 			except AttributeError:
 				print "Error: Failed to set libwnck client type, window " \
 						"activation may not work"
-			screen = Wnck.Screen.get_default()
-			while Gtk.events_pending():
-				Gtk.main_iteration()
+			screen = wnck.screen_get_default()
+			while gtk.events_pending():
+				gtk.main_iteration()
 			wins = screen.get_windows_stacked()
 			
 			for win in wins:
@@ -98,9 +98,9 @@ class Tilo ():
 	def show_menu(self,event):
 
 		#Create the items for Preferences and About
-		self.prefs = Gtk.ImageMenuItem(Gtk.STOCK_PREFERENCES)
-		self.about = Gtk.ImageMenuItem(Gtk.STOCK_ABOUT)
-		self.edit = Gtk.ImageMenuItem(Gtk.STOCK_EDIT)
+		self.prefs = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
+		self.about = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
+		self.edit = gtk.ImageMenuItem(gtk.STOCK_EDIT)
 	
 		#Connect the two items to functions when clicked
 		self.prefs.connect("activate", self.properties)

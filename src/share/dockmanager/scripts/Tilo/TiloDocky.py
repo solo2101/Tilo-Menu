@@ -11,7 +11,7 @@
 
 # Dbus Tilo interface
 import sys
-from gi.repository import GObject
+import gobject
 import dbus
 import dbus.mainloop.glib
 import os
@@ -33,7 +33,7 @@ def emit_signal():
    object.emitActivate(dbus_interface="com.tilo.Tilo")
                           #reply_handler = handle_reply, error_handler = handle_error)
    # exit after waiting a short time for the signal
-   GObject.timeout_add(2000, loop.quit)
+   gobject.timeout_add(2000, loop.quit)
 
    if sys.argv[1:] == ['--exit-service']:
       object.Exit(dbus_interface='com.tilo.Tilo')
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     bus.add_signal_receiver(catchall_testservice_interface_handler, dbus_interface = "com.tilo.Tilo", message_keyword='dbus_message')
 
     # Tell the remote object to emit the signal after a short delay
-    GObject.timeout_add(1, emit_signal)
+    gobject.timeout_add(1, emit_signal)
 
-    loop = GObject.MainLoop()
+    loop = gobject.MainLoop()
     loop.run()

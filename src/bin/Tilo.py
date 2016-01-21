@@ -9,7 +9,7 @@
 #
 #(c) Whise 2008,2009 <helderfraga@gmail.com>
 #
-# Consolidated Mate Menu
+# Consolidated Gnome Menu
 # This is free software made available under the GNU public license.
 
 # Standalone launcher

@@ -24,6 +24,8 @@ except:
 	import xml.dom.minidom
 	print "xml backend"
 
+
+
 HomeDirectory = os.path.expanduser("~")
 ConfigDirectory = HomeDirectory + '/.tilo'
 gconf_app_key = '/apps/tilo'

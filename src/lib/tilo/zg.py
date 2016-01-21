@@ -11,7 +11,7 @@
 # Modified by Whise aka Helder Fraga 2010 <helderfraga@gmail.com>
 
 # Find recently used items from Zeitgeist (synchronously)
-# Part of the Tilo
+# Part of the GnoMenu
 
 from datetime import date
 try:

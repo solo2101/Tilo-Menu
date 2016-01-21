@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<content type="Menu">
+<ContentData Name="Transparent Black Menu" Author="Jonian Guveli" Version="2.2" Copyright="GPL"/>
+# If only one theme type available then specify color='All'
+<theme color="All" color_lang="All" colorvalue="#ffffff">
+	<Background Image="background.png"/>
+	<WindowDimensions Width="371" Height="513"/>
+	<IconSettings X="42" Y="6" Width="66" Height="66" InsetX="10" InsetY="10" InsetWidth="46" InsetHeight="46"/>
+	<SearchBarSettings  X="173" Y="485" Width="207" Height="20" Widget="gtk"/>
+	<ProgramListSettings X="152" Y="8" Width="228" Height="468"/>
+	<Capabilities HasSearch="1" HasIcon="1" HasFadeTransition="0"/>\
+
+	<Tab Name="Favorites"	Markup="&lt;span foreground='#FFFFFF' font_desc='Sans 8' stretch='normal' weight='normal'&gt;Favorites&lt;/span&gt;"		TextX="39" TextY="14" Image="" ImageSel="m_tab.png" IconX="4" IconY="4" TabIcon="m_favorites.png" TabX="5" TabY="89" SubMenu="1" Command="7" CloseMenu="0" Icon="m_favorites.png" AddBackButton='0' InvertTextColorOnSel='0'/>
+
+	<Tab Name="Applications"	Markup="&lt;span foreground='#FFFFFF' font_desc='Sans 8' stretch='normal' weight='normal'&gt;Applications&lt;/span&gt;"		TextX="39" TextY="14" Image="" ImageSel="m_tab.png" IconX="4" IconY="5" TabIcon="m_applications.png" TabX="5" TabY="134"   SubMenu="1" Command="1" CloseMenu="0" Icon="m_applications.png" AddBackButton='0' InvertTextColorOnSel='0'/>
+
+	<Tab Name="Computer"	Markup="&lt;span foreground='#FFFFFF' font_desc='Sans 8' stretch='normal' weight='normal'&gt;Computer&lt;/span&gt;"		TextX="39" TextY="14" Image="" ImageSel="m_tab.png" IconX="4" IconY="5" TabIcon="m_computer.png" TabX="5" TabY="179" SubMenu="1" Command="8" CloseMenu="0" Icon="m_computer.png" AddBackButton='0' InvertTextColorOnSel='0'/>
+
+    <Tab Name="Recent Files"	Markup="&lt;span foreground='#FFFFFF' font_desc='Sans 8' stretch='normal' weight='normal'&gt;Recent Files&lt;/span&gt;"		TextX="39" TextY="14" Image="" ImageSel="m_tab.png"  IconX="4" IconY="5" TabIcon="m_recentitems.png" TabX="5" TabY="224" SubMenu="1" Command="4" CloseMenu="0" Icon="m_recentitems.png" AddBackButton='0' InvertTextColorOnSel='0'/>
+    
+	<Button Name=":SEPARATOR:"	Markup="" TextX="0" TextY="0" Image="m_separator.png" ButtonIcon="" ButtonIconSel="" ButtonX="9" ButtonY="271" SubMenu="0" Command="0" CloseMenu="0" Icon=""/>
+
+	<Button Name="Search for Files"		Markup="&lt;span foreground='#FFFFFF' font_desc='sans 8' stretch='normal' weight='normal'&gt;Search for Files&lt;/span&gt;"		TextX="10" TextY="9" Image="m_button.png" ButtonIcon="" ButtonIconSel="" ButtonX="5" ButtonY="277" SubMenu="0" Command="Search" CloseMenu="1" Icon="m_search.png"/>
+
+	<Button Name="Network"		Markup="&lt;span foreground='#FFFFFF' font_desc='sans 8' stretch='normal' weight='normal'&gt;Network&lt;/span&gt;"		TextX="10" TextY="9" Image="m_button.png" ButtonIcon="" ButtonIconSel="" ButtonX="5" ButtonY="308" SubMenu="0" Command="Network" CloseMenu="1" Icon="m_network.png"/>
+
+	<Button Name="Connect To"	Markup="&lt;span foreground='#FFFFFF' font_desc='sans 8' stretch='normal' weight='normal'&gt;Connect To&lt;/span&gt;"		TextX="10" TextY="9" Image="m_button.png" ButtonIcon="" ButtonIconSel="" ButtonX="5" ButtonY="339" SubMenu="0" Command="Network Config" CloseMenu="1" Icon="m_connect.png"/>
+
+	<Button Name=":SEPARATOR:"	Markup="" TextX="0" TextY="0" Image="m_separator.png" ButtonIcon="" ButtonIconSel="" ButtonX="9" ButtonY="372" SubMenu="0" Command="0" CloseMenu="0" Icon=""/>
+
+	<Button Name="Control Center"	Markup="&lt;span foreground='#FFFFFF' font_desc='sans 8' stretch='normal' weight='normal'&gt;Control Center&lt;/span&gt;"	TextX="10" TextY="9" Image="m_button.png" ButtonIcon="" ButtonIconSel="" ButtonX="5" ButtonY="378" SubMenu="0" Command="Control Panel" CloseMenu="1" Icon="m_controlpanel.png"/>
+
+	<Button Name="Package Manager"	Markup="&lt;span foreground='#FFFFFF' font_desc='sans 8' stretch='normal' weight='normal'&gt;Package Manager&lt;/span&gt;"	TextX="10" TextY="9" Image="m_button.png" ButtonIcon="" ButtonIconSel="" ButtonX="5" ButtonY="409" SubMenu="0" Command="Package Manager" CloseMenu="1" Icon="m_synaptic.png"/>
+
+	<Button Name="Help Center"		Markup="&lt;span foreground='#FFFFFF' font_desc='sans 8' stretch='normal' weight='normal'&gt;Help Center&lt;/span&gt;"	TextX="10" TextY="9" Image="m_button.png" ButtonIcon="" ButtonIconSel="" ButtonX="5" ButtonY="440" SubMenu="0" Command="Help" CloseMenu="1" Icon="m_help.png"/>
+
+	<Button Name="Power"		Markup="" TextX="0" TextY="0" Image="m_power_sel.png" ButtonIcon="m_power.png" ButtonIconSel="m_power_sel.png" ButtonX="18" ButtonY="483" SubMenu="0" Command="Power" CloseMenu="1" Icon=""/>
+
+	<Button Name="Logout"		Markup="" TextX="0" TextY="0" Image="m_logout_sel.png" ButtonIcon="m_logout.png" ButtonIconSel="m_logout.png" ButtonX="63" ButtonY="483" SubMenu="0" Command="Logout" CloseMenu="1" Icon=""/>
+
+	<Button Name="Lock"		Markup="" TextX="0" TextY="0" Image="m_lock_sel.png" ButtonIcon="m_lock.png" ButtonIconSel="m_lock.png" ButtonX="108" ButtonY="483" SubMenu="0" Command="Lock" CloseMenu="1" Icon=""/>
+
+</theme>
+</content>

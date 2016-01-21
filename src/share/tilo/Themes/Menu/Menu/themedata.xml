@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <content type="Menu">
-<ContentData Name="Tilo default" Author="Helder Fraga" Version="1.0" Copyright="GPL"/>
+<ContentData Name="GnoMenu default" Author="Helder Fraga" Version="1.0" Copyright="GPL"/>
 # If only one theme type available then specify color='All'
 <theme color="All" color_lang="All" colorvalue="#ffffff">
 	<Background Image="startmenu.png"/>
