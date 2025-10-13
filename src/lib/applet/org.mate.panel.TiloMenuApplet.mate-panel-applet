@@ -1,0 +1,9 @@
+[Applet Factory]
+Id=TiloMenuAppletFactory
+Name=Tilo Menu
+Description=Application menu for MATE
+Icon=applications-system
+InProcess=false
+
+[Applet IIDs]
+Iid=TiloMenuAppletFactory::TiloMenuApplet
