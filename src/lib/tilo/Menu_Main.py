@@ -7,6 +7,7 @@ gi.require_version("Gdk", "3.0")
 gi.require_version("GdkPixbuf", "2.0")
 from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, GLib
 
+import cairo
 import sys
 import os
 import time
@@ -75,8 +76,17 @@ class Main_Menu(GObject.GObject):
         except Exception:
             pass
 
-        self.colorpb = None
+        # RGBA visual for transparency
         self.supports_alpha = True
+        try:
+            screen = self.window.get_screen()
+            visual = screen.get_rgba_visual()
+            if visual:
+                self.window.set_visual(visual)
+            else:
+                self.supports_alpha = False
+        except Exception:
+            self.supports_alpha = False
 
         self.window.connect("draw", self.on_draw)
         self.window.connect("destroy", Gtk.main_quit)
@@ -98,7 +108,6 @@ class Main_Menu(GObject.GObject):
     # ===== Special commands =====
     def special_command(self, event):
         self.leave_focus = False
-        # Placeholder for MATE menu integration
         self.callback = GLib.timeout_add(1500, self.timeout_callback)
 
     def MateMenu_unmap(self, event):
@@ -135,10 +144,9 @@ class Main_Menu(GObject.GObject):
     def on_draw(self, widget, cr):
         # Clear with transparent or white
         cr.set_source_rgba(1, 1, 1, 0 if self.supports_alpha else 1)
-        # Using Cairo operator requires pycairo; the constant import is implicit
-        cr.set_operator(gi.repository.cairo.OPERATOR_SOURCE)
+        cr.set_operator(cairo.Operator.SOURCE)
         cr.paint()
-        # Background image handled by Gtk.Image placed in setup()
+        # Background comes from a Gtk.Image placed in setup()
         return False
 
     # ===== Setup =====
@@ -197,14 +205,13 @@ class Main_Menu(GObject.GObject):
         for i in range(0, Globals.MenuLabelCount):
             self.MenuLabels.append(MenuLabel(i, self.menuframe))
 
-        # Program list (CairoProgramList removed; map legacy value to IconProgramList)
+        # Program list
         prog_style = Globals.Settings.get('Prog_List', 2)
         if prog_style == 0:
             self.PGL = TreeProgramList()
         elif prog_style in (1, 2):
             self.PGL = ProgramList()
         else:
-            # Legacy 3 (Cairo) or any unknown -> icons
             self.PGL = IconProgramList()
 
         self.PGL.connect('menu', self.menu_callback)
@@ -239,7 +246,6 @@ class Main_Menu(GObject.GObject):
                 self.SearchBar = GtkSearchBar()
                 self.SearchBar.set_text('')
             elif widget_type == "CAIRO":
-                # If present, keep using the Cairo-drawn search bar (independent of the old program list)
                 from Menu_Widgets import CairoSearchBar
                 try:
                     GObject.type_register(CairoSearchBar)
@@ -306,7 +312,7 @@ class Main_Menu(GObject.GObject):
     def composite_changed(self, widget):
         self.hide_method()
         self.show_window()
-        self.shape()
+        # self.shape()  # keep only if implemented
 
     # ===== Show / hide =====
     def show_window(self):
@@ -323,15 +329,14 @@ class Main_Menu(GObject.GObject):
         self.window.activate_focus()
         self.ChangeUserPic_Normalise()
         self.PlaySound(0)
-        
+
         focus_first = getattr(self.PGL, "SetFirstButton", None)
         if callable(focus_first):
             focus_first(0)
         else:
             focus_input = getattr(self.PGL, "SetInputFocus", None)
-        if callable(focus_input):
-            focus_input()
-        
+            if callable(focus_input):
+                focus_input()
 
     def lose_focus(self, widget, event):
         print('focus lost')
@@ -490,7 +495,7 @@ class Main_Menu(GObject.GObject):
                 ico = Globals.IconDirectory + image
 
             self.UserPicName = ico
-            if self.LastUserPicName != self.UserPicName:
+            if getattr(self, "LastUserPicName", "") != self.UserPicName:
                 self.LastUserPicName = self.UserPicName
                 if self.usericonstate == 0:
                     self.usericon.updateimage(2, self.UserPicName)
@@ -580,6 +585,5 @@ def destroy():
 
 if __name__ == "__main__":
     hwg = Main_Menu(destroy)
-    #hwg.setup()
     hwg.show_window()
     Gtk.main()

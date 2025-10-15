@@ -50,7 +50,8 @@ class Tilo(MatePanelApplet.Applet):
         self.Fixed = Gtk.Fixed()
         self.EBox = Gtk.EventBox()
         self.EBox.set_tooltip_text(Globals.name)
-        self.EBox.set_visible_window(False)
+        # make the area visible so a fallback is obvious
+        self.EBox.set_visible_window(True)
         self.EBox.add_events(
             Gdk.EventMask.BUTTON_PRESS_MASK
             | Gdk.EventMask.ENTER_NOTIFY_MASK
@@ -104,9 +105,12 @@ class Tilo(MatePanelApplet.Applet):
 
     def _get_panel_size(self) -> int:
         try:
-            return int(self.applet.get_size())
+            s = int(self.applet.get_size())
         except Exception:
-            return 32
+            s = 32
+        if s <= 0:
+            s = 32
+        return s
 
     def _store_settings(self) -> None:
         backend.save_setting("orientation", self.orientation or "bottom")
@@ -165,7 +169,7 @@ class Tilo(MatePanelApplet.Applet):
                     self.Button_state = 2
             self._redraw_graphics()
         elif event.button == 3:
-            pass  # keep right-click free for future menu
+            pass  # reserved for future menu
 
     def select_box(self, *_args):
         if self.Button_state == 0:
@@ -208,19 +212,18 @@ class Tilo(MatePanelApplet.Applet):
     def _fallback_icon(self, size: int):
         try:
             theme = Gtk.IconTheme.get_default()
-            for name in ("start-here", "application-menu", "system-run"):
+            for name in ("applications-system", "start-here", "application-menu", "system-run"):
                 if theme.has_icon(name):
-                    info = theme.lookup_icon(name, size, 0)
-                    if info and info.get_filename():
-                        return GdkPixbuf.Pixbuf.new_from_file_at_size(
-                            info.get_filename(), size, size
-                        )
+                    return theme.load_icon(name, size, 0)
         except Exception:
             pass
-        return None
+        # last resort, visible square
+        pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, size, size)
+        pb.fill(0xffffffff)  # opaque white
+        return pb
 
     def _redraw_graphics(self):
-        btn_h = max(1, int(self.size))
+        btn_h = max(16, int(self.size))
         pixbuf = None
         use_logo = Globals.Settings.get("Distributor_Logo", 0) == 1 and hasattr(Globals, "distro_logo")
 
@@ -228,26 +231,29 @@ class Tilo(MatePanelApplet.Applet):
             if use_logo and os.path.isfile(Globals.distro_logo):
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(Globals.distro_logo, btn_h, btn_h)
             else:
-                path = Globals.StartButton[self.Button_state]
-                im = GdkPixbuf.Pixbuf.new_from_file(path)
-                w = max(1, im.get_width())
-                h = max(1, im.get_height())
-                scale = float(btn_h) / float(h)
-                pixbuf = im.scale_simple(int(w * scale), btn_h, GdkPixbuf.InterpType.BILINEAR)
-                if Globals.flip is False and Globals.ButtonHasTop == 1:
+                path = None
+                if getattr(Globals, "StartButton", None):
                     try:
-                        pixbuf = pixbuf.flip(True)
+                        path = Globals.StartButton[self.Button_state]
                     except Exception:
-                        pass
+                        path = None
+
+                if path and os.path.isfile(path):
+                    im = GdkPixbuf.Pixbuf.new_from_file(path)
+                    w = max(1, im.get_width())
+                    h = max(1, im.get_height())
+                    scale = float(btn_h) / float(h)
+                    pixbuf = im.scale_simple(int(w * scale), btn_h, GdkPixbuf.InterpType.BILINEAR)
+                    if Globals.flip is False and Globals.ButtonHasTop == 1:
+                        try:
+                            pixbuf = pixbuf.flip(True)
+                        except Exception:
+                            pass
         except Exception:
             pixbuf = None
 
         if pixbuf is None:
             pixbuf = self._fallback_icon(btn_h)
-
-        if pixbuf is None:
-            pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, btn_h, btn_h)
-            pixbuf.fill(0x00000000)
 
         btn_w = max(24, int(pixbuf.get_width()))
         try:
@@ -277,7 +283,7 @@ try:
 except Exception:
     pass
 
-def Tilo_factory(applet, iid):
+def Tilo_factory(applet, iid, data=None):
     Tilo(applet, iid)
     return True
 
@@ -286,10 +292,11 @@ def Tilo_factory(applet, iid):
 # Entry points
 # ============================================================
 if __name__ == "__main__":
-    # 1) Panel factory mode (spawned by D-Bus via .service file)
+    # Spawned by mate-panel via the D-Bus service
     if "--factory" in sys.argv or os.environ.get("MATE_PANEL_APPLET_ID"):
+        print("Tilo factory starting. IID=OAFIID:MATE_TiloMenu; argv=", sys.argv)
         MatePanelApplet.Applet.factory_main(
-            "TiloMenuAppletFactory",          # MUST match Id= in .mate-panel-applet
+            "OAFIID:MATE_TiloMenu",        # must match MateComponentId
             True,
             MatePanelApplet.Applet.__gtype__,
             Tilo_factory,

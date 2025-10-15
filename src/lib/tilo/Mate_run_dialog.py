@@ -1,45 +1,47 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-# This application is released under the GNU General Public License 
-# v3 (or, at your option, any later version). You can find the full 
-# text of the license under http://www.gnu.org/licenses/gpl.txt. 
-# By using, editing and/or distributing this software you agree to 
-# the terms and conditions of this license. 
-# Thank you for using free software!
-#
-#(c) QB89Dragon 2007/8 <hughescih@hotmail.com>
-#(c) Whise 2008,2009 <helderfraga@gmail.com>
-#
-# MATE RUN DIALOG
-# Part of the GnoMenu
- 
+import os
 import sys
-try:
-	from Xlib import X, display, Xatom
-	import Xlib
-except:
-	print "Critical Error: python-xlib not installed. Cannot continue."
-	sys.exit ()
+import shutil
+import subprocess
 
-def get_atom(display, atom_name):
+def run_with_mate_panel_control() -> bool:
+    cmd = shutil.which("mate-panel-control")
+    if not cmd:
+        return False
+    try:
+        subprocess.run([cmd, "--run-dialog"], check=True)
+        return True
+    except Exception:
+        return False
 
-	atom = XInternAtom(disp, atom_name, False)
-	if atom == None:
-		print "Critical Error: Panel objects (atom) not found"
-		sys.exit ()
-	return atom
+def run_with_xlib() -> bool:
+    try:
+        from Xlib.display import Display
+        from Xlib import X, protocol
+    except Exception:
+        return False
+    try:
+        disp = Display()
+        root = disp.screen().root
+        atom_action = disp.intern_atom("_MATE_PANEL_ACTION")
+        atom_run = disp.intern_atom("_MATE_PANEL_ACTION_RUN_DIALOG")
+        data = (32, [atom_run, X.CurrentTime, 0, 0, 0])
+        ev = protocol.event.ClientMessage(window=root, client_type=atom_action, data=data)
+        # send to root with common masks
+        root.send_event(ev, event_mask=X.SubstructureRedirectMask | X.SubstructureNotifyMask)
+        disp.flush()
+        return True
+    except Exception:
+        return False
 
-# Get display
-disp =  Xlib.display.Display()
-# Get atoms for panel and run dialog menu
-mate_panel_atom = disp.intern_atom("_MATE_PANEL_ACTION")
-run_atom = disp.intern_atom("_MATE_PANEL_ACTION_RUN_DIALOG")
+def main():
+    if run_with_mate_panel_control():
+        sys.exit(0)
+    if run_with_xlib():
+        sys.exit(0)
+    print("Run dialog not triggered", file=sys.stderr)
+    sys.exit(1)
 
-args = [0,0,0]
-time = X.CurrentTime
-data = (32,([run_atom,time]+args))
-event = Xlib.protocol.event.ClientMessage(window = disp.screen().root,client_type = mate_panel_atom, data = data)
-# Send event to display
-disp.send_event(disp.screen().root,event, event_mask=X.StructureNotifyMask, propagate=0)
-# Show menu
-disp.sync()
+if __name__ == "__main__":
+    main()

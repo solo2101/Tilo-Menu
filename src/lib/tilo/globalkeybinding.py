@@ -1,119 +1,134 @@
-# Copyright (C) 2008  Luca Bruno <lethalman88@gmail.com>
-# Copyright (C) 2009  whise <helderfraga@gmail.com>
-#
-# This a slightly modified version of the globalkeybinding.py
-#   
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell   
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#   
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#   
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,  
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER    
-# DEALINGS IN THE SOFTWARE.
+#!/usr/bin/env python3
+# globalkeybinding.py  (safe if Xlib is missing)
 
-from Xlib.display import Display
-from Xlib import X
-import gobject
-import gtk.gdk
 import threading
+import gi
+gi.require_version("Gtk", "3.0")
+gi.require_version("Gdk", "3.0")
+from gi.repository import Gtk, Gdk, GObject, GLib
 
-class GlobalKeyBinding (gobject.GObject, threading.Thread):
-    __gsignals__ = {
-        'activate': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-        }
+try:
+    from Xlib.display import Display
+    from Xlib import X
+    HAVE_XLIB = True
+except Exception:
+    HAVE_XLIB = False
+    Display = None
+    X = None
 
-    def __init__ (self,  key):
-        gobject.GObject.__init__ (self)
-        threading.Thread.__init__ (self)
-        self.setDaemon (True)
+
+class GlobalKeyBinding(GObject.GObject, threading.Thread):
+    __gsignals__ = {"activate": (GObject.SignalFlags.RUN_LAST, None, ())}
+
+    def __init__(self, key: str):
+        GObject.GObject.__init__(self)
+        threading.Thread.__init__(self)
+        self.setDaemon(True)
 
         self.key = key
+        self.keycode = None
+        self.modifiers = None
+        self.running = False
+        self._toggle = True
 
-        self.keymap = gtk.gdk.keymap_get_default ()
-        self.display = Display ()
-        self.screen = self.display.screen ()
-        self.root = self.screen.root
-	self.e = True
-        self.map_modifiers ()
+        self.keymap = Gdk.Keymap.get_default()
 
-    def map_modifiers (self):
-        gdk_modifiers = (gtk.gdk.CONTROL_MASK, gtk.gdk.SHIFT_MASK, gtk.gdk.MOD1_MASK,
-                         gtk.gdk.MOD2_MASK, gtk.gdk.MOD3_MASK, gtk.gdk.MOD4_MASK, gtk.gdk.MOD5_MASK,
-                         gtk.gdk.SUPER_MASK, gtk.gdk.HYPER_MASK,gtk.gdk.LOCK_MASK)
+        if HAVE_XLIB:
+            self.display = Display()
+            self.screen = self.display.screen()
+            self.root = self.screen.root
+            self._map_modifiers()
+            self.grab()
+        else:
+            print("GlobalKeyBinding disabled. python-xlib not installed.")
+
+    def _map_modifiers(self):
+        gdk_mods = (
+            Gdk.ModifierType.CONTROL_MASK, Gdk.ModifierType.SHIFT_MASK,
+            Gdk.ModifierType.MOD1_MASK,  Gdk.ModifierType.MOD2_MASK,
+            Gdk.ModifierType.MOD3_MASK,  Gdk.ModifierType.Mod4Mask,
+            Gdk.ModifierType.MOD5_MASK,  Gdk.ModifierType.SUPER_MASK,
+            Gdk.ModifierType.HYPER_MASK, Gdk.ModifierType.LOCK_MASK,
+        )
         self.known_modifiers_mask = 0
-        for modifier in gdk_modifiers:
-            # Do you know how to handle unknown "Mod*" keys?
-            # They are usually Locks and something like that
-            if "Mod" not in gtk.accelerator_name (0, modifier):
-                self.known_modifiers_mask |= modifier
+        for m in gdk_mods:
+            name = Gtk.accelerator_name(0, m)
+            if "Mod" not in name:
+                self.known_modifiers_mask |= int(m)
 
-    def on_key_changed (self, *args):
-        self.regrab ()
+    def on_key_changed(self, *args):
+        if HAVE_XLIB:
+            self.regrab()
 
-    def regrab (self):
-        self.ungrab ()
-        self.grab ()
+    def regrab(self):
+        if HAVE_XLIB:
+            self.ungrab()
+            self.grab()
 
-    def grab (self):
-	
-        accelerator = (self.key)
-        keyval, modifiers = gtk.accelerator_parse (accelerator)
-        if not accelerator or (not keyval and not modifiers):
+    def grab(self):
+        if not HAVE_XLIB:
+            return
+        keyval, modifiers = Gtk.accelerator_parse(self.key)
+        if not self.key or (not keyval and not modifiers):
             self.keycode = None
             self.modifiers = None
-	    print 'Unable to bind the selected key'
             return
-        self.keycode = self.keymap.get_entries_for_keyval(keyval)[0][0]
-        self.modifiers = int (modifiers)
-        return self.root.grab_key (self.keycode, X.AnyModifier, True, X.GrabModeAsync, X.GrabModeSync)
+        self.keycode = self.display.keysym_to_keycode(keyval)
+        self.modifiers = int(modifiers)
+        try:
+            self.root.grab_key(self.keycode, X.AnyModifier, True, X.GrabModeAsync, X.GrabModeSync)
+            self.display.flush()
+        except Exception:
+            self.keycode = None
 
-    def ungrab (self):
-        if self.keycode:
-            self.root.ungrab_key (self.keycode, X.AnyModifier, self.root)
-        
-    def idle (self):
-        # Clipboard requests will hang without locking the GDK thread
-        gtk.gdk.threads_enter ()
-	# Workarround to only send signal every 2 times needed by tilo
-	if self.e == True: 
-	        self.emit ("activate")
-		self.e = False
-	elif self.e == False:
-		self.e = True
-        gtk.gdk.threads_leave ()
+    def ungrab(self):
+        if HAVE_XLIB and self.keycode:
+            try:
+                self.root.ungrab_key(self.keycode, X.AnyModifier, self.root)
+                self.display.flush()
+            except Exception:
+                pass
+
+    def _emit_activate(self):
+        if self._toggle:
+            self.emit("activate")
+            self._toggle = False
+        else:
+            self._toggle = True
         return False
 
-    def run (self):
+    def run(self):
+        if not HAVE_XLIB:
+            return
         self.running = True
         wait_for_release = False
         while self.running:
-            event = self.display.next_event ()
-            if event.detail == self.keycode and event.type == X.KeyPress and not wait_for_release:
-                modifiers = event.state & self.known_modifiers_mask
-                if modifiers == self.modifiers:
+            event = self.display.next_event()
+            if (
+                self.keycode
+                and event.type == X.KeyPress
+                and event.detail == self.keycode
+                and not wait_for_release
+            ):
+                mods = event.state & self.known_modifiers_mask
+                if mods == self.modifiers:
                     wait_for_release = True
-                    self.display.allow_events (X.AsyncKeyboard, event.time)
+                    self.display.allow_events(X.AsyncKeyboard, event.time)
                 else:
-                    self.display.allow_events (X.ReplayKeyboard, event.time)
-            elif event.detail == self.keycode and wait_for_release:
+                    self.display.allow_events(X.ReplayKeyboard, event.time)
+            elif self.keycode and wait_for_release and event.detail == self.keycode:
                 if event.type == X.KeyRelease:
                     wait_for_release = False
-                    gobject.idle_add (self.idle)
-                self.display.allow_events (X.AsyncKeyboard, event.time)
+                    GLib.idle_add(self._emit_activate)
+                self.display.allow_events(X.AsyncKeyboard, event.time)
             else:
-                self.display.allow_events (X.ReplayKeyboard, event.time)
+                self.display.allow_events(X.ReplayKeyboard, event.time)
 
-    def stop (self):
+    def stop(self):
         self.running = False
-        self.ungrab ()
-        self.display.close ()
+        self.ungrab()
+        if HAVE_XLIB:
+            try:
+                self.display.close()
+            except Exception:
+                pass
