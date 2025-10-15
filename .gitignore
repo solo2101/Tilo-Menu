@@ -26,3 +26,6 @@ gitigonre/
 gitigonre/
 gitigonre/
 gitigonre/
+gitigonre/
+__pycache__/
+*.pyc
