@@ -16,7 +16,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version("Gdk", "3.0")
 gi.require_version("GdkPixbuf", "2.0")
-from gi.repository import GdkPixbuf, Gtk, Gio
+from gi.repository import Gdk, GdkPixbuf, Gtk, Gio
 
 from .applications import application_categories, installed_applications, launch_application
 from .themes import load_menu_theme
@@ -32,10 +32,16 @@ class MenuWindow(Gtk.Window):
         self.set_default_size(theme.width, theme.height)
         self.set_resizable(False)
         self.set_decorated(False)
+        screen = self.get_screen()
+        visual = screen.get_rgba_visual()
+        if visual is not None and screen.is_composited():
+            self.set_visual(visual)
+        self.get_style_context().add_class("tilo-window")
         self.connect("destroy", Gtk.main_quit)
         self.connect("button-press-event", self._theme_context_menu)
 
         layout = Gtk.Fixed()
+        layout.get_style_context().add_class("tilo-layout")
         self.add(layout)
         background = theme.directory / theme.background
         if background.is_file():
@@ -58,24 +64,26 @@ class MenuWindow(Gtk.Window):
             for category in application_categories(app)
         })
         self.category_select = Gtk.ComboBoxText()
+        self.category_select.get_style_context().add_class("tilo-category")
         for name in ["All Applications", "Favorites", *category_names]:
             self.category_select.append_text(name)
         self.category_select.set_active(0)
-        self.category_select.set_size_request(program.integer("Width"), 30)
+        self.category_select.set_size_request(program.integer("Width"), min(30, max(20, program.integer("Height") // 5)))
         layout.put(self.category_select, program.integer("X"), program.integer("Y"))
         self.category_select.connect("changed", self._change_category)
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scroll.set_size_request(program.integer("Width"), max(50, program.integer("Height") - 32))
+        scroll.get_style_context().add_class("tilo-app-scroll")
+        scroll.set_size_request(program.integer("Width"), max(20, program.integer("Height") - 32))
         layout.put(scroll, program.integer("X"), program.integer("Y") + 32)
         css = Gtk.CssProvider()
-        css.load_from_data(b"""
-            listbox, listbox row, scrolledwindow, viewport { background: transparent; border: none; }
-            listbox row { padding: 0; min-height: 0; }
-            button.tilo-app { background: transparent; background-image: none; border: none;
+        css.load_from_data(b"""\n            window.tilo-window, window.tilo-window > fixed.tilo-layout { background: transparent; background-color: transparent; }\n            .tilo-window combobox.tilo-category button, .tilo-window combobox.tilo-category box { background-image: none; box-shadow: none; }\n            .tilo-window entry { box-shadow: none; }
+            .tilo-window listbox, .tilo-window listbox row, .tilo-window scrolledwindow, .tilo-window viewport { background: transparent; border: none; box-shadow: none; }
+            .tilo-window listbox row { padding: 0; min-height: 0; }
+            .tilo-window button.tilo-app { background: transparent; background-image: none; border: none;
                 box-shadow: none; border-radius: 0; padding: 3px 5px; min-height: 26px; }
-            button.tilo-app:hover { background: rgba(90, 145, 210, 0.35); }
-            button.tilo-app label { font-size: 12px; color: #f4f4f4; text-shadow: 0 1px 1px #111; }
+            .tilo-window button.tilo-app:hover { background: rgba(90, 145, 210, 0.35); }
+            .tilo-window button.tilo-app label { font-size: 12px; color: #f4f4f4; text-shadow: 0 1px 1px #111; }
         """)
         Gtk.StyleContext.add_provider_for_screen(
             self.get_screen(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
@@ -88,6 +96,7 @@ class MenuWindow(Gtk.Window):
         search = theme.search
         if search.attributes.get("Widget") != "None":
             entry = Gtk.SearchEntry()
+            entry.get_style_context().add_class("tilo-search")
             entry.set_placeholder_text(search.attributes.get("InitialText", "Search"))
             entry.set_size_request(search.integer("Width"), search.integer("Height"))
             layout.put(entry, search.integer("X"), search.integer("Y"))
