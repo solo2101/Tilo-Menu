@@ -1924,7 +1924,7 @@ class IconProgramList(gobject.GObject):
 
         def map_event(self,widget,event,a):
                 if a == 'map':
-                        self.tree1.set_item_width(Globals.PG_buttonframedimensions[0]-self.ScrollFrame.get_vscrollbar().size_request()[0]-4)
+                        self.tree1.set_item_width(Globals.PG_buttonframedimensions[0]-self.ScrollFrame.get_vscrollbar().size_request().width-4)
                 else:
                         self.tree1.set_item_width(Globals.PG_buttonframedimensions[0]-2)
 
@@ -2029,7 +2029,7 @@ class IconProgramList(gobject.GObject):
                                 self.AddButton(self.XDG.L_Names[i],self.XDG.L_Icons[i],i)
                 #print time.clock()-a
                 #if a * Globals.PG_iconsize > Globals.PG_buttonframedimensions[1]:
-                #       self.tree1.set_item_width(Globals.PG_buttonframedimensions[0]-self.ScrollFrame.get_vscrollbar().size_request()[0]-4)
+                #       self.tree1.set_item_width(Globals.PG_buttonframedimensions[0]-self.ScrollFrame.get_vscrollbar().size_request().width-4)
                 #else:
                 #       self.tree1.set_item_width(Globals.PG_buttonframedimensions[0]-2)
                 #print time.clock() 
