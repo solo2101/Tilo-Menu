@@ -82,9 +82,16 @@ jobs:
           done
 
       - name: Exercise original XDG menu special-page navigation
-        continue-on-error: true
         env:
           GSETTINGS_BACKEND: memory
           XDG_MENU_PREFIX: mate-
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_special_menus.py
+
+      - name: Construct original program context menu under GTK3
+        continue-on-error: true
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_context_menu.py
