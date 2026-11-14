@@ -262,11 +262,11 @@ class MenuTab:
                 self.prime_color = self.txt[(self.txt.find("span foreground='") +len("span foreground='")):]
                 self.prime_color = self.prime_color[:self.prime_color.find("'")]
                 if self.prime_color == '':self.prime_color = Globals.ThemeColorHtml
-                self.theme_color = gtk.gdk.color_parse(self.prime_color)
+                self.theme_color = Gdk.color_parse(self.prime_color)
                 self.theme_color_r = 65535 - int(self.theme_color.red)
                 self.theme_color_g = 65535 - int(self.theme_color.green)
                 self.theme_color_b = 65535 - int(self.theme_color.blue)
-                self.color = gtk.gdk.Color(self.theme_color_r,self.theme_color_g,self.theme_color_b,0)
+                self.color = Gdk.Color(self.theme_color_r,self.theme_color_g,self.theme_color_b)
                 self.second_color = self.color_to_hex(self.color)
                 self.Frame.set_tooltip_text(_(Globals.MenuTabNames[i]))
                 #self.Label.set_markup(self.txt)
@@ -859,7 +859,7 @@ class ImageFrame_cairo_surface:#flickers
 
                 self.temp = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.w, self.h)
                 self.cr2 = cairo.Context(self.temp)
-                self.ct = (self.cr2)
+                self.ct = self.cr2
                 Gdk.cairo_set_source_pixbuf(self.ct, self.temppixbuf,0,0)
                 self.ct.paint()
 
@@ -1099,18 +1099,18 @@ class CairoSearchBar(gtk.Entry):
                 if Globals.Settings['GtkColors'] == 1:
                         self.Backcolor = Globals.GtkColorCode
                 else:
-                        self.Backcolor = gtk.gdk.color_parse(BackColor)
+                        self.Backcolor = Gdk.color_parse(BackColor)
                 self.Backcolor_r = (self.Backcolor.red)/65535.0
                 self.Backcolor_g = (self.Backcolor.green)/65535.0
                 self.Backcolor_b = (self.Backcolor.blue)/65535.0
-                self.Bordercolor = gtk.gdk.color_parse(BorderColor)
+                self.Bordercolor = Gdk.color_parse(BorderColor)
                 self.Bordercolor_r = (self.Bordercolor.red)/65535.0
                 self.Bordercolor_g = (self.Bordercolor.green)/65535.0
                 self.Bordercolor_b = (self.Bordercolor.blue)/65535.0
                 #for state in [gtk.StateType.ACTIVE, gtk.StateType.NORMAL,gtk.StateType.PRELIGHT, gtk.StateType.SELECTED]: 
                 self.modify_bg(gtk.StateType.NORMAL, self.Backcolor)
                 self.modify_base(gtk.StateType.NORMAL, self.Backcolor)
-                self.modify_text(gtk.StateType.NORMAL, gtk.gdk.color_parse(TextColor))
+                self.modify_text(gtk.StateType.NORMAL, Gdk.color_parse(TextColor))
                 self.connect("draw", self.expose)
                 try:
                         if self.text != _('Search'):
@@ -1179,7 +1179,7 @@ class CustomSearchBar(gtk.DrawingArea):
                 self.selection = False
                 self.cursorblink = False
                 self.cursorvisible = False
-                color = gtk.gdk.color_parse(TextColor)
+                color = Gdk.color_parse(TextColor)
                 self.color_r = (color.red)/65535.0
                 self.color_g = (color.green)/65535.0
                 self.color_b = (color.blue)/65535.0             
@@ -1212,80 +1212,52 @@ class CustomSearchBar(gtk.DrawingArea):
 
 
         def enter(self, widget, event):
-                self.window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.XTERM))
+                self.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.XTERM))
 
         def leave(self, widget, event):
-                self.window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
+                self.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
                 
         def do_realize(self):
-                # Create events
-                self.set_flags(self.flags() | gtk.REALIZED | gtk.CAN_FOCUS | gtk.HAS_FOCUS)
-                
-                # Create window for widget to be displayed in
-                        
-                self.window = gtk.gdk.Window(
-                        self.get_parent_window(),
-                        width=self.allocation.width,
-                        height=self.allocation.height,
-                        window_type=gdk.WINDOW_CHILD,
-                        wclass=gdk.INPUT_OUTPUT,
-                        event_mask=self.get_events() | Gdk.EventMask.EXPOSURE_MASK | Gdk.EventType.KEY_PRESS_MASK  | Gdk.EventMask.KEY_RELEASE_MASK | Gdk.EventMask.FOCUS_CHANGE_MASK | Gdk.EventMask.BUTTON1_MOTION_MASK | Gdk.EventType.BUTTON_PRESS_MASK | Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.POINTER_MOTION_HINT_MASK 
-| Gdk.EventMask.ENTER_NOTIFY_MASK | Gdk.EventMask.LEAVE_NOTIFY_MASK)
-
-                
-                                
-                                
-                # Associate the gdk.Window with ourselves, Gtk+ needs a reference
-                # between the widget and the gdk window
-                self.window.set_user_data(self)
-                
-                # Attach the style to the gdk.Window, a style contains colors and
-                # GC contextes used for drawing
-                self.style.attach(self.window)
-                
-
-                # The default color of the background should be what
-                # the style (theme engine) tells us.
-                self.style.set_background(self.window, gtk.StateType.NORMAL)
-
+                # GTK3 DrawingArea realizes its own Gdk.Window. Retain the
+                # original key, hover and cursor timing after realization.
+                gtk.DrawingArea.do_realize(self)
+                self.window = self.get_window()
+                self.set_can_focus(True)
                 if Globals.Settings['GtkColors'] == 1:
                         bgcolor = Globals.GtkColorCode
-                        self.t_color_r = 65535.0 - (bgcolor.red*255)/65535.0
-                        self.t_color_g = 65535.0- (bgcolor.green*255)/65535.0
-                        self.t_color_b = 65535.0- (bgcolor.blue*255)/65535.0
+                        self.t_color_r = 1.0 - bgcolor.red / 65535.0
+                        self.t_color_g = 1.0 - bgcolor.green / 65535.0
+                        self.t_color_b = 1.0 - bgcolor.blue / 65535.0
                 else:
-                        color = gtk.gdk.color_parse(self.TextColor)
-                        self.t_color_r = (color.red)/65535.0
-                        self.t_color_g = (color.green)/65535.0
-                        self.t_color_b = (color.blue)/65535.0
-                self.window.move_resize(*self.allocation)
-                
-                # self.style is a gtk.Style object, self.style.fg_gc is
-                # an array or graphic contexts used for drawing the forground
-                # colours       
-                self.gc = self.style.fg_gc[gtk.StateType.NORMAL]
-                self.connect("key_press_event", self.do_keypress)
-                self.connect("enter_notify_event", self.enter)
-                self.connect("leave_notify_event", self.leave)
-                #if self.cursorvisible:
-                gobject.timeout_add(700,self.blinkcursor)
-                
+                        color = Gdk.color_parse(self.TextColor)
+                        self.t_color_r = color.red / 65535.0
+                        self.t_color_g = color.green / 65535.0
+                        self.t_color_b = color.blue / 65535.0
+                self.add_events(Gdk.EventMask.KEY_PRESS_MASK |
+                                Gdk.EventMask.KEY_RELEASE_MASK |
+                                Gdk.EventMask.ENTER_NOTIFY_MASK |
+                                Gdk.EventMask.LEAVE_NOTIFY_MASK)
+                self.connect("key-press-event", self.do_keypress)
+                self.connect("enter-notify-event", self.enter)
+                self.connect("leave-notify-event", self.leave)
+                gobject.timeout_add(700, self.blinkcursor)
+
         def do_keypress(self,widget,event):
                 key = event.hardware_keycode
                 if key==9:
                         self.text=""
-                        self.window.invalidate_rect(None,False)                                         
+                        self.queue_draw()                                         
                 elif key==22 and self.cursor>0:
                         self.text = self.text[0:len(self.text)-1]
-                        self.window.invalidate_rect(None,False)
+                        self.queue_draw()
                 else:
                         self.text=self.text+event.string
                         self.cursor = self.cursor + 1
-                        self.window.invalidate_rect(None,False)
+                        self.queue_draw()
         
         def set_text(self,text):
                 self.text = text
-                self.window.invalidate_rect(None,False)
+                self.queue_draw()
         
         def get_text(self):
                 return self.text
@@ -1305,7 +1277,7 @@ class CustomSearchBar(gtk.DrawingArea):
         
         def blinkcursor(self):
                 self.cursorblink = not self.cursorblink
-                self.window.invalidate_rect(None,False)
+                self.queue_draw()
                 #Fixme Invalidate only the leading cursor-edge region
                 return True
         
@@ -1349,7 +1321,7 @@ class CustomSearchBar(gtk.DrawingArea):
         def BuildBackground(self,w,h):
                 self.buttonsurface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
                 context = cairo.Context(self.buttonsurface)
-                self.ct = (context)
+                self.ct = context
                 if Globals.Settings['GtkColors'] == 1:
                         cairo_drawing.draw_image_gtk(self.ct,0,0,self.backimage,w,h,Globals.GtkColorCode,None,False)
                 else:
@@ -2589,8 +2561,8 @@ class MenuArea(gtk.DrawingArea):
                 #self.padding = 1
                 self.pointer_x = 0
                 self.pointer_y = 0
-                self.add_events(Gdk.EventMask.BUTTON_MOTION_MASK | Gdk.EventMask.ENTER_NOTIFY_MASK | Gdk.EventMask.LEAVE_NOTIFY_MASK | Gdk.EventType.BUTTON_PRESS_MASK |
-                                Gdk.EventType.BUTTON_RELEASE_MASK | Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.SCROLL_MASK | Gdk.EventType.KEY_PRESS_MASK)
+                self.add_events(Gdk.EventMask.BUTTON_MOTION_MASK | Gdk.EventMask.ENTER_NOTIFY_MASK | Gdk.EventMask.LEAVE_NOTIFY_MASK | Gdk.EventMask.BUTTON_PRESS_MASK |
+                                Gdk.EventMask.BUTTON_RELEASE_MASK | Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.SCROLL_MASK | Gdk.EventMask.KEY_PRESS_MASK)
 
         def scrollbar_changed(self,value):
                 self.scroll = value
@@ -2879,7 +2851,7 @@ class CairoProgramList:
                 self.menu = CairoMenuObject()
                 self.menu.set_events(Gdk.EventMask.POINTER_MOTION_MASK |
                               Gdk.EventMask.POINTER_MOTION_HINT_MASK |
-                              Gdk.EventType.BUTTON_PRESS_MASK)
+                              Gdk.EventMask.BUTTON_PRESS_MASK)
                 self.menu.connect("motion_notify_event", self.mousemove)
                 self.menu.connect("button-press-event", self.buttonpress)
                 self.menu.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])      
