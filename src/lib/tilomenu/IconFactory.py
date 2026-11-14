@@ -125,7 +125,14 @@ class IconFactory(gobject.GObject):
                         if os.path.isfile(icon):
                                 pix = GdkPixbuf.Pixbuf.new_from_file_at_size(icon, Globals.PG_iconsize, Globals.PG_iconsize)
                                 return pix
-                        pix = self.gtkicontheme.load_icon('gtk-missing-image',Globals.PG_iconsize,gtk.IconLookupFlags.FORCE_SIZE)
-                        return pix
+                        # GTK3 themes no longer guarantee the GTK2 stock icon name.
+                        # Retain the original bundled brokenlink.png as fallback.
+                        for name in ('image-missing', 'gtk-missing-image'):
+                                if self.gtkicontheme.has_icon(name):
+                                        return self.gtkicontheme.load_icon(
+                                                name, Globals.PG_iconsize,
+                                                gtk.IconLookupFlags.FORCE_SIZE)
+                        return GdkPixbuf.Pixbuf.new_from_file_at_size(
+                                Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
 
 
