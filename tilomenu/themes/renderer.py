@@ -6,6 +6,7 @@ ImageBack is the optional resting background. Original Pango markup is honored.
 import getpass
 import html
 import platform
+import re
 import shutil
 import subprocess
 import xml.etree.ElementTree as ET
@@ -58,6 +59,41 @@ def _set_safe_markup(label, markup, fallback=""):
     label.set_markup(markup)
 
 
+def _is_valid_markup(markup):
+    if not markup:
+        return False
+    try:
+        ET.fromstring("<root>" + markup + "</root>")
+        return True
+    except ET.ParseError:
+        return False
+
+
+def _readable_tab_markup(markup):
+    """Bring 6pt tab captions to a readable minimum without changing fonts."""
+    def adjust(match):
+        size = float(match.group(2))
+        return match.group(1) + ("8" if size < 8 else match.group(2)) + match.group(3)
+
+    return re.sub(
+        r"(font_desc\s*=\s*['\"][^'\"]*?\s)(\d+(?:\.\d+)?)(['\"])",
+        adjust, markup,
+    )
+
+
+def _tab_text_x(attrs, icon):
+    x = int(attrs.get("TextX", "0"))
+    if icon is None:
+        return x
+    iy = int(attrs.get("TabIconY", "0"))
+    ix = int(attrs.get("TabIconX", "0"))
+    ty = int(attrs.get("TextY", "0"))
+    overlap = min(iy + icon.get_height(), ty + 12) - max(iy, ty)
+    if overlap > 6:
+        return max(x, ix + icon.get_width() + 4)
+    return x
+
+
 def _valid_markup(markup, fallback=""):
     """Keep legacy typography if valid, otherwise show a readable label."""
     if markup:
@@ -82,12 +118,16 @@ def _color_label(label, theme, markup, fallback, x, y, width,
 
 
 def _markup(container, attrs, width, *, theme, x=0, y=0, fallback="",
-            selected=False, invert_unselected=False, overlay=""):
-    markup = attrs.get("Markup", "")
+            selected=False, invert_unselected=False, overlay="",
+            markup_override=None, text_x=None):
+    markup = attrs.get("Markup", "") if markup_override is None else markup_override
     if not markup and not fallback:
         return None
+    # Some legacy icon-only tabs contain intentionally unusable markup.
+    if markup and not _is_valid_markup(markup) and not fallback:
+        return None
     label = Gtk.Label()
-    xoff = int(attrs.get("TextX", "0"))
+    xoff = int(attrs.get("TextX", "0")) if text_x is None else text_x
     yoff = int(attrs.get("TextY", "0"))
     available = max(1, width - xoff - 4)
     _color_label(
@@ -139,7 +179,8 @@ def render_theme_buttons(layout: Gtk.Fixed, theme, on_activate=None) -> None:
         container.put(foreground, 0, 0)
         if attrs.get("Name") == ":SEPARATOR:":
             foreground.set_from_pixbuf(hover)
-        default_icon_name = attrs.get("ButtonIcon") or attrs.get("Icon", "")
+        # Icon describes the menu action, not button artwork.
+        default_icon_name = attrs.get("ButtonIcon", "")
         icon_size = int(attrs.get("ButtonIconSize", "0") or "0")
         default_icon = _icon(theme.directory, default_icon_name, icon_size)
         selected_icon = _icon(theme.directory, attrs.get("ButtonIconSel", ""), icon_size)
@@ -239,17 +280,31 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None) -> dict:
         text = markup.replace("[TEXT]", html.escape(replacement))
         label = Gtk.Label()
         x, y = element.integer("LabelX"), element.integer("LabelY")
-        width = max(1, theme.width - x - 4)
+        alignment = max(0, min(2, int(attrs.get("TextAlignment", "0"))))
         _color_label(
             label, theme, text, attrs.get("Name", ""), x, y,
-            min(width, max(70, theme.width // 2)),
+            min(220, max(70, theme.width // 2)),
         )
+        natural = label.get_preferred_size()[1].width
+        # LabelX is an anchor. Right-aligned labels extend to its left.
+        # Confine left-column system text to its XML-designated panel.
+        if alignment == 2:
+            allowed = max(1, min(natural, x - 4))
+            left = x - allowed
+        elif alignment == 1:
+            allowed = max(1, min(natural, 2 * min(x, theme.width - x) - 6))
+            left = x - allowed // 2
+        else:
+            available = max(1, theme.width - x - 4)
+            program_x = theme.program_list.integer("X")
+            if 0 < x < program_x and program_x - x > 30:
+                available = min(available, program_x - x - 6)
+            allowed = max(1, min(natural, available))
+            left = x
         label.set_ellipsize(Pango.EllipsizeMode.END)
-        label.set_size_request(width, -1)
-        label.set_xalign(
-            (0.0, 0.5, 1.0)[max(0, min(2, int(attrs.get("TextAlignment", "0"))))]
-        )
-        layout.put(label, x, y)
+        label.set_size_request(allowed, -1)
+        label.set_xalign((0.0, 0.5, 1.0)[alignment])
+        layout.put(label, max(0, left), y)
 
     tabs = {}
     tab_names = [e.attributes.get("Name", "") for e in theme.tabs]
@@ -269,7 +324,8 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None) -> dict:
         picture = Gtk.Image()
         container.put(picture, 0, 0)
         icon_size = int(attrs.get("TabIconSize", "0") or "0")
-        icon_name = attrs.get("TabIcon", "") or attrs.get("Icon", "")
+        # Only TabIcon is painted on tabs; Icon is used for menu content.
+        icon_name = attrs.get("TabIcon", "")
         icon_pix = _icon(theme.directory, icon_name, icon_size)
         if icon_pix is not None:
             container.put(
@@ -279,9 +335,11 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None) -> dict:
         name = attrs.get("Name", "")
         tx, ty = element.integer("TabX"), element.integer("TabY")
         inverted = attrs.get("InvertTextColorOnSel", "0") == "1"
+        readable_markup = _readable_tab_markup(attrs.get("Markup", ""))
+        text_x = _tab_text_x(attrs, icon_pix)
         label = _markup(
             container, attrs, width, theme=theme, x=tx, y=ty,
-            fallback=name,
+            fallback="", markup_override=readable_markup, text_x=text_x,
             selected=name == active, invert_unselected=inverted,
             overlay=attrs.get("ImageSel", "") if name == active
                     else attrs.get("Image", ""),
@@ -289,14 +347,15 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None) -> dict:
 
         def set_selected(value, picture=picture, normal=normal, selected=selected,
                          text=label, attr=attrs, bx=tx, by=ty, w=width,
-                         tab_name=name, invert=inverted):
+                         tab_name=name, invert=inverted,
+                         text_x=text_x, original_markup=readable_markup):
             picture.set_from_pixbuf((selected or normal) if value else normal)
             if text is not None:
                 _color_label(
-                    text, theme, attr.get("Markup", ""), tab_name,
-                    bx + int(attr.get("TextX", "0")),
+                    text, theme, original_markup, "",
+                    bx + text_x,
                     by + int(attr.get("TextY", "0")),
-                    max(1, w - int(attr.get("TextX", "0")) - 4),
+                    max(1, w - text_x - 4),
                     selected=value, invert_unselected=invert,
                     overlay=attr.get("ImageSel", "") if value
                             else attr.get("Image", ""),
