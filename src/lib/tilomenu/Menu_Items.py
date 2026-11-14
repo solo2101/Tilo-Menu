@@ -340,7 +340,7 @@ class XDGMenu(gobject.GObject):
                         for item in self.recent:
                                 if isgio:
                                         mime = item.get_mime_type()
-                                        app = gio.app_info_get_default_for_type(mime, 0)
+                                        app = gio.AppInfo.get_default_for_type(mime, 0)
                                         if app:
                                                 if app.get_name() not in self.L_Names:
                                                         self.addtomenu(app.get_name(),self.IconFactory.getgicon(app.get_icon()),1,"",app.get_executable())
@@ -603,8 +603,8 @@ class XDGMenu(gobject.GObject):
                                                                 Gfile = gio.File(f)
                                                                 tuble = [Gfile, Gfile.query_info("standard::*"), []]
                                                                 name = tuble[1].get_name()
-                                                                #ff =  gio.file_parse_name(f)
-                                                                apps = gio.app_info_get_all_for_type(tuble[1].get_content_type())
+                                                                #ff =  gio.File.parse_name(f)
+                                                                apps = gio.AppInfo.get_all_for_type(tuble[1].get_content_type())
                                                                 self.submenu = gtk.Menu()
                                                                 self.openwith.set_submenu(self.submenu)
                                                                 for app in apps:

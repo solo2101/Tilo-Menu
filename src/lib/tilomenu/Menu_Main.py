@@ -125,7 +125,7 @@ class Main_Menu(gobject.GObject):
                         self.GnomeMenu.connect_after('unmap',self.GnomeMenu_unmap)
                 self.leave_focus = False
                 self.GnomeMenu.showmenu()
-                self.callback = gobject.timeout_add(1500,self.timeout_callback)
+                self.callback = GLib.timeout_add(1500,self.timeout_callback)
 
         def GnomeMenu_unmap(self,event):
                 if not self.window.is_active():
@@ -413,7 +413,7 @@ class Main_Menu(gobject.GObject):
                 
                 self.leave_focus = False
                 if self.leave_focus == False:
-                        self.callback = gobject.timeout_add(500,self.timeout_callback)
+                        self.callback = GLib.timeout_add(500,self.timeout_callback)
 
         def menu_clicked(self,event):
                 self.PlaySound(2)
@@ -422,7 +422,7 @@ class Main_Menu(gobject.GObject):
         def menu_right_clicked(self,event):
 
                 self.leave_focus = False
-                self.callback = gobject.timeout_add(500,self.timeout_callback)
+                self.callback = GLib.timeout_add(500,self.timeout_callback)
 
 
         def Adjust_Window_Dimensions(self, win_x, win_y):
@@ -511,7 +511,7 @@ class Main_Menu(gobject.GObject):
                                                         self.hide_method()
                                                 #self.PGL.Restart()
                                                 if self.leave_focus == False:
-                                                        self.callback = gobject.timeout_add(3000,self.timeout_callback)
+                                                        self.callback = GLib.timeout_add(3000,self.timeout_callback)
                                         else:
                                                 self.MenuTabs[i].SetSelectedTab(False)
 
@@ -536,9 +536,9 @@ class Main_Menu(gobject.GObject):
                 if Globals.MenuButtonIconSel[i]:
                         self.MenuButtons[i].SetIcon(Globals.ImageDirectory + Globals.MenuButtonIconSel[i])
                 try:
-                        gobject.source_remove(self.timeout_button)
+                        GLib.source_remove(self.timeout_button)
                 except:pass
-                self.timeout_button = gobject.timeout_add(300,self.button_has_entered,widget,event,i)
+                self.timeout_button = GLib.timeout_add(300,self.button_has_entered,widget,event,i)
 
         def button_has_entered(self,widget,event,i):
                 # User Icon Code 
@@ -559,8 +559,8 @@ class Main_Menu(gobject.GObject):
                 self.MenuButtons[i].SetBackground()
                 if Globals.MenuButtonIcon[i]:
                         self.MenuButtons[i].SetIcon(Globals.ImageDirectory + Globals.MenuButtonIcon[i])
-                gobject.source_remove(self.timeout_button)
-                self.timeout_button = gobject.timeout_add(300,self.button_has_leave,widget,event,i)
+                GLib.source_remove(self.timeout_button)
+                self.timeout_button = GLib.timeout_add(300,self.button_has_leave,widget,event,i)
         
         def Button_click(self,widget,event,i):
                 # Launch standard menu command
@@ -574,7 +574,7 @@ class Main_Menu(gobject.GObject):
                         self.hide_method()
                 #self.PGL.Restart()
                 if self.leave_focus == False:
-                        self.callback = gobject.timeout_add(3000,self.timeout_callback)
+                        self.callback = GLib.timeout_add(3000,self.timeout_callback)
 
                 self.PlaySound(2)
                 
@@ -583,15 +583,15 @@ class Main_Menu(gobject.GObject):
 #=================================================================
         def Tab_enter(self,widget,event,i):
                 try:
-                        gobject.source_remove(self.timeout_tab)
+                        GLib.source_remove(self.timeout_tab)
                 except:pass
-                self.timeout_tab = gobject.timeout_add(300,self.tab_has_entered,widget,event,i)
+                self.timeout_tab = GLib.timeout_add(300,self.tab_has_entered,widget,event,i)
 
         def tab_has_entered(self,widget,event,i):
                 self.UpdateUserImage(i,Globals.MenuCairoIconTab[i])
 
         def Tab_leave(self,widget,event,i):
-                self.timeout_tab = gobject.timeout_add(300,self.tab_has_leave,widget,event,i)
+                self.timeout_tab = GLib.timeout_add(300,self.tab_has_leave,widget,event,i)
 
         def tab_has_leave(self,widget,event,i):
                 # User Icon code
@@ -614,7 +614,7 @@ class Main_Menu(gobject.GObject):
                         self.hide_method()
                 #self.PGL.Restart()
                 if self.leave_focus == False:
-                        self.callback = gobject.timeout_add(3000,self.timeout_callback)
+                        self.callback = GLib.timeout_add(3000,self.timeout_callback)
 
         def Tab_click(self,widget,event,i):
                 for ii in range(0,Globals.MenuTabCount):
@@ -632,7 +632,7 @@ class Main_Menu(gobject.GObject):
                         self.hide_method()
                 #self.PGL.Restart()
                 if self.leave_focus == False:
-                        self.callback = gobject.timeout_add(3000,self.timeout_callback)
+                        self.callback = GLib.timeout_add(3000,self.timeout_callback)
                 self.PlaySound(3)
 
         def timeout_callback(self):
@@ -735,8 +735,8 @@ class Main_Menu(gobject.GObject):
                         self.PGL.BanFocusSteal = True
                         self.prevsearchitem = self.searchitem
                         if self.callback_search:
-                                        gobject.source_remove(self.callback_search)
-                        self.callback_search = gobject.timeout_add(500,self.timeout_callback_search)
+                                        GLib.source_remove(self.callback_search)
+                        self.callback_search = GLib.timeout_add(500,self.timeout_callback_search)
 
         def timeout_callback_search(self):
                 self.PGL.CallSpecialMenu(5,self.searchitem)

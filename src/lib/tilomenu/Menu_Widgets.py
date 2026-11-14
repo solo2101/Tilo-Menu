@@ -622,14 +622,14 @@ class ImageFrame:
 
         def transition(self,step, speed, rate, termination_event):
                 if self.timer:
-                        gobject.source_remove(self.timer)
+                        GLib.source_remove(self.timer)
                         self.intrans = False
                         self.Pic = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, self.w,self.h)
                         self.Pic.fill(0x00000000)
                 
                 if step != self.step:
                         if self.timer:
-                                gobject.source_remove(self.timer)
+                                GLib.source_remove(self.timer)
                                 self.intrans = False
                 self.step = step
                 if self.intrans == False:
@@ -637,7 +637,7 @@ class ImageFrame:
                         # Add timer
                         self.Pic = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, self.w,self.h)
                         self.Pic.fill(0x00000000)
-                        self.timer = gobject.timeout_add(speed,self.updatefade, termination_event, rate)
+                        self.timer = GLib.timeout_add(speed,self.updatefade, termination_event, rate)
 
         def updatefade(self, termination_event, rate):
 
@@ -753,7 +753,7 @@ class ImageFrame_cairo_surface:#flickers
         def transition(self,step, speed, rate, termination_event):
                 self.step = step
                 if self.timer is None:
-                        self.timer = gobject.timeout_add(speed,self.updatefade, termination_event, rate)
+                        self.timer = GLib.timeout_add(speed,self.updatefade, termination_event, rate)
         
         def composite_changed(self,widget):
                 print(self.frame_window.is_composited())
@@ -925,18 +925,18 @@ class ImageFrame_new:
 
         def transition(self,step, speed, rate, termination_event):
                 if self.timer:
-                        gobject.source_remove(self.timer)
+                        GLib.source_remove(self.timer)
                         self.intrans = False
                 
                 if step != self.step:
                         if self.timer:
-                                gobject.source_remove(self.timer)
+                                GLib.source_remove(self.timer)
                                 self.intrans = False
                 self.step = step
                 if self.intrans == False:
                         self.intrans = True
                         # Add timer
-                        self.timer = gobject.timeout_add(speed,self.updatefade, termination_event, rate)
+                        self.timer = GLib.timeout_add(speed,self.updatefade, termination_event, rate)
 
         def composite_changed(self,widget):
                 print(self.frame_window.is_composited())
@@ -1240,7 +1240,7 @@ class CustomSearchBar(gtk.DrawingArea):
                 self.connect("key-press-event", self.do_keypress)
                 self.connect("enter-notify-event", self.enter)
                 self.connect("leave-notify-event", self.leave)
-                gobject.timeout_add(700, self.blinkcursor)
+                GLib.timeout_add(700, self.blinkcursor)
 
         def do_keypress(self,widget,event):
                 key = event.hardware_keycode
@@ -1739,7 +1739,7 @@ class CellRendererImage(gtk.CellRenderer):
                         model = tree.get_model()
                         model.foreach(self.func, (image, tree))
                         if self.redraw:
-                                gobject.timeout_add(image.get_data('iter').get_delay_time(), \
+                                GLib.timeout_add(image.get_data('iter').get_delay_time(), \
                                         self.animation_timeout, tree, image)
                         else:
                                 image.set_data('iter', None)
@@ -1765,7 +1765,7 @@ class CellRendererImage(gtk.CellRenderer):
                         if not self.image.get_data('iter'):
                                 animation = self.image.get_animation()
                                 self.image.set_data('iter', animation.get_iter())
-                                gobject.timeout_add(self.image.get_data('iter').get_delay_time(), \
+                                GLib.timeout_add(self.image.get_data('iter').get_delay_time(), \
                                         self.animation_timeout, widget, self.image)
 
                         pix = self.image.get_data('iter').get_pixbuf()
@@ -2461,7 +2461,7 @@ class ProgramList(gobject.GObject):
                 if key == 98 or key == 111:     #Up (menu loop-around)
                         if self.index == 0:
                                 # Set timeout to call last button (as key press has not gone through yet)
-                                gobject.timeout_add(100,self.SetFirstButton, self)
+                                GLib.timeout_add(100,self.SetFirstButton, self)
                                 
                         inc = self.ScrollFrame.get_vscrollbar().get_adjustment().get_value() - self.ScrollFrame.get_vscrollbar().get_adjustment().get_step_increment()
                         if inc < self.ScrollFrame.get_vscrollbar().get_adjustment().get_lower(): inc = self.ScrollFrame.get_vscrollbar().get_adjustment().get_lower()
@@ -2470,7 +2470,7 @@ class ProgramList(gobject.GObject):
                 elif key == 104 or key == 116:  #Down
                         if self.index == len(self.XDG.L_Names)-1:
                                 # Set timeout to call last button (as key press has not gone through yet)
-                                gobject.timeout_add(100,self.SetLastButton, self)
+                                GLib.timeout_add(100,self.SetLastButton, self)
                         inc = self.ScrollFrame.get_vscrollbar().get_adjustment().get_value() + self.ScrollFrame.get_vscrollbar().get_adjustment().get_step_increment() 
                         if inc + self.ScrollFrame.get_vscrollbar().get_adjustment().get_page_size() > self.ScrollFrame.get_vscrollbar().get_adjustment().get_upper(): inc = self.ScrollFrame.get_vscrollbar().get_adjustment().get_upper() - self.ScrollFrame.get_vscrollbar().get_adjustment().get_page_size()
 
@@ -2859,7 +2859,7 @@ class CairoProgramList:
                 Frame.show_all()
                 self.menu.UpdateButtons(self.XDG.L_Names)
                 self.menu.InitiateAnimation(1)
-                gobject.timeout_add(10,self.UpdateAnimation)
+                GLib.timeout_add(10,self.UpdateAnimation)
                 
         def UpdateAnimation(self):
                 self.Frame.queue_draw_area(Globals.PG_buttonframe[0],Globals.PG_buttonframe[1],Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
@@ -2882,11 +2882,11 @@ class CairoProgramList:
                 self.menu.NameBuffer = self.XDG.L_Names
                 if a==0:                #forward menu movement
                         self.menu.InitiateAnimation(2)
-                        gobject.timeout_add(10,self.UpdateAnimation)
+                        GLib.timeout_add(10,self.UpdateAnimation)
 
                 elif a==2:      #back menu movement
                         self.menu.InitiateAnimation(3)
-                        gobject.timeout_add(10,self.UpdateAnimation)
+                        GLib.timeout_add(10,self.UpdateAnimation)
 
 #=================================================================  
 #EXTRA FUNCTION PASSTHROUGH TO XDG
@@ -2901,7 +2901,7 @@ class CairoProgramList:
 
                 self.menu.UpdateButtons(self.XDG.L_Names)
                 self.menu.InitiateAnimation(1)
-                gobject.timeout_add(10,self.UpdateAnimation)
+                GLib.timeout_add(10,self.UpdateAnimation)
 
         def SetInputFocus(self):
                 # Give keyboard input focus to last item on list or to sub menu program group start
