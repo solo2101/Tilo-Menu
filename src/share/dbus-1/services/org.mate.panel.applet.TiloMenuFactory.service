@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.mate.panel.applet.TiloMenuFactory
+Exec=/usr/bin/python3 /usr/lib/tilomenu/TiloMenu.py

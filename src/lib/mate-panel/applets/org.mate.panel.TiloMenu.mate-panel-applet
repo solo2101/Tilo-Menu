@@ -1,0 +1,11 @@
+[Applet Factory]
+Id=TiloMenuFactory
+InProcess=false
+Location=/usr/lib/tilomenu/TiloMenu.py
+Name=TiloMenu Factory
+Description=Original GnoMenu port for MATE
+
+[TiloMenuApplet]
+Name=TiloMenu
+Description=Classic customizable start menu
+Icon=start-here
