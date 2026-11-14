@@ -635,7 +635,7 @@ class TiloMenuSettings:
                 if id == 'Menu':
 
 
-                        themes = os.listdir('%s/share/gnomenu/Themes/Menu/' % INSTALL_PREFIX)
+                        themes = os.listdir('%s/share/tilomenu/Themes/Menu/' % INSTALL_PREFIX)
                         themes.sort(key=str.upper)
                         x = 0
                         self.combo_menu.get_model().clear()
@@ -646,7 +646,7 @@ class TiloMenuSettings:
                                 x = x + 1
                 elif id == 'Button':
 
-                        themes = os.listdir('%s/share/gnomenu/Themes/Button/' % INSTALL_PREFIX)
+                        themes = os.listdir('%s/share/tilomenu/Themes/Button/' % INSTALL_PREFIX)
                         themes.sort(key=str.upper)
                         x = 0
                         self.combo_button.get_model().clear()
@@ -656,7 +656,7 @@ class TiloMenuSettings:
                                         self.combo_button.set_active(x)
                                 x = x + 1
                 elif id == 'Icon':
-                        themes = os.listdir('%s/share/gnomenu/Themes/Icon/' % INSTALL_PREFIX)
+                        themes = os.listdir('%s/share/tilomenu/Themes/Icon/' % INSTALL_PREFIX)
                         themes.sort(key=str.upper)
                         x = 0
                         self.combo_icon.get_model().clear()
@@ -667,7 +667,7 @@ class TiloMenuSettings:
                                 x = x + 1
 
                 elif id == 'Sound':
-                        themes = os.listdir('%s/share/gnomenu/Themes/Sound/' % INSTALL_PREFIX)
+                        themes = os.listdir('%s/share/tilomenu/Themes/Sound/' % INSTALL_PREFIX)
                         self.combo_sound.get_model().clear()
                         self.combo_sound.append_text('None')
                         self.combo_sound.set_active(0)
@@ -847,7 +847,7 @@ class TiloMenuSettings:
                         utils.show_warning('3%s' % _('Error - theme not installed\nMaybe the Theme was packaged incorrectly\nTry to install the Theme manually'))
                         os.system('rm -rf /tmp/gnomenu')
                         return
-                install_dir = '%s/share/gnomenu/Themes/%s/' % (INSTALL_PREFIX, type)
+                install_dir = '%s/share/tilomenu/Themes/%s/' % (INSTALL_PREFIX, type)
 
                 if self.is_installed('%s/%s' % (type, name)):
                         if utils.show_question(_('Theme exists. Continue?')) == False:

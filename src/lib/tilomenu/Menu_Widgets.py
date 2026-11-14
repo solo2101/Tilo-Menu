@@ -500,11 +500,11 @@ class MenuLabel:
                 if Globals.MenuLabelNameAlignment[i] == 0:
                         s = 0
                 elif Globals.MenuLabelNameAlignment[i] == 1:
-                        s = int(self.Label.size_request()[0] /2)
+                        s = int(self.Label.size_request().width /2)
                 else:
-                        s = self.Label.size_request()[0]
+                        s = self.Label.size_request().width
                 if Globals.flip == False:
-                        base.put(self.Label,Globals.MenuLabelX[i]-s,Globals.MenuLabelY[i]-self.Label.size_request()[1])
+                        base.put(self.Label,Globals.MenuLabelX[i]-s,Globals.MenuLabelY[i]-self.Label.size_request().height)
                 else:
                         base.put(self.Label,Globals.MenuLabelX[i]-s,Globals.MenuLabelY[i])
                 #gc.collect()
@@ -1617,7 +1617,7 @@ class TreeProgramList(gobject.GObject):
                 if Globals.Settings['GtkColors'] == 0:
                         self.Label.modify_fg(gtk.StateType.NORMAL, Globals.NegativeThemeColorCode)
                 self.Label.show()
-                self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1]- self.Label.size_request()[1]-1)
+                self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1]- self.Label.size_request().height-1)
         
 
 
@@ -2035,7 +2035,7 @@ class IconProgramList(gobject.GObject):
                 #print time.clock() 
                 #self.SetInputFocus()
                 #gc.collect()
-                #print Globals.PG_buttonframedimensions[0]-self.ScrollFrame.size_request()[0]
+                #print Globals.PG_buttonframedimensions[0]-self.ScrollFrame.size_request().width
                 self.tree1.set_model(self.model)
                 self.tree1.thaw_child_notify()
                 self.ScrollFrame.get_vscrollbar().set_value(0)
@@ -2094,7 +2094,7 @@ class IconProgramList(gobject.GObject):
                 if Globals.Settings['GtkColors'] == 0:
                         self.Label.modify_fg(gtk.StateType.NORMAL, Globals.NegativeThemeColorCode)
                 self.Label.show()
-                self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1]- self.Label.size_request()[1]-1)
+                self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1]- self.Label.size_request().height-1)
         
 
 
@@ -2395,7 +2395,7 @@ class ProgramList(gobject.GObject):
                 if Globals.Settings['GtkColors'] == 0:
                         self.Label.modify_fg(gtk.StateType.NORMAL, Globals.NegativeThemeColorCode)
                 self.Label.show()
-                self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1]- self.Label.size_request()[1]-1)
+                self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1]- self.Label.size_request().height-1)
                 self.Buttonlist.append(self.Label)
 
         def AddSeparator2(self):
