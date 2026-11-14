@@ -15,15 +15,14 @@
 
 import utils
 import Globals
-import string
 import os
-import urllib
-import gobject
+import urllib.parse as urllib
+from gi.repository import GObject as gobject
 
 
 class Launcher(gobject.GObject):
         __gsignals__ = {
-        'special-command': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        'special-command': (gobject.SignalFlags.RUN_LAST, None, ()),
         }
 
         def __init__(self):
@@ -43,7 +42,7 @@ class Launcher(gobject.GObject):
                         self.outcommand = ""
                         if "%" in self.expl[len(self.expl)-1]:
                                 self.outcommand = " %s" %  self.expl.pop()
-                        self.expls = string.join(self.expl,' ') 
+                        self.expls = ' '.join(self.expl) 
                         os.system('%s &' % self.expls)
 
                 elif tag == 3 or tag == 4:

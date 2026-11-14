@@ -14,10 +14,7 @@
 
 
 
-import gtk
-import pygtk
-pygtk.require('2.0')
-import gobject
+from gi.repository import Gtk as gtk, Gdk, GdkPixbuf, GObject as gobject
 import os
 import dbus
 BUS = dbus.SessionBus()
@@ -33,8 +30,8 @@ except:pass
                 
 def show_message (message, title='GnoMenu'):
 
-        md = gtk.MessageDialog(None, type=gtk.MESSAGE_INFO, 
-                        buttons=gtk.BUTTONS_OK)
+        md = gtk.MessageDialog(None, message_type=gtk.MessageType.INFO, 
+                        buttons=gtk.ButtonsType.OK)
         md.set_title(title)
         md.set_markup(str(message))
         md.run()
@@ -42,7 +39,7 @@ def show_message (message, title='GnoMenu'):
 
 def show_warning (message, title='GnoMenu'):
 
-        md = gtk.MessageDialog(None, type=gtk.MESSAGE_WARNING, 
+        md = gtk.MessageDialog(None, message_type=gtk.MessageType.WARNING, 
                         buttons=gtk.BUTTONS_OK)
         md.set_title(title)
         print(message)
@@ -52,13 +49,13 @@ def show_warning (message, title='GnoMenu'):
 
 
 def show_question (message, title='GnoMenu'):
-        md = gtk.MessageDialog(None, type=gtk.MESSAGE_QUESTION, 
-                        buttons=gtk.BUTTONS_YES_NO)
+        md = gtk.MessageDialog(None, message_type=gtk.MessageType.QUESTION, 
+                        buttons=gtk.ButtonsType.YES_NO)
         md.set_title(title)
         md.set_markup(message)
         response = md.run()
         md.destroy()
-        if response == gtk.RESPONSE_YES:
+        if response == gtk.ResponseType.YES:
                 return True
         return False
 
@@ -73,10 +70,10 @@ def emit_notification(title,message):
 
 def sys_get_window_manager():
         """Returns window manager name"""
-        root = gtk.gdk.get_default_root_window()
+        root = Gdk.get_default_root_window()
         try:
                 ident = root.property_get("_NET_SUPPORTING_WM_CHECK", "WINDOW")[2]
-                _WM_NAME_WIN = gtk.gdk.window_foreign_new(long(ident[0]))
+                _WM_NAME_WIN = Gdk.X11Window.foreign_new_for_display(Gdk.Display.get_default(), int(ident[0]))
         except TypeError as exc:
                 _WM_NAME_WIN = ""
         
@@ -93,7 +90,7 @@ def sys_get_window_manager():
 
 def get_image_size(pix):
         """Gets a picture width and height"""
-        pixbuf = gtk.gdk.pixbuf_new_from_file(pix)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(pix)
         iw = pixbuf.get_width()
         ih = pixbuf.get_height()
         puxbuf = None

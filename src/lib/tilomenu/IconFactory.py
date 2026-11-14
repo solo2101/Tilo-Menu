@@ -12,22 +12,16 @@
 # Icon factory
 # Part of the GnoMenu
 
-import gtk
+from gi.repository import Gtk as gtk, GObject as gobject, Gio as gio
 import os
 import xml.dom.minidom
-import gobject
 import utils
 import Globals
 import gc
-import urllib
+import urllib.request as urllib
 import xdg.IconTheme
 import xdg.BaseDirectory as bd
-try:
-        import gio
-        isgio = True
-except:
-        print('gio not found')
-        isgio = False
+isgio = True
 
 Icontype = ["png", "xpm", "svg"]
 
@@ -47,7 +41,7 @@ def _(s):
 def GetSystemIcon(icon):
         for n in Icontype:
                 icon = str(icon).replace('.' + n,'')
-        ico = Globals.GtkIconTheme.lookup_icon(icon,48,gtk.ICON_LOOKUP_FORCE_SVG)
+        ico = Globals.GtkIconTheme.lookup_icon(icon,48,gtk.IconLookupFlags.FORCE_SVG)
         if ico:
                 ico = ico.get_filename()
         else:
@@ -55,7 +49,7 @@ def GetSystemIcon(icon):
         return ico
 
 class IconFactory(gobject.GObject):
-        __gsignals__ = {"icons-changed" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        __gsignals__ = {"icons-changed" : (gobject.SignalFlags.RUN_LAST, None, ()),
         }
         def __init__(self):
                 gobject.GObject.__init__(self)
@@ -65,7 +59,7 @@ class IconFactory(gobject.GObject):
                         self.thumbnailer.connect("worklist-finished", lambda m: self.emit('icons-changed'))
 
                 ##### looksup icon theme in gtk, we could also use : gconf.client_get_default().get_string('/desktop/gnome/interface/icon_theme')
-                self.gtkicontheme = gtk.icon_theme_get_default()
+                self.gtkicontheme = gtk.IconTheme.get_default()
                 self.icontheme = Globals.DefaultIconTheme
                 self.old_icontheme = self.icontheme
                 ###### Check if icon theme is stored in cache#################
@@ -76,8 +70,8 @@ class IconFactory(gobject.GObject):
                 """Icons have changed"""
 
                 print('icons changed')
-                self.icontheme = gtk.settings_get_default().get_property("gtk-icon-theme-name")
-                self.gtkicontheme = gtk.icon_theme_get_default()
+                self.icontheme = gtk.Settings.get_default().get_property("gtk-icon-theme-name")
+                self.gtkicontheme = gtk.IconTheme.get_default()
 
         def getgicon(self,gico):
                 """Returns gio icon"""
@@ -95,8 +89,8 @@ class IconFactory(gobject.GObject):
                         if not os.path.exists(path): 
                                 return item.get_icon(Globals.PG_iconsize)
                         if isgio:
-                                self.gfile = gio.File(path)
-                                self.info = self.gfile.query_info(gio.FILE_ATTRIBUTE_THUMBNAIL_PATH, gio.FILE_QUERY_INFO_NONE)
+                                self.gfile = gio.File.new_for_path(path)
+                                self.info = self.gfile.query_info(gio.FILE_ATTRIBUTE_THUMBNAIL_PATH, gio.FileQueryInfoFlags.NONE)
                                 thumbfile = self.info.get_attribute_as_string(gio.FILE_ATTRIBUTE_THUMBNAIL_PATH)
                                 if thumbfile:
                                         if os.path.isfile(thumbfile): 
