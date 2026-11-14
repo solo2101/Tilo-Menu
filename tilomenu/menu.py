@@ -63,21 +63,22 @@ class MenuWindow(Gtk.Window):
             category for app in self.all_apps
             for category in application_categories(app)
         })
-        self.category_select = Gtk.ComboBoxText()
+        self.categories = ["All Applications", "Favorites", *category_names]
+        self.show_categories = False
+        self.category_select = Gtk.Button(label="All Applications  ▾")
         self.category_select.get_style_context().add_class("tilo-category")
-        for name in ["All Applications", "Favorites", *category_names]:
-            self.category_select.append_text(name)
-        self.category_select.set_active(0)
-        self.category_select.set_size_request(program.integer("Width"), min(30, max(20, program.integer("Height") // 5)))
+        self.category_select.set_relief(Gtk.ReliefStyle.NONE)
+        self.category_select.set_size_request(program.integer("Width"), 30)
         layout.put(self.category_select, program.integer("X"), program.integer("Y"))
-        self.category_select.connect("changed", self._change_category)
+        self.category_select.connect("clicked", self._toggle_categories)
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scroll.get_style_context().add_class("tilo-app-scroll")
         scroll.set_size_request(program.integer("Width"), max(20, program.integer("Height") - 32))
         layout.put(scroll, program.integer("X"), program.integer("Y") + 32)
         css = Gtk.CssProvider()
-        css.load_from_data(b"""\n            window.tilo-window, window.tilo-window > fixed.tilo-layout { background: transparent; background-color: transparent; }\n            .tilo-window combobox.tilo-category button, .tilo-window combobox.tilo-category box { background-image: none; box-shadow: none; }\n            .tilo-window entry { box-shadow: none; }
+        css.load_from_data(b"""\n            window.tilo-window, window.tilo-window > fixed.tilo-layout { background: transparent; background-color: transparent; }\n            .tilo-window button.tilo-category { background: transparent; background-image: none; border: 0; border-radius: 0; box-shadow: none; padding: 2px 6px; color: #f4f4f4; }
+            .tilo-window button.tilo-category:hover { background: rgba(100, 130, 170, 0.25); }\n            .tilo-window entry { box-shadow: none; }
             .tilo-window listbox, .tilo-window listbox row, .tilo-window scrolledwindow, .tilo-window viewport { background: transparent; border: none; box-shadow: none; }
             .tilo-window listbox row { padding: 0; min-height: 0; }
             .tilo-window button.tilo-app { background: transparent; background-image: none; border: none;
@@ -248,8 +249,14 @@ class MenuWindow(Gtk.Window):
         menu.popup_at_widget(widget, 2, 3, event)
         return True
 
-    def _change_category(self, widget):
-        self.category = widget.get_active_text() or "All Applications"
+    def _toggle_categories(self, _button):
+        self.show_categories = not self.show_categories
+        self._populate()
+
+    def _choose_category(self, _button, category):
+        self.category = category
+        self.show_categories = False
+        self.category_select.set_label(category + "  ▾")
         self._populate()
 
     def _change_search(self, widget):
@@ -259,6 +266,15 @@ class MenuWindow(Gtk.Window):
     def _populate(self, query=None):
         for child in self.apps.get_children():
             self.apps.remove(child)
+        if self.show_categories:
+            for category in self.categories:
+                button = Gtk.Button(label=category)
+                button.get_style_context().add_class("tilo-app")
+                button.set_relief(Gtk.ReliefStyle.NONE)
+                button.connect("clicked", self._choose_category, category)
+                self.apps.add(button)
+            self.apps.show_all()
+            return
         for app in self.all_apps:
             name = app.get_display_name() or app.get_name()
             if self.category == "Favorites" and app.get_id() not in self.favorites:
