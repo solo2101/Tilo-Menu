@@ -1428,7 +1428,7 @@ class TreeProgramList(gobject.GObject):
                         
 
                 
-                self.tree1.set_cursor_on_cell((0,0), focus_column=None,focus_cell=None, start_editing=False)
+                self.tree1.set_cursor_on_cell(gtk.TreePath.new_from_indices([0]), focus_column=None,focus_cell=None, start_editing=False)
                 if Globals.Settings['Show_Tips']:
                         self.model = gtk.ListStore(GdkPixbuf.Pixbuf, gobject.TYPE_STRING, gobject.TYPE_STRING)
                 else:
