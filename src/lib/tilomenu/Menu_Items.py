@@ -83,12 +83,12 @@ class XDGMenu(gobject.GObject):
                         self.menuparser.ParseMenus()
                         self.BaseMenu = self.menuparser.CacheApplications
                 if isgio:
-                        self.monitor=gio.volume_monitor_get()
+                        self.monitor=gio.VolumeMonitor.get()
                         self.monitor.connect("drive-changed",self.on_drive_changed)
-                        self.allgio =  gio.app_info_get_all()
+                        self.allgio =  gio.AppInfo.get_all()
                 else:self.allgio = None
                 self.Launcher = Launcher.Launcher()
-                self.recent_manager = gtk.recent_manager_get_default()
+                self.recent_manager = gtk.RecentManager.get_default()
                 self.recent_manager.connect("changed", self.onRecentChanged)
                 self.recents_changed = True
                 self.recents = None
@@ -497,9 +497,9 @@ class XDGMenu(gobject.GObject):
                 self.etype = self.L_Types[index]
                 if event == 0:event_button = 1
                 else:
-                        if event.type == gtk.gdk.KEY_PRESS:event_button = 1
-                        elif event.type == gtk.gdk.BUTTON_PRESS:event_button = event.button
-                        elif event.type == gtk.gdk.BUTTON_RELEASE:event_button = event.button
+                        if event.type == Gdk.EventType.KEY_PRESS:event_button = 1
+                        elif event.type == Gdk.EventType.BUTTON_PRESS:event_button = event.button
+                        elif event.type == Gdk.EventType.BUTTON_RELEASE:event_button = event.button
                 if event_button == 1:   
                         if self.etype == 0:                                     #Subfolder
                                 self.PrevMenu.append(self.Menu)                 

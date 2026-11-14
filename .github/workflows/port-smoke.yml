@@ -26,6 +26,7 @@ jobs:
         env:
           GSETTINGS_SCHEMA_DIR: ${{ github.workspace }}/src/share/glib-2.0/schemas
           GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
         run: /usr/bin/python3 tests/test_source_port.py
 
   original-gtk-import:
@@ -36,7 +37,7 @@ jobs:
       - name: Install original Python/GI/GDK dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-gi python3-gi-cairo python3-cairo python3-xdg python3-dbus gir1.2-gtk-3.0 libglib2.0-bin xvfb dbus-x11 curl make
+          sudo apt-get install -y python3-gi python3-gi-cairo python3-cairo python3-xdg python3-dbus mate-menus gir1.2-gtk-3.0 libglib2.0-bin xvfb dbus-x11 curl make
       - name: Extract untouched GnoMenu themes and assets
         run: |
           curl --fail --location --retry 2 \
@@ -47,10 +48,12 @@ jobs:
       - name: Import original menu components using GTK3
         env:
           GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_gui_import.py
       - name: Construct original popup, then show/hide under GTK3
         env:
           GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_window_lifecycle.py

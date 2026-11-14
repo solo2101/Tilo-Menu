@@ -41,6 +41,8 @@ class MenuParser(gobject.GObject):
                         self.MenuInstance = xdg.Menu.Menu
                         self.EntryInstance = xdg.Menu.MenuEntry
                 self.updating = False
+                self.CacheApplications = None
+                self.CacheSettings = None
 
 
         def ParseMenus(self):
@@ -98,6 +100,8 @@ class MenuParser(gobject.GObject):
                                         except:
                                                 print('unable to parse the settings menu')
 
+                        if self.CacheApplications is None:
+                                raise RuntimeError("No XDG applications.menu found. Install mate-menus and set XDG_MENU_PREFIX=mate-")
                         self.AppsFile = self.CacheApplications.Filename
                         self._monitors = []
                         self.SetFile = self.CacheSettings.Filename if getattr(self, 'CacheSettings', None) else None
