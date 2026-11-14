@@ -8,6 +8,22 @@ The original GnoBlue button theme is loaded through its unchanged XML.
 `make prepare` extracts the original artwork and GPL COPYING license
 byte-for-byte from the original source archive.
 
+## First test: original panel button only
+
+Run this before installing anything into the panel:
+
+```bash
+clear
+cd ~/Downloads/Tilo-Menu
+git pull
+make prepare
+/usr/bin/python3 src/lib/tilomenu/TiloMenu.py run-in-window
+```
+
+This opens the original testing sandpit with the GnoBlue button. Move the
+mouse over the button to check its normal and hover PNGs. The popup menu and
+settings are deliberately not yet ported.
+
 ## Prepare on Fedora MATE
 
 ```bash

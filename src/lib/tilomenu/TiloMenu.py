@@ -249,7 +249,34 @@ def TiloMenu_factory(applet, iid, data=None):
     return True
 
 
+def run_in_window():
+    """Port of original GnoMenu.py run-in-window testing sandpit."""
+    class StandaloneApplet(Gtk.EventBox):
+        def get_orient(self):
+            return 1
+
+        def get_size(self):
+            return 32
+
+        def setup_menu(self, xml, action_group):
+            # Bonobo's GTK2 testing applet had no registered panel context.
+            pass
+
+    main_window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+    main_window.set_decorated(True)
+    main_window.set_title('TiloMenu Testing Sandpit')
+    main_window.connect('destroy', Gtk.main_quit)
+    applet = StandaloneApplet()
+    TiloMenu(applet, '')
+    main_window.add(applet)
+    main_window.show_all()
+    Gtk.main()
+    return 0
+
+
 def main():
+    if len(sys.argv) == 2 and sys.argv[1] == 'run-in-window':
+        return run_in_window()
     return MatePanelApplet.Applet.factory_main(
         FACTORY_IID, True, MatePanelApplet.Applet.__gtype__,
         TiloMenu_factory, None
