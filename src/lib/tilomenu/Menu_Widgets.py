@@ -55,7 +55,7 @@ class MenuButton:
                 else:
                         self.supports_alpha = True
                 self.Button.connect("composited-changed", self.composite_changed)
-                self.Frame.connect("expose_event", self.expose)
+                self.Frame.connect("draw", self.expose)
                 self.Button.add(self.Frame)
                 if Globals.MenuButtonIcon[i]:
                         self.Icon = gtk.Image()
@@ -73,7 +73,7 @@ class MenuButton:
                 # Set the background which is always present
                 self.BackgroundImage = gtk.Image()
                 if Globals.MenuButtonImageBack[i] != '':
-                        self.BackgroundImage.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file(Globals.ImageDirectory + Globals.MenuButtonImageBack[i]))
+                        self.BackgroundImage.set_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file(Globals.ImageDirectory + Globals.MenuButtonImageBack[i]))
                 else:
                         self.BackgroundImage.set_from_pixbuf(None)
                 self.Image.set_size_request(self.w,self.h)
@@ -98,7 +98,7 @@ class MenuButton:
                 else:
                         self.Label.set_alignment(1, 0)
                 self.Label.set_size_request(int(self.w-Globals.MenuButtonNameOffsetX[i]*2)-2,-1)
-                self.Label.set_ellipsize(pango.ELLIPSIZE_END)
+                self.Label.set_ellipsize(pango.EllipsizeMode.END)
                 self.Frame.put(self.Label,Globals.MenuButtonNameOffsetX[i],Globals.MenuButtonNameOffsetY[i])
                 if self.Label.get_text() == '' or Globals.Settings['Show_Tips']:
                         self.Frame.set_tooltip_text(_(Globals.MenuButtonNames[i]))
@@ -114,7 +114,7 @@ class MenuButton:
                         self.supports_alpha = True
 
         def expose (self, widget, event):
-                self.ctx = widget.window.cairo_create()
+                self.ctx = event
                 # set a clip region for the expose event
                 if self.supports_alpha == False:
                         self.ctx.set_source_rgb(1, 1, 1)
@@ -132,9 +132,9 @@ class MenuButton:
                         if Globals.MenuButtonIconSize[self.i] != 0:
                                 self.ww = Globals.MenuButtonIconSize[self.i]
                                 self.hh = self.ww
-                                self.Pic = gtk.gdk.pixbuf_new_from_file_at_size(filename,self.ww,self.hh)
+                                self.Pic = GdkPixbuf.Pixbuf.new_from_file_at_size(filename,self.ww,self.hh)
                         else:
-                                self.Pic = gtk.gdk.pixbuf_new_from_file(filename)
+                                self.Pic = GdkPixbuf.Pixbuf.new_from_file(filename)
                                 self.ww = self.Pic.get_width()
                                 self.hh = self.Pic.get_height()
                         if Globals.Settings['System_Icons']:
@@ -142,14 +142,14 @@ class MenuButton:
                                         ico = IconFactory.GetSystemIcon(Globals.MenuButtonIcon[self.i])
                                         if not ico:
                                                 ico = filename
-                                        self.Pic = gtk.gdk.pixbuf_new_from_file_at_size(ico,self.ww,self.hh)
+                                        self.Pic = GdkPixbuf.Pixbuf.new_from_file_at_size(ico,self.ww,self.hh)
                         self.Icon.set_from_pixbuf(self.Pic)
                 except:print('error on button seticon'  + filename)
                                 
 
         def Setimage(self,imagefile):
                 # The image is background when it's not displaying the overlay
-                self.Pic = gtk.gdk.pixbuf_new_from_file(imagefile)
+                self.Pic = GdkPixbuf.Pixbuf.new_from_file(imagefile)
                 self.Image.set_from_pixbuf(self.Pic)
 
         def SetBackground(self):
@@ -167,14 +167,14 @@ class MenuImage:
                         self.supports_alpha = True
                 self.Frame.connect("composited-changed", self.composite_changed)
                 self.Image = gtk.Image()
-                self.Pic = gtk.gdk.pixbuf_new_from_file(Globals.ImageDirectory + Globals.MenuImage[i])
+                self.Pic = GdkPixbuf.Pixbuf.new_from_file(Globals.ImageDirectory + Globals.MenuImage[i])
                 self.w = self.Pic.get_width()
                 self.h = self.Pic.get_height()
                 if Globals.Settings['System_Icons']:
                         ico = IconFactory.GetSystemIcon(Globals.MenuImage[i])
                         if not ico:
                                 ico = Globals.ImageDirectory + Globals.MenuImage[i]
-                        self.Pic = gtk.gdk.pixbuf_new_from_file_at_size(ico,self.w,self.h)
+                        self.Pic = GdkPixbuf.Pixbuf.new_from_file_at_size(ico,self.w,self.h)
 
                 if self.backimagearea is None:
                         if Globals.flip == False:
@@ -182,7 +182,7 @@ class MenuImage:
                                 self.backimagearea = self.backimagearea.flip(Globals.flip)
                         else:
                                 self.backimagearea = backimage.subpixbuf(Globals.MenuImageX[i],Globals.MenuImageY[i] ,self.w,self.h)
-                self.Pic.composite(self.backimagearea, 0, 0, self.w, self.h, 0, 0, 1, 1, gtk.gdk.INTERP_BILINEAR, 255)
+                self.Pic.composite(self.backimagearea, 0, 0, self.w, self.h, 0, 0, 1, 1, GdkPixbuf.InterpType.BILINEAR, 255)
                 # Set the background which is always present
                 self.Image.set_from_pixbuf(self.backimagearea)
                 self.Image.set_size_request(self.w,self.h)
@@ -202,7 +202,7 @@ class MenuImage:
 
         def expose (self, widget, event):
                 
-                self.ctx = widget.window.cairo_create()
+                self.ctx = event
                 # set a clip region for the expose event
                 if self.supports_alpha == False:
                         self.ctx.set_source_rgb(1, 1, 1)
@@ -225,8 +225,8 @@ class MenuTab:
                 self.Tab.connect("composited-changed", self.composite_changed)
                 self.Tab.connect("enter_notify_event", self.enter,i)
                 self.Tab.connect("leave_notify_event", self.leave,i)
-                self.Frame.connect("expose_event", self.expose)
-                sel = gtk.gdk.pixbuf_get_file_info(Globals.ImageDirectory +Globals.MenuTabImageSel[self.i])
+                self.Frame.connect("draw", self.expose)
+                sel = GdkPixbuf.Pixbuf.get_file_info(Globals.ImageDirectory +Globals.MenuTabImageSel[self.i])
                 self.w = sel[1]
                 self.h = sel[2]
                 sel = None
@@ -277,7 +277,7 @@ class MenuTab:
                 else:
                         self.Label.set_alignment(1, 0)
                 self.Label.set_size_request(int(self.w-Globals.MenuTabNameOffsetX[i]*2)-2,-1)
-                self.Label.set_ellipsize(pango.ELLIPSIZE_END)
+                self.Label.set_ellipsize(pango.EllipsizeMode.END)
                 self.Frame.put(self.Label,Globals.MenuTabNameOffsetX[i],Globals.MenuTabNameOffsetY[i])
                 base.put(self.Tab,Globals.MenuTabX[i],Globals.MenuTabY[i])
                 self.selected_tab = False
@@ -296,28 +296,28 @@ class MenuTab:
                                 ico = Globals.ImageDirectory + Globals.MenuTabIcon[i]
 
                         if Globals.Settings['Tab_Efect'] == 1: #grow
-                                self.Pic = gtk.gdk.pixbuf_new_from_file_at_size(ico,self.ww+4,self.hh+4)
+                                self.Pic = GdkPixbuf.Pixbuf.new_from_file_at_size(ico,self.ww+4,self.hh+4)
 
 
                         elif Globals.Settings['Tab_Efect'] == 2:#bw
-                                self.Pic = gtk.gdk.pixbuf_new_from_file_at_size(ico,self.ww,self.hh)
+                                self.Pic = GdkPixbuf.Pixbuf.new_from_file_at_size(ico,self.ww,self.hh)
                                 self.Pic.saturate_and_pixelate(self.Pic, 0.0, False)
 
                         elif Globals.Settings['Tab_Efect'] == 3:#Blur
 
-                                colorpb = gtk.gdk.pixbuf_new_from_file_at_size(ico,self.ww,self.hh)
+                                colorpb = GdkPixbuf.Pixbuf.new_from_file_at_size(ico,self.ww,self.hh)
                                 alpha = 255#int(int(70) * 2.55 + 0.2)
                                 tk = 2
-                                bg = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, self.ww,self.hh)
+                                bg = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, self.ww,self.hh)
                                 bg.fill(0x00000000)
                                 glow = bg.copy()
                                 # Prepare the glow that should be put bind the icon
                                 tk1 = tk - int(tk/2)
                                 for x, y in ((-tk1,-tk1), (-tk1,tk1), (tk1,-tk1), (tk1,tk1)):
-                                        colorpb.composite(glow, 0, 0, self.ww, self.hh, x, y, 1, 1, gtk.gdk.INTERP_BILINEAR, 170)
+                                        colorpb.composite(glow, 0, 0, self.ww, self.hh, x, y, 1, 1, GdkPixbuf.InterpType.BILINEAR, 170)
                                 for x, y in ((-tk,-tk), (-tk,tk), (tk,-tk), (tk,tk)):
-                                        colorpb.composite(glow, 0, 0, self.ww, self.hh, x, y, 1, 1, gtk.gdk.INTERP_BILINEAR, 70)
-                                glow.composite(bg, 0, 0, self.ww, self.hh, 0, 0, 1, 1, gtk.gdk.INTERP_BILINEAR, alpha)
+                                        colorpb.composite(glow, 0, 0, self.ww, self.hh, x, y, 1, 1, GdkPixbuf.InterpType.BILINEAR, 70)
+                                glow.composite(bg, 0, 0, self.ww, self.hh, 0, 0, 1, 1, GdkPixbuf.InterpType.BILINEAR, alpha)
                                 self.Pic = bg
                                 
 
@@ -326,7 +326,7 @@ class MenuTab:
                                         r = 255
                                         g = 255
                                         b = 0
-                                        self.Pic = gtk.gdk.pixbuf_new_from_file_at_size(ico,self.ww,self.hh)
+                                        self.Pic = GdkPixbuf.Pixbuf.new_from_file_at_size(ico,self.ww,self.hh)
                                         colorpb= self.Pic.copy()
                                         for row in colorpb.get_pixels_array():
                                                 for pix in row:
@@ -336,22 +336,22 @@ class MenuTab:
         
                                         alpha = 255#int(int(70) * 2.55 + 0.2)
                                         tk = 2
-                                        bg = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, self.ww,self.hh)
+                                        bg = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, self.ww,self.hh)
                                         bg.fill(0x00000000)
                                         glow = bg.copy()
                                         # Prepare the glow that should be put bind the icon
                                         tk1 = tk - int(tk/2)
                                         for x, y in ((-tk1,-tk1), (-tk1,tk1), (tk1,-tk1), (tk1,tk1)):
-                                                colorpb.composite(glow, 0, 0, self.ww, self.hh, x, y, 1, 1, gtk.gdk.INTERP_BILINEAR, 170)
+                                                colorpb.composite(glow, 0, 0, self.ww, self.hh, x, y, 1, 1, GdkPixbuf.InterpType.BILINEAR, 170)
                                         for x, y in ((-tk,-tk), (-tk,tk), (tk,-tk), (tk,tk)):
-                                                colorpb.composite(glow, 0, 0, self.ww, self.hh, x, y, 1, 1, gtk.gdk.INTERP_BILINEAR, 70)
-                                        glow.composite(bg, 0, 0, self.ww, self.hh, 0, 0, 1, 1, gtk.gdk.INTERP_BILINEAR, alpha)
-                                        self.Pic.composite(bg, 0, 0, self.ww, self.hh, 0, 0, 1, 1, gtk.gdk.INTERP_BILINEAR, 255)
+                                                colorpb.composite(glow, 0, 0, self.ww, self.hh, x, y, 1, 1, GdkPixbuf.InterpType.BILINEAR, 70)
+                                        glow.composite(bg, 0, 0, self.ww, self.hh, 0, 0, 1, 1, GdkPixbuf.InterpType.BILINEAR, alpha)
+                                        self.Pic.composite(bg, 0, 0, self.ww, self.hh, 0, 0, 1, 1, GdkPixbuf.InterpType.BILINEAR, 255)
                                         self.Pic = bg
                                 else:print('Error - This efect requires numpy installed'                                        )
 
                         elif Globals.Settings['Tab_Efect'] == 5:#saturate
-                                self.Pic = gtk.gdk.pixbuf_new_from_file_at_size(ico,self.ww,self.hh)
+                                self.Pic = GdkPixbuf.Pixbuf.new_from_file_at_size(ico,self.ww,self.hh)
                                 self.Pic.saturate_and_pixelate(self.Pic, 6.0, False)
                                         
 
@@ -371,7 +371,7 @@ class MenuTab:
                         else:
                                 ico = Globals.ImageDirectory + Globals.MenuTabIcon[i]
 
-                        self.Pic = gtk.gdk.pixbuf_new_from_file_at_size(ico,self.ww,self.hh)
+                        self.Pic = GdkPixbuf.Pixbuf.new_from_file_at_size(ico,self.ww,self.hh)
                         self.Frame.move(self.Icon,Globals.MenuCairoIcontabX[i],Globals.MenuCairoIcontabY[i])
                         self.Icon.set_from_pixbuf(self.Pic)
 
@@ -384,7 +384,7 @@ class MenuTab:
                         self.supports_alpha = True
 
         def expose (self, widget, event):
-                self.ctx = widget.window.cairo_create()
+                self.ctx = event
                 # set a clip region for the expose event
                 if self.supports_alpha == False:
                         self.ctx.set_source_rgb(1, 1, 1)
@@ -405,13 +405,13 @@ class MenuTab:
                                 ico = Globals.ImageDirectory + Globals.MenuTabIcon[self.i]
                 else:
                         ico = Globals.ImageDirectory + Globals.MenuTabIcon[self.i]
-                self.Pic = gtk.gdk.pixbuf_get_file_info(Globals.ImageDirectory + Globals.MenuTabIcon[self.i])
+                self.Pic = GdkPixbuf.Pixbuf.get_file_info(Globals.ImageDirectory + Globals.MenuTabIcon[self.i])
                 self.ww = Globals.MenuCairoIcontabSize[self.i]
                 self.hh = self.ww
                 if self.ww == 0:self.ww = self.Pic[1]
                 if self.hh == 0:self.hh = self.Pic[2]
 
-                self.Pic = gtk.gdk.pixbuf_new_from_file_at_size(ico,self.ww,self.hh)
+                self.Pic = GdkPixbuf.Pixbuf.new_from_file_at_size(ico,self.ww,self.hh)
                 self.Icon.set_from_pixbuf(self.Pic)
                 #except:print('Menu Tab error in - ' + filename)
                                 
@@ -419,7 +419,7 @@ class MenuTab:
         def Setimage(self,imagefile):
                 # The image is background when it's not displaying the overlay
                 try:
-                        self.Pic = gtk.gdk.pixbuf_new_from_file(imagefile)
+                        self.Pic = GdkPixbuf.Pixbuf.new_from_file(imagefile)
                         if Globals.Settings['GtkColors'] == 1 and Globals.Has_Numpy:
                                 
                                 bgcolor = Globals.GtkColorCode
@@ -433,7 +433,7 @@ class MenuTab:
                                                 pix[1] = g
                                                 pix[2] = b
 
-                                self.Pic.composite(colorpb, 0, 0, self.w, self.h, 0, 0, 1, 1, gtk.gdk.INTERP_BILINEAR, 70)
+                                self.Pic.composite(colorpb, 0, 0, self.w, self.h, 0, 0, 1, 1, GdkPixbuf.InterpType.BILINEAR, 70)
                                 self.Pic = colorpb
 
                         if Globals.flip == False:
@@ -482,13 +482,13 @@ class Separator:
                 base.put(self.Image,Globals.MenuButtonX[i],Globals.MenuButtonY[i])
 
         def Setimage(self,imagefile):
-                self.Pic = gtk.gdk.pixbuf_new_from_file(imagefile)
+                self.Pic = GdkPixbuf.Pixbuf.new_from_file(imagefile)
                 self.Image.set_from_pixbuf(self.Pic)
 
 class MenuLabel:
         def __init__(self,i,base):
                 self.Label = gtk.Label()
-                self.Label.connect_after('expose-event', self.expose,i)
+                self.Label.connect_after('draw', self.expose,i)
                 self.txt = Globals.MenuLabelMarkup[i]
                 self.txt = self.txt.replace(Globals.MenuLabelNames[i],_(Globals.MenuLabelNames[i]))
                 if Globals.MenuLabelCommands[i] != "":
@@ -547,7 +547,7 @@ class ImageFrame:
                 self.frame_window.set_tooltip_text(_('About Me'))
                 self.frame_window.connect("button-press-event", self.but_click)
                 self.frame_window.connect("composited-changed", self.composite_changed)
-                self.Frame.connect('expose-event', self.expose)
+                self.Frame.connect('draw', self.expose)
                 self.frame_window.add(self.Frame)
                 self.frame_window.set_size_request(w,h)
                 # Grab the background pixels from under the location of the menu button
@@ -568,13 +568,13 @@ class ImageFrame:
                 self.SetBackground()
                 self.Frame.put(self.Image,0,0)
                 self.base.put(self.frame_window,self.ix,self.iy)
-                self.Pic = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, self.w,self.h)
+                self.Pic = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, self.w,self.h)
                 self.Pic.fill(0x00000000)
                 #gc.collect()
 
 
         def expose (self, widget, event):
-                self.ctx = widget.window.cairo_create()
+                self.ctx = event
                 # set a clip region for the expose event
                 if self.supports_alpha == False:
                         self.ctx.set_source_rgb(1, 1, 1)
@@ -596,15 +596,15 @@ class ImageFrame:
         def Setimage(self):
                 # The image is background when it's not displaying the overlay
                 self.Image.set_from_pixbuf(None)
-                self.Pic = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, self.w,self.h)
+                self.Pic = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, self.w,self.h)
                 self.Pic.fill(0x00000000)
                 bg = self.Pic.copy()
                 for i in range(0,len(self.iconopacity)):
                         if self.icons[i] != None and self.iconopacity[i] > 0:
                                 if i ==1:
-                                        self.icons[i].composite(self.Pic, self.ix, self.iy, self.icons[i].get_width(), self.icons[i].get_height(), self.ix, self.iy, 1, 1, gtk.gdk.INTERP_BILINEAR, int(self.iconopacity[i]* 255))
+                                        self.icons[i].composite(self.Pic, self.ix, self.iy, self.icons[i].get_width(), self.icons[i].get_height(), self.ix, self.iy, 1, 1, GdkPixbuf.InterpType.BILINEAR, int(self.iconopacity[i]* 255))
                                 else:
-                                        self.icons[i].composite(self.Pic, 0, 0, self.icons[i].get_width(), self.icons[i].get_height(), 0, 0, 1, 1, gtk.gdk.INTERP_BILINEAR, int(self.iconopacity[i]* 255))
+                                        self.icons[i].composite(self.Pic, 0, 0, self.icons[i].get_width(), self.icons[i].get_height(), 0, 0, 1, 1, GdkPixbuf.InterpType.BILINEAR, int(self.iconopacity[i]* 255))
                 
                 self.Image.set_from_pixbuf(self.Pic)
 
@@ -624,7 +624,7 @@ class ImageFrame:
                 if self.timer:
                         gobject.source_remove(self.timer)
                         self.intrans = False
-                        self.Pic = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, self.w,self.h)
+                        self.Pic = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, self.w,self.h)
                         self.Pic.fill(0x00000000)
                 
                 if step != self.step:
@@ -635,7 +635,7 @@ class ImageFrame:
                 if self.intrans == False:
                         self.intrans = True
                         # Add timer
-                        self.Pic = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, self.w,self.h)
+                        self.Pic = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, self.w,self.h)
                         self.Pic.fill(0x00000000)
                         self.timer = gobject.timeout_add(speed,self.updatefade, termination_event, rate)
 
@@ -658,7 +658,7 @@ class ImageFrame:
                 
                 self.Setimage()
                 if self.step==[0,0,0,0]:
-                        self.Pic = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, self.w,self.h)
+                        self.Pic = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, self.w,self.h)
                         self.Pic.fill(0x00000000)
                         self.intrans = False
                         if termination_event:
@@ -673,16 +673,16 @@ class ImageFrame:
 
                 if index==1:
 
-                        self.temp = gtk.gdk.pixbuf_new_from_file(imagefile).scale_simple(self.iw,self.ih,gtk.gdk.INTERP_BILINEAR)
+                        self.temp = GdkPixbuf.Pixbuf.new_from_file(imagefile).scale_simple(self.iw,self.ih,GdkPixbuf.InterpType.BILINEAR)
 
                 elif index==0:  
 
-                        self.temp = gtk.gdk.pixbuf_new_from_file(imagefile)
+                        self.temp = GdkPixbuf.Pixbuf.new_from_file(imagefile)
                         self.w = self.temp.get_width()
                         self.h = self.temp.get_height()
                 else:
                         try:
-                                self.temp = gtk.gdk.pixbuf_new_from_file_at_size(imagefile, self.w, self.h)
+                                self.temp = GdkPixbuf.Pixbuf.new_from_file_at_size(imagefile, self.w, self.h)
                         except:
                                 print('Warning: icon %s not found in gnomenu icons, trying system icons instead!' % imagefile)
                                 image = IconFactory.GetSystemIcon(imagefile.split('/').pop())
@@ -690,7 +690,7 @@ class ImageFrame:
                                         print('Warning: icon %s was not found in system icons either!' % imagefile)
                                         image = IconFactory.GetSystemIcon('gtk-missing-image')
                                 
-                                self.temp = gtk.gdk.pixbuf_new_from_file_at_size(image, self.w, self.h)
+                                self.temp = GdkPixbuf.Pixbuf.new_from_file_at_size(image, self.w, self.h)
                 if index==0:
                         #FRAME
                         self.icons[0] = self.temp
@@ -723,7 +723,7 @@ class ImageFrame_cairo_surface:#flickers
                 #Connect redraw-events
                 self.frame_window.connect("button-press-event", self.but_click)
                 self.frame_window.connect("composited-changed", self.composite_changed)
-                self.frame_window.connect_after('expose-event', self.expose)
+                self.frame_window.connect_after('draw', self.expose)
                 self.frame_window.connect('screen-changed', self.screen_changed)
                 self.frame_window.connect('destroy', self.destroy)
                 self.icons = [None,None,None,None]
@@ -792,7 +792,7 @@ class ImageFrame_cairo_surface:#flickers
                                 self.cr.save()
                                 self.cr.set_source_rgba(1, 1, 1, 0)
                                 self.cr.set_operator (cairo.OPERATOR_SOURCE)
-                                self.cr.set_source_pixbuf(self.backimagearea, 0, 0)
+                                Gdk.cairo_set_source_pixbuf(self.cr, self.backimagearea, 0, 0)
                                 self.cr.paint()
                                 self.cr.restore()
                                 self.cr.set_operator(cairo.OPERATOR_OVER) #DEST_ATOP
@@ -810,7 +810,7 @@ class ImageFrame_cairo_surface:#flickers
                                 self.cr.set_operator (cairo.OPERATOR_SOURCE)
                                 self.cr.paint()
                                 self.cr.set_operator(cairo.OPERATOR_OVER) #DEST_ATOP
-                                self.cr.set_source_pixbuf(self.backimagearea, 0, 0)
+                                Gdk.cairo_set_source_pixbuf(self.cr, self.backimagearea, 0, 0)
                                 self.cr.paint()
                                 
                                 for i in range(0,len(self.iconopacity)):
@@ -846,21 +846,21 @@ class ImageFrame_cairo_surface:#flickers
 
                 if index==0:
 
-                        self.temppixbuf = gtk.gdk.pixbuf_new_from_file(imagefile)
+                        self.temppixbuf = GdkPixbuf.Pixbuf.new_from_file(imagefile)
                         self.w = self.temppixbuf.get_width()
                         self.h = self.temppixbuf.get_height()
 
                 elif index==1:
 
-                        self.temppixbuf = gtk.gdk.pixbuf_new_from_file(imagefile).scale_simple(self.iw,self.iw,gtk.gdk.INTERP_BILINEAR)
+                        self.temppixbuf = GdkPixbuf.Pixbuf.new_from_file(imagefile).scale_simple(self.iw,self.iw,GdkPixbuf.InterpType.BILINEAR)
 
                 else:
-                        self.temppixbuf = gtk.gdk.pixbuf_new_from_file_at_size(imagefile, self.w, self.h)
+                        self.temppixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(imagefile, self.w, self.h)
 
                 self.temp = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.w, self.h)
                 self.cr2 = cairo.Context(self.temp)
-                self.ct = gtk.gdk.CairoContext(self.cr2)
-                self.ct.set_source_pixbuf(self.temppixbuf,0,0)
+                self.ct = (self.cr2)
+                Gdk.cairo_set_source_pixbuf(self.ct, self.temppixbuf,0,0)
                 self.ct.paint()
 
                 if index==0:
@@ -895,7 +895,7 @@ class ImageFrame_new:
                 #Connect redraw-events
                 self.frame_window.connect("button-press-event", self.but_click)
                 self.frame_window.connect("composited-changed", self.composite_changed)
-                self.frame_window.connect_after('expose-event', self.expose)
+                self.frame_window.connect_after('draw', self.expose)
                 self.frame_window.connect('screen-changed', self.screen_changed)
                 self.frame_window.connect('destroy', self.destroy)
                 self.icon1=cairo.ImageSurface
@@ -980,7 +980,7 @@ class ImageFrame_new:
                                 self.cr.set_operator (cairo.OPERATOR_SOURCE)
                                 pixbuf = self.backimagearea
 
-                                self.cr.set_source_pixbuf(pixbuf, 0, 0)
+                                Gdk.cairo_set_source_pixbuf(self.cr, pixbuf, 0, 0)
                                 self.cr.paint()
                                 #self.cr.set_operator(cairo.OPERATOR_OVER) #DEST_ATOP
                                 
@@ -998,7 +998,7 @@ class ImageFrame_new:
                                 self.cr.paint()
                                 self.cr.set_operator(cairo.OPERATOR_OVER) #DEST_ATOP
                                 pixbuf = self.backimagearea
-                                self.cr.set_source_pixbuf(pixbuf, 0, 0)
+                                Gdk.cairo_set_source_pixbuf(self.cr, pixbuf, 0, 0)
                                 self.cr.paint()
                                 
                                 if isinstance(self.icon1,cairo.Surface):
@@ -1039,39 +1039,39 @@ class ImageFrame_new:
                 if index==0:
                         #FRAME
 
-                        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(imagefile,self.w,self.h)
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(imagefile,self.w,self.h)
                         # Resize the image and create the cairo surface to be used
                         self.icon1 = self.frame_window.window.cairo_create()
-                        self.temp = self.icon1.set_source_pixbuf(pixbuf, 0, 0)
+                        self.temp = Gdk.cairo_set_source_pixbuf(self.icon1, pixbuf, 0, 0)
                 if index==1:
                         #.FACE
-                        pixbuf = gtk.gdk.pixbuf_new_from_file(imagefile).scale_simple(self.iw,self.iw,gtk.gdk.INTERP_BILINEAR)
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_file(imagefile).scale_simple(self.iw,self.iw,GdkPixbuf.InterpType.BILINEAR)
                         # Resize the image and create the cairo surface to be used
                         self.icon2 = self.frame_window.window.cairo_create()
-                        self.temp = self.icon2.set_source_pixbuf(pixbuf, self.ix, self.iy)
+                        self.temp = Gdk.cairo_set_source_pixbuf(self.icon2, pixbuf, self.ix, self.iy)
                         if Globals.MenuHasFade != 1:
                                 self.iconopacity = [1,1,-1,-1]
                 if index==2:
                         #1ST ICON
-                        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(imagefile,self.w,self.h)
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(imagefile,self.w,self.h)
                         # Resize the image and create the cairo surface to be used
                         self.icon3 = self.frame_window.window.cairo_create()
-                        self.temp = self.icon3.set_source_pixbuf(pixbuf, 0, 0)
+                        self.temp = Gdk.cairo_set_source_pixbuf(self.icon3, pixbuf, 0, 0)
                 if index==3:
                         #2ND ICON
-                        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(imagefile,self.w,self.h)
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(imagefile,self.w,self.h)
                         # Resize the image and create the cairo surface to be used
                         self.icon4 = self.frame_window.window.cairo_create()
-                        self.temp = self.icon4.set_source_pixbuf(pixbuf, 0, 0)
+                        self.temp = Gdk.cairo_set_source_pixbuf(self.icon4, pixbuf, 0, 0)
                 #self.Redraw()
 
 class GtkSearchBar(gtk.Entry):
         def __init__(self):
                 gtk.Entry.__init__(self)
                 if Globals.Settings['GtkColors'] == 0:
-                        self.modify_base(gtk.STATE_NORMAL, Globals.ThemeColorCode)
+                        self.modify_base(gtk.StateType.NORMAL, Globals.ThemeColorCode)
 
-                self.connect("expose_event", self.expose)
+                self.connect("draw", self.expose)
                 try:
                         if self.text != _('Search'):
                                 self.font_desc = pango.FontDescription('sans italic')
@@ -1080,7 +1080,7 @@ class GtkSearchBar(gtk.Entry):
                         self.modify_font(self.font_desc)
                 except:pass
                 if Globals.Settings['GtkColors'] == 0:
-                        self.modify_text(gtk.STATE_NORMAL, Globals.NegativeThemeColorCode)
+                        self.modify_text(gtk.StateType.NORMAL, Globals.NegativeThemeColorCode)
            
         def expose (self, widget, event):
                 try:
@@ -1107,11 +1107,11 @@ class CairoSearchBar(gtk.Entry):
                 self.Bordercolor_r = (self.Bordercolor.red)/65535.0
                 self.Bordercolor_g = (self.Bordercolor.green)/65535.0
                 self.Bordercolor_b = (self.Bordercolor.blue)/65535.0
-                #for state in [gtk.STATE_ACTIVE, gtk.STATE_NORMAL,gtk.STATE_PRELIGHT, gtk.STATE_SELECTED]: 
-                self.modify_bg(gtk.STATE_NORMAL, self.Backcolor)
-                self.modify_base(gtk.STATE_NORMAL, self.Backcolor)
-                self.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse(TextColor))
-                self.connect("expose_event", self.expose)
+                #for state in [gtk.StateType.ACTIVE, gtk.StateType.NORMAL,gtk.StateType.PRELIGHT, gtk.StateType.SELECTED]: 
+                self.modify_bg(gtk.StateType.NORMAL, self.Backcolor)
+                self.modify_base(gtk.StateType.NORMAL, self.Backcolor)
+                self.modify_text(gtk.StateType.NORMAL, gtk.gdk.color_parse(TextColor))
+                self.connect("draw", self.expose)
                 try:
                         if self.text != _('Search'):
                                 self.font_desc = pango.FontDescription('sans italic')
@@ -1121,7 +1121,7 @@ class CairoSearchBar(gtk.Entry):
                 except:pass
                            
         def expose (self, widget, event):
-                self.cr = widget.window.cairo_create()
+                self.cr = event
                 self.cr.save()
                 self.allocation = widget.allocation
                 if self.is_composited() is True:        
@@ -1162,13 +1162,13 @@ class CustomSearchBar_new:
                 else:
                         self.supports_alpha = True
                 self.Button.connect("composited-changed", self.composite_changed)
-                self.Frame.connect("expose_event", self.expose)
+                self.Frame.connect("draw", self.expose)
                 self.Button.add(self.Frame)
 
-class CustomSearchBar(gtk.Widget):
+class CustomSearchBar(gtk.DrawingArea):
         def __init__(self, BackImageFile=None, InitialText="",TextColor="#000000",SearchX=0,SearchY=0,SearchW=0,SearchH=0, X=4, Y=15,colorpb=None):
-                gtk.Widget.__init__(self)
-                self.connect("expose_event", self.expose)#enter-notify-event
+                gtk.DrawingArea.__init__(self)
+                self.connect("draw", self.expose)#enter-notify-event
 
                 self.colorpb = colorpb
                 # Text Settings
@@ -1195,7 +1195,7 @@ class CustomSearchBar(gtk.Widget):
                 self.hasrectangle = False
                 self.cornerradius = 12
                 self.backimage = BackImageFile
-                self.backimagepb = gtk.gdk.pixbuf_new_from_file(self.backimage)
+                self.backimagepb = GdkPixbuf.Pixbuf.new_from_file(self.backimage)
                 self.BackImageBuffer = None
                 if Globals.flip == False:
 
@@ -1212,10 +1212,10 @@ class CustomSearchBar(gtk.Widget):
 
 
         def enter(self, widget, event):
-                self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.XTERM))
+                self.window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.XTERM))
 
         def leave(self, widget, event):
-                self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.ARROW))
+                self.window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
                 
         def do_realize(self):
                 # Create events
@@ -1229,8 +1229,8 @@ class CustomSearchBar(gtk.Widget):
                         height=self.allocation.height,
                         window_type=gdk.WINDOW_CHILD,
                         wclass=gdk.INPUT_OUTPUT,
-                        event_mask=self.get_events() | gtk.gdk.EXPOSURE_MASK | gtk.gdk.KEY_PRESS_MASK  | gtk.gdk.KEY_RELEASE_MASK | gtk.gdk.FOCUS_CHANGE_MASK | gtk.gdk.BUTTON1_MOTION_MASK | gtk.gdk.BUTTON_PRESS_MASK | gtk.gdk.POINTER_MOTION_MASK | gtk.gdk.POINTER_MOTION_HINT_MASK 
-| gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK)
+                        event_mask=self.get_events() | Gdk.EventMask.EXPOSURE_MASK | Gdk.EventType.KEY_PRESS_MASK  | Gdk.EventMask.KEY_RELEASE_MASK | Gdk.EventMask.FOCUS_CHANGE_MASK | Gdk.EventMask.BUTTON1_MOTION_MASK | Gdk.EventType.BUTTON_PRESS_MASK | Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.POINTER_MOTION_HINT_MASK 
+| Gdk.EventMask.ENTER_NOTIFY_MASK | Gdk.EventMask.LEAVE_NOTIFY_MASK)
 
                 
                                 
@@ -1246,7 +1246,7 @@ class CustomSearchBar(gtk.Widget):
 
                 # The default color of the background should be what
                 # the style (theme engine) tells us.
-                self.style.set_background(self.window, gtk.STATE_NORMAL)
+                self.style.set_background(self.window, gtk.StateType.NORMAL)
 
                 if Globals.Settings['GtkColors'] == 1:
                         bgcolor = Globals.GtkColorCode
@@ -1263,7 +1263,7 @@ class CustomSearchBar(gtk.Widget):
                 # self.style is a gtk.Style object, self.style.fg_gc is
                 # an array or graphic contexts used for drawing the forground
                 # colours       
-                self.gc = self.style.fg_gc[gtk.STATE_NORMAL]
+                self.gc = self.style.fg_gc[gtk.StateType.NORMAL]
                 self.connect("key_press_event", self.do_keypress)
                 self.connect("enter_notify_event", self.enter)
                 self.connect("leave_notify_event", self.leave)
@@ -1292,12 +1292,12 @@ class CustomSearchBar(gtk.Widget):
 
         def expose(self, widget, event):
                 # Redraw the window
-                self.context = widget.window.cairo_create()
+                self.context = event
                 # Set the region to be redrawn
-                self.context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
+                self.context.rectangle(0, 0, widget.get_allocated_width(), widget.get_allocated_height())
                 self.context.clip()
                 self.context.set_operator (cairo.OPERATOR_SOURCE)
-                self.context.set_source_pixbuf(self.backimagearea, 0, 0)
+                Gdk.cairo_set_source_pixbuf(self.context, self.backimagearea, 0, 0)
                 self.context.paint()
                 self.context.set_operator (cairo.OPERATOR_OVER)
                 self.draw(self.context)
@@ -1349,7 +1349,7 @@ class CustomSearchBar(gtk.Widget):
         def BuildBackground(self,w,h):
                 self.buttonsurface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
                 context = cairo.Context(self.buttonsurface)
-                self.ct = gtk.gdk.CairoContext(context)
+                self.ct = (context)
                 if Globals.Settings['GtkColors'] == 1:
                         cairo_drawing.draw_image_gtk(self.ct,0,0,self.backimage,w,h,Globals.GtkColorCode,None,False)
                 else:
@@ -1422,22 +1422,22 @@ class TreeProgramList(gobject.GObject):
                 self.column1 = gtk.TreeViewColumn("", self.render,pixbuf=0)
                 self.column2 = gtk.TreeViewColumn("", self.cell1,text=1)
                 self.Separator = None
-                self.gtkicontheme = gtk.icon_theme_get_default()
+                self.gtkicontheme = gtk.IconTheme.get_default()
                 self.gtkicontheme.connect('changed', self.update_icons) 
                 targets = [('text/uri-list', 0, 0)]
-                #self.tree1.connect("expose_event", self.expose)
-                #self.EBox.connect("expose_event", self.expose) 
-                #self.VBoxOut.connect("expose_event", self.expose)
-                #self.ScrollFrame.connect("expose_event", self.expose)  
+                #self.tree1.connect("draw", self.expose)
+                #self.EBox.connect("draw", self.expose) 
+                #self.VBoxOut.connect("draw", self.expose)
+                #self.ScrollFrame.connect("draw", self.expose)  
                 #if Globals.Settings['GtkColors'] == 0:
                         
-                        #self.VBoxOut.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
-                        #self.ScrollFrame.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
+                        #self.VBoxOut.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
+                        #self.ScrollFrame.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
 
                 #self.ScrollFrame.connect_after("map-event", self.map_event)
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])        
-                self.ScrollFrame.set_shadow_type(gtk.SHADOW_NONE)
-                self.ScrollFrame.set_policy(gtk.POLICY_NEVER,gtk.POLICY_AUTOMATIC)
+                self.ScrollFrame.set_shadow_type(gtk.ShadowType.NONE)
+                self.ScrollFrame.set_policy(gtk.PolicyType.NEVER,gtk.PolicyType.AUTOMATIC)
 
                 self.VBoxOut.pack_start(self.ScrollFrame, True,True, 0)
                 self.ScrollFrame.add(self.tree1)
@@ -1458,24 +1458,24 @@ class TreeProgramList(gobject.GObject):
                 
                 self.tree1.set_cursor_on_cell((0,0), focus_column=None,focus_cell=None, start_editing=False)
                 if Globals.Settings['Show_Tips']:
-                        self.model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING, gobject.TYPE_STRING)
+                        self.model = gtk.ListStore(GdkPixbuf.Pixbuf, gobject.TYPE_STRING, gobject.TYPE_STRING)
                 else:
-                        self.model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING)
+                        self.model = gtk.ListStore(GdkPixbuf.Pixbuf, gobject.TYPE_STRING)
                 self.tree1.connect("key-press-event", self.PGListButtonKey)
                 self.tree1.connect("drag-data-get", self.drag_data_get)
-                self.tree1.drag_source_set(gtk.gdk.BUTTON1_MASK,targets,gtk.gdk.ACTION_COPY)
+                self.tree1.drag_source_set(Gdk.ModifierType.BUTTON1_MASK,targets,Gdk.DragAction.COPY)
                 self.tree1.drag_source_add_text_targets()
                 self.tree1.connect("button-press-event", self.drag_begin)
                 self.tree1.connect("button-release-event", self.treeclick)
-                self.cell1.set_property('ellipsize', pango.ELLIPSIZE_END)
+                self.cell1.set_property('ellipsize', pango.EllipsizeMode.END)
                 self.tree1.set_model(self.model)
                 if Globals.Settings['GtkColors'] == 0:
-                        self.EBox.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
+                        self.EBox.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
                         #self.cell1.set_property('background', Globals.ThemeColorCode)
                         self.cell1.set_property('cell-background', Globals.ThemeColorCode)
                         self.render.set_property('cell-background', Globals.ThemeColorCode)
-                        #self.tree1.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
-                        self.tree1.modify_base(gtk.STATE_NORMAL, Globals.ThemeColorCode)
+                        #self.tree1.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
+                        self.tree1.modify_base(gtk.StateType.NORMAL, Globals.ThemeColorCode)
                         self.cell1.set_property('foreground',Globals.NegativeThemeColorCode)
 
                 self.tree1.set_hover_selection(True)
@@ -1521,7 +1521,7 @@ class TreeProgramList(gobject.GObject):
 
         def expose(self, widget, event):
                 #widget.window.set_composited(1)
-                cr = widget.window.cairo_create()
+                cr = event
                 if widget.is_composited() is True:      
                         cr.set_source_rgba(1, 1, 1, 0)
                 else:
@@ -1556,9 +1556,9 @@ class TreeProgramList(gobject.GObject):
                 except:pass
                 # doing the following is faster then self.model.clear()
                 if Globals.Settings['Show_Tips']:
-                        self.model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING, gobject.TYPE_STRING)
+                        self.model = gtk.ListStore(GdkPixbuf.Pixbuf, gobject.TYPE_STRING, gobject.TYPE_STRING)
                 else:
-                        self.model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING)
+                        self.model = gtk.ListStore(GdkPixbuf.Pixbuf, gobject.TYPE_STRING)
                 
                 self.tree1.freeze_child_notify()
 
@@ -1589,7 +1589,7 @@ class TreeProgramList(gobject.GObject):
         def AddBackButton(self,name,icon,i):
                 if name == _('Back'):
                         if not icon:
-                                icon = gtk.gdk.pixbuf_new_from_file_at_size(Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
+                                icon = GdkPixbuf.Pixbuf.new_from_file_at_size(Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
 
                 
                         self.Button = gtk.Button(name)
@@ -1600,7 +1600,7 @@ class TreeProgramList(gobject.GObject):
                         self.Button.set_tooltip_text(_('Return to last menu'))
                         self.PG_buttonwidth = Globals.PG_buttonframedimensions[0] - 12
                         self.Button.set_size_request(self.PG_buttonwidth, Globals.PG_iconsize+8)
-                        self.Button.set_relief(gtk.RELIEF_NONE)
+                        self.Button.set_relief(gtk.ReliefStyle.NONE)
                         self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],self.ScrollFrame.get_size_request()[1] -  self.Button.get_size_request()[1])
                         self.AddSeparator2()
                         self.VBoxOut.pack_start(self.Button, True,True, 0)
@@ -1609,8 +1609,8 @@ class TreeProgramList(gobject.GObject):
                         self.Button.show()
                         image,label =  self.Button.get_children()[0].get_children()[0].get_children()
                         if Globals.Settings['GtkColors'] == 0:
-                                label.modify_fg(gtk.STATE_NORMAL, Globals.NegativeThemeColorCode)
-                        label.set_property("ellipsize", pango.ELLIPSIZE_END) 
+                                label.modify_fg(gtk.StateType.NORMAL, Globals.NegativeThemeColorCode)
+                        label.set_property("ellipsize", pango.EllipsizeMode.END) 
                         label.set_max_width_chars(int(Globals.PG_buttonframedimensions[0]/11))
                         self.Buttonlist.append(self.Button)
                         icon = None
@@ -1620,7 +1620,7 @@ class TreeProgramList(gobject.GObject):
         def AddButton(self,name,icon,i):
 
                 if not icon:
-                        icon = gtk.gdk.pixbuf_new_from_file_at_size(Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
+                        icon = GdkPixbuf.Pixbuf.new_from_file_at_size(Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
 
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
                 if Globals.Settings['Show_Tips']:
@@ -1637,13 +1637,13 @@ class TreeProgramList(gobject.GObject):
         def AddLabel(self,name):
                 self.Label = gtk.Label(name)
                 self.Label.set_line_wrap(True)
-                self.Label.set_property("ellipsize", pango.ELLIPSIZE_END) 
+                self.Label.set_property("ellipsize", pango.EllipsizeMode.END) 
                 self.PG_buttonwidth = Globals.PG_buttonframedimensions[0] - 12
                 if self.Separator:
                         self.Separator.set_size_request(self.PG_buttonwidth, 1)
                 self.VBoxOut.pack_start(self.Label, False,False, 0)
                 if Globals.Settings['GtkColors'] == 0:
-                        self.Label.modify_fg(gtk.STATE_NORMAL, Globals.NegativeThemeColorCode)
+                        self.Label.modify_fg(gtk.StateType.NORMAL, Globals.NegativeThemeColorCode)
                 self.Label.show()
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1]- self.Label.size_request()[1]-1)
         
@@ -1674,9 +1674,9 @@ class TreeProgramList(gobject.GObject):
                         self.emit('menu')
                 
         def ActivateButton(self,event):
-                if event.type == gtk.gdk.KEY_PRESS:event_button = 1
-                elif event.type == gtk.gdk.BUTTON_PRESS:event_button = event.button
-                elif event.type ==  gtk.gdk.BUTTON_RELEASE:event_button = event.button
+                if event.type == Gdk.EventType.KEY_PRESS:event_button = 1
+                elif event.type == Gdk.EventType.BUTTON_PRESS:event_button = event.button
+                elif event.type ==  Gdk.EventType.BUTTON_RELEASE:event_button = event.button
 
                 self.type = self.XDG.L_Types[self.index]
                 a = self.XDG.ButtonClick(self.index,event)
@@ -1761,7 +1761,7 @@ class CellRendererImage(gtk.CellRenderer):
                                 cell_area.height)
 
         def animation_timeout(self, tree, image):
-                if image.get_storage_type() == gtk.IMAGE_ANIMATION:
+                if image.get_storage_type() == gtk.ImageType.ANIMATION:
                         self.redraw = 0
                         image.get_data('iter').advance()
                         model = tree.get_model()
@@ -1776,7 +1776,7 @@ class CellRendererImage(gtk.CellRenderer):
                 expose_area, flags):
                 if not self.image:
                         return
-                pix_rect = gtk.gdk.Rectangle()
+                pix_rect = Gdk.Rectangle()
                 pix_rect.x, pix_rect.y, pix_rect.width, pix_rect.height = \
                         self.on_get_size(widget, cell_area)
 
@@ -1788,7 +1788,7 @@ class CellRendererImage(gtk.CellRenderer):
                 draw_rect = cell_area.intersect(pix_rect)
                 draw_rect = expose_area.intersect(draw_rect)
 
-                if self.image.get_storage_type() == gtk.IMAGE_ANIMATION:
+                if self.image.get_storage_type() == gtk.ImageType.ANIMATION:
 
                         if not self.image.get_data('iter'):
                                 animation = self.image.get_animation()
@@ -1797,22 +1797,22 @@ class CellRendererImage(gtk.CellRenderer):
                                         self.animation_timeout, widget, self.image)
 
                         pix = self.image.get_data('iter').get_pixbuf()
-                elif self.image.get_storage_type() == gtk.IMAGE_PIXBUF:
+                elif self.image.get_storage_type() == gtk.ImageType.PIXBUF:
                         pix = self.image.get_pixbuf()
                 else:
                         return
                 window.draw_pixbuf(widget.style.black_gc, pix, \
                         draw_rect.x-pix_rect.x, draw_rect.y-pix_rect.y, draw_rect.x, \
                         draw_rect.y+2, draw_rect.width, draw_rect.height, \
-                        gtk.gdk.RGB_DITHER_NONE, 0, 0)
+                        Gdk.RgbDither.NONE, 0, 0)
 
         def on_get_size(self, widget, cell_area):
                 if not self.image:
                         return 0, 0, 0, 0
-                if self.image.get_storage_type() == gtk.IMAGE_ANIMATION:
+                if self.image.get_storage_type() == gtk.ImageType.ANIMATION:
                         animation = self.image.get_animation()
                         pix = animation.get_iter().get_pixbuf()
-                elif self.image.get_storage_type() == gtk.IMAGE_PIXBUF:
+                elif self.image.get_storage_type() == gtk.ImageType.PIXBUF:
                         pix = self.image.get_pixbuf()
                 else:
                         return 0, 0, 0, 0
@@ -1870,22 +1870,22 @@ class IconProgramList(gobject.GObject):
                 self.tree1 = gtk.IconView()
                 self.Button = gtk.Button()
                 self.Separator = None
-                self.gtkicontheme = gtk.icon_theme_get_default()
+                self.gtkicontheme = gtk.IconTheme.get_default()
                 self.gtkicontheme.connect('changed', self.update_icons) 
                 targets = [('text/uri-list', 0, 0)]
-                #self.tree1.connect("expose_event", self.expose)
-                #self.EBox.connect("expose_event", self.expose) 
-                #self.VBoxOut.connect("expose_event", self.expose)
-                #self.ScrollFrame.connect("expose_event", self.expose)  
+                #self.tree1.connect("draw", self.expose)
+                #self.EBox.connect("draw", self.expose) 
+                #self.VBoxOut.connect("draw", self.expose)
+                #self.ScrollFrame.connect("draw", self.expose)  
                 if Globals.Settings['GtkColors'] == 0:
-                        self.EBox.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
-                        #self.VBoxOut.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
-                        #self.ScrollFrame.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
+                        self.EBox.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
+                        #self.VBoxOut.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
+                        #self.ScrollFrame.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
 
                 
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])        
-                self.ScrollFrame.set_shadow_type(gtk.SHADOW_NONE)
-                self.ScrollFrame.set_policy(gtk.POLICY_NEVER,gtk.POLICY_AUTOMATIC)
+                self.ScrollFrame.set_shadow_type(gtk.ShadowType.NONE)
+                self.ScrollFrame.set_policy(gtk.PolicyType.NEVER,gtk.PolicyType.AUTOMATIC)
                 self.VBoxOut.pack_start(self.ScrollFrame, True,True, 0)
                 self.VBoxOut.set_border_width(0)
                 self.ScrollFrame.add(self.tree1)
@@ -1897,15 +1897,15 @@ class IconProgramList(gobject.GObject):
                 self.tree1.set_size_request(Globals.PG_buttonframedimensions[0], -1)
 
                 
-                self.tree1.set_orientation( gtk.ORIENTATION_HORIZONTAL)
+                self.tree1.set_orientation( gtk.Orientation.HORIZONTAL)
                 if Globals.Settings['Show_Tips']:
                         self.tree1.set_tooltip_column (1)
                 #Globals.PG_buttonframedimensions[0],self.ScrollFrame.get_size_request()[1]
 
-                self.tree1.set_selection_mode(gtk.SELECTION_SINGLE)
+                self.tree1.set_selection_mode(gtk.SelectionMode.SINGLE)
                 self.tree1.set_item_width(Globals.PG_buttonframedimensions[0]-2)
                 cell = self.tree1.get_cells()[0]
-                cell.set_property('ellipsize', pango.ELLIPSIZE_END)
+                cell.set_property('ellipsize', pango.EllipsizeMode.END)
                 cell.set_fixed_size(-1,Globals.PG_iconsize)#+((Globals.PG_iconsize *8)/28))
                 cell.set_property('ypad', (Globals.PG_iconsize *8)/28)
                 #self.tree1.get_cells()[0].set_property('yalign', 0.1)
@@ -1916,8 +1916,8 @@ class IconProgramList(gobject.GObject):
                 if Globals.Settings['GtkColors'] == 0:
                         cell.set_property('cell-background', Globals.ThemeColorCode)
                         self.tree1.get_cells()[1].set_property('cell-background', Globals.ThemeColorCode)
-                        #self.tree1.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
-                        self.tree1.modify_base(gtk.STATE_NORMAL, Globals.ThemeColorCode)
+                        #self.tree1.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
+                        self.tree1.modify_base(gtk.StateType.NORMAL, Globals.ThemeColorCode)
                         cell.set_property('foreground',Globals.NegativeThemeColorCode)
                 
                 self.tree1.set_row_spacing(0)
@@ -1925,23 +1925,23 @@ class IconProgramList(gobject.GObject):
                 self.tree1.set_spacing(0)
 
                 #self.tree1.set_cursor_on_cell((0,0), focus_column=None,focus_cell=None, start_editing=False)
-                self.model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING)
-                self.tree1.set_events(gtk.gdk.ALL_EVENTS_MASK)
+                self.model = gtk.ListStore(GdkPixbuf.Pixbuf, gobject.TYPE_STRING)
+                self.tree1.set_events(Gdk.EventMask.ALL_EVENTS_MASK)
                 self.tree1.connect("key-press-event", self.PGListButtonKey)
                 self.tree1.connect("motion-notify-event", self.move)
                 self.tree1.connect("leave-notify-event", self.leave)
                 self.tree1.connect("drag-data-get", self.drag_data_get)
                 self.tree1.connect("drag-begin", self.drag_begin)
-                self.tree1.drag_source_set(gtk.gdk.BUTTON1_MASK,targets,gtk.gdk.ACTION_COPY)
+                self.tree1.drag_source_set(Gdk.ModifierType.BUTTON1_MASK,targets,Gdk.DragAction.COPY)
                 self.tree1.drag_source_add_text_targets()
                 self.tree1.connect("button-press-event", self.drag_begin)
                 self.tree1.connect("button-release-event", self.treeclick)
                 self.tree1.set_model(self.model)
                 #if Globals.Settings['GtkColors'] == 0:
                         
-                        #self.tree1.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
-                        #self.tree1.modify_base(gtk.STATE_NORMAL, Globals.ThemeColorCode)
-                self.ScrollFrame.get_vscrollbar().set_events(gtk.gdk.ALL_EVENTS_MASK)
+                        #self.tree1.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
+                        #self.tree1.modify_base(gtk.StateType.NORMAL, Globals.ThemeColorCode)
+                self.ScrollFrame.get_vscrollbar().set_events(Gdk.EventMask.ALL_EVENTS_MASK)
                 self.ScrollFrame.get_vscrollbar().connect_after("map-event", self.map_event,'map')
                 self.ScrollFrame.get_vscrollbar().connect_after("unmap-event", self.map_event,'unmap')
                 #gc.collect()
@@ -2004,7 +2004,7 @@ class IconProgramList(gobject.GObject):
 
         def expose(self, widget, event):
                 #widget.window.set_composited(1)
-                cr = widget.window.cairo_create()
+                cr = event
                 if widget.is_composited() is True:      
                         cr.set_source_rgba(1, 1, 1, 0)
                 else:
@@ -2036,7 +2036,7 @@ class IconProgramList(gobject.GObject):
                         self.Label.destroy()
                 except:pass
                 # doing the following is faster then self.model.clear()
-                self.model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING)
+                self.model = gtk.ListStore(GdkPixbuf.Pixbuf, gobject.TYPE_STRING)
                 self.tree1.freeze_child_notify()
                 
 
@@ -2071,7 +2071,7 @@ class IconProgramList(gobject.GObject):
         def AddBackButton(self,name,icon,i):
                 if name == _('Back'):
                         if not icon:
-                                icon = gtk.gdk.pixbuf_new_from_file_at_size(Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
+                                icon = GdkPixbuf.Pixbuf.new_from_file_at_size(Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
 
                 
                         self.Button = gtk.Button(name)
@@ -2082,7 +2082,7 @@ class IconProgramList(gobject.GObject):
                         self.Button.set_tooltip_text(_('Return to last menu'))
                         self.PG_buttonwidth = Globals.PG_buttonframedimensions[0] - 12
                         self.Button.set_size_request(self.PG_buttonwidth, Globals.PG_iconsize+8)
-                        self.Button.set_relief(gtk.RELIEF_NONE)
+                        self.Button.set_relief(gtk.ReliefStyle.NONE)
                         self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],self.ScrollFrame.get_size_request()[1] -  self.Button.get_size_request()[1])
                         self.AddSeparator2()
                         self.VBoxOut.pack_start(self.Button, True,True, 0)
@@ -2091,8 +2091,8 @@ class IconProgramList(gobject.GObject):
                         self.Button.show()
                         image,label =  self.Button.get_children()[0].get_children()[0].get_children()
                         if Globals.Settings['GtkColors'] == 0:
-                                label.modify_fg(gtk.STATE_NORMAL, Globals.NegativeThemeColorCode)
-                        label.set_property("ellipsize", pango.ELLIPSIZE_END) 
+                                label.modify_fg(gtk.StateType.NORMAL, Globals.NegativeThemeColorCode)
+                        label.set_property("ellipsize", pango.EllipsizeMode.END) 
                         label.set_max_width_chars(int(Globals.PG_buttonframedimensions[0]/11))
                         self.Buttonlist.append(self.Button)
                         icon = None
@@ -2102,7 +2102,7 @@ class IconProgramList(gobject.GObject):
         def AddButton(self,name,icon,i):
 
                 if not icon:
-                        icon = gtk.gdk.pixbuf_new_from_file_at_size(Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
+                        icon = GdkPixbuf.Pixbuf.new_from_file_at_size(Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
 
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
                 if Globals.Settings['Show_Tips']:
@@ -2114,13 +2114,13 @@ class IconProgramList(gobject.GObject):
         def AddLabel(self,name):
                 self.Label = gtk.Label(name)
                 self.Label.set_line_wrap(True)
-                self.Label.set_property("ellipsize", pango.ELLIPSIZE_END) 
+                self.Label.set_property("ellipsize", pango.EllipsizeMode.END) 
                 self.PG_buttonwidth = Globals.PG_buttonframedimensions[0] - 12
                 if self.Separator:
                         self.Separator.set_size_request(self.PG_buttonwidth, 1)
                 self.VBoxOut.pack_start(self.Label, False,False, 0)
                 if Globals.Settings['GtkColors'] == 0:
-                        self.Label.modify_fg(gtk.STATE_NORMAL, Globals.NegativeThemeColorCode)
+                        self.Label.modify_fg(gtk.StateType.NORMAL, Globals.NegativeThemeColorCode)
                 self.Label.show()
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1]- self.Label.size_request()[1]-1)
         
@@ -2151,9 +2151,9 @@ class IconProgramList(gobject.GObject):
                         self.emit('menu')
                 
         def ActivateButton(self,event):
-                if event.type == gtk.gdk.KEY_PRESS:event_button = 1
-                elif event.type == gtk.gdk.BUTTON_PRESS:event_button = event.button
-                elif event.type ==  gtk.gdk.BUTTON_RELEASE:event_button = event.button
+                if event.type == Gdk.EventType.KEY_PRESS:event_button = 1
+                elif event.type == Gdk.EventType.BUTTON_PRESS:event_button = event.button
+                elif event.type ==  Gdk.EventType.BUTTON_RELEASE:event_button = event.button
 
                 self.type = self.XDG.L_Types[self.index]
                 a = self.XDG.ButtonClick(self.index,event)
@@ -2249,30 +2249,30 @@ class ProgramList(gobject.GObject):
                 self.VBoxOut = gtk.VBox(False)
                 self.VBoxOut.pack_start(self.ScrollFrame, True,True, 0)
                 self.ScrollFrame.connect_after("map-event", self.map_event)
-                #self.ScrollFrame.connect("expose_event", self.expose)
-                #self.VBoxOut.connect("expose_event", self.expose)
-                #self.VBoxIn.connect("expose_event", self.expose)
+                #self.ScrollFrame.connect("draw", self.expose)
+                #self.VBoxOut.connect("draw", self.expose)
+                #self.VBoxIn.connect("draw", self.expose)
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])      
-                self.ScrollFrame.set_shadow_type(gtk.SHADOW_NONE)
-                self.ScrollFrame.set_policy(gtk.POLICY_NEVER,gtk.POLICY_AUTOMATIC)
+                self.ScrollFrame.set_shadow_type(gtk.ShadowType.NONE)
+                self.ScrollFrame.set_policy(gtk.PolicyType.NEVER,gtk.PolicyType.AUTOMATIC)
                 #Build structure
                 self.ScrollFrame.add_with_viewport(self.VBoxIn)
-                self.ScrollFrame.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
+                self.ScrollFrame.get_children()[0].set_shadow_type(gtk.ShadowType.NONE)
                 if Globals.Settings['GtkColors'] == 0:
                 
 
-                        self.VBoxOut.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
-                        self.VBoxIn.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
-                        self.ScrollFrame.modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
-                        self.ScrollFrame.get_children()[0].modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
+                        self.VBoxOut.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
+                        self.VBoxIn.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
+                        self.ScrollFrame.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
+                        self.ScrollFrame.get_children()[0].modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
 
                 
                 
                 self.Frame.put(self.VBoxOut,Globals.PG_buttonframe[0],Globals.PG_buttonframe[1])
                 #Show newly created widgets
                 
-                self.ScrollFrame.set_shadow_type(gtk.SHADOW_NONE)
-                self.gtkicontheme = gtk.icon_theme_get_default()
+                self.ScrollFrame.set_shadow_type(gtk.ShadowType.NONE)
+                self.gtkicontheme = gtk.IconTheme.get_default()
                 self.gtkicontheme.connect('changed', self.update_icons) 
                 self.Separator = None
                 #gtk.rc_parse_string ("""
@@ -2296,7 +2296,7 @@ class ProgramList(gobject.GObject):
                 #gc.collect()
 
         def expose(self, widget, event):
-                cr = widget.window.cairo_create()
+                cr = event
                 if widget.is_composited() is True:      
                         cr.set_source_rgba(1, 1, 1, 0)
                 else:
@@ -2337,7 +2337,7 @@ class ProgramList(gobject.GObject):
                 if icon:
                         self.Pic = icon
                 else:
-                        self.Pic = gtk.gdk.pixbuf_new_from_file_at_size(Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
+                        self.Pic = GdkPixbuf.Pixbuf.new_from_file_at_size(Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
 
                 self.Img = gtk.Image()
                 self.Img.set_from_pixbuf(self.Pic)
@@ -2346,7 +2346,7 @@ class ProgramList(gobject.GObject):
                 self.Button.set_image(self.Img)
                 self.PG_buttonwidth = Globals.PG_buttonframedimensions[0] - 12
                 self.Button.set_size_request(self.PG_buttonwidth, Globals.PG_iconsize+10)
-                self.Button.set_relief(gtk.RELIEF_NONE)
+                self.Button.set_relief(gtk.ReliefStyle.NONE)
 
                 if name ==_('Back'):
                         self.Button.set_tooltip_text(_('Return to last menu'))
@@ -2367,7 +2367,7 @@ class ProgramList(gobject.GObject):
                                         self.Button.set_tooltip_text(name)
                 self.Button.connect("drag-data-get", self.drag_data_get,i)
                 targets = [('text/uri-list', 0, 0)]
-                self.Button.drag_source_set(gtk.gdk.BUTTON1_MASK,targets,gtk.gdk.ACTION_COPY)
+                self.Button.drag_source_set(Gdk.ModifierType.BUTTON1_MASK,targets,Gdk.DragAction.COPY)
                 self.Button.drag_source_add_text_targets()
                 #self.tree1.connect("drag-begin", self.drag_begin)
                 self.Button.connect("button-press-event", self.drag_begin)
@@ -2376,8 +2376,8 @@ class ProgramList(gobject.GObject):
                 self.Button.show()
                 image,label =  self.Button.get_children()[0].get_children()[0].get_children()
                 if Globals.Settings['GtkColors'] == 0:
-                        label.modify_fg(gtk.STATE_NORMAL, Globals.NegativeThemeColorCode)
-                label.set_property("ellipsize", pango.ELLIPSIZE_END) 
+                        label.modify_fg(gtk.StateType.NORMAL, Globals.NegativeThemeColorCode)
+                label.set_property("ellipsize", pango.EllipsizeMode.END) 
                 label.set_alignment(0, label.get_alignment()[1])
                 label.set_padding(5,0)
                 label.set_size_request(Globals.PG_buttonframedimensions[0]-Globals.PG_iconsize*2,-1)
@@ -2415,13 +2415,13 @@ class ProgramList(gobject.GObject):
         def AddLabel(self,name):
                 self.Label = gtk.Label(name)
                 self.Label.set_line_wrap(True)
-                self.Label.set_property("ellipsize", pango.ELLIPSIZE_END) 
+                self.Label.set_property("ellipsize", pango.EllipsizeMode.END) 
                 self.PG_buttonwidth = Globals.PG_buttonframedimensions[0] - 12
                 if self.Separator:
                         self.Separator.set_size_request(self.PG_buttonwidth, 1)
                 self.VBoxOut.pack_start(self.Label, True,True, 0)
                 if Globals.Settings['GtkColors'] == 0:
-                        self.Label.modify_fg(gtk.STATE_NORMAL, Globals.NegativeThemeColorCode)
+                        self.Label.modify_fg(gtk.StateType.NORMAL, Globals.NegativeThemeColorCode)
                 self.Label.show()
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1]- self.Label.size_request()[1]-1)
                 self.Buttonlist.append(self.Label)
@@ -2456,9 +2456,9 @@ class ProgramList(gobject.GObject):
                                 self.emit('menu')
                 
         def ActivateButton(self,event,i):
-                if event.type == gtk.gdk.KEY_PRESS:event_button = 1
-                elif event.type == gtk.gdk.BUTTON_PRESS:event_button = event.button
-                elif event.type ==  gtk.gdk.BUTTON_RELEASE:event_button = event.button
+                if event.type == Gdk.EventType.KEY_PRESS:event_button = 1
+                elif event.type == Gdk.EventType.BUTTON_PRESS:event_button = event.button
+                elif event.type ==  Gdk.EventType.BUTTON_RELEASE:event_button = event.button
                 self.index = i
                 self.type = self.XDG.L_Types[self.index]
                 a = self.XDG.ButtonClick(self.index,event)
@@ -2589,8 +2589,8 @@ class MenuArea(gtk.DrawingArea):
                 #self.padding = 1
                 self.pointer_x = 0
                 self.pointer_y = 0
-                self.add_events(gtk.gdk.BUTTON_MOTION_MASK | gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.BUTTON_PRESS_MASK |
-                                gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.POINTER_MOTION_MASK | gtk.gdk.SCROLL_MASK | gtk.gdk.KEY_PRESS_MASK)
+                self.add_events(Gdk.EventMask.BUTTON_MOTION_MASK | Gdk.EventMask.ENTER_NOTIFY_MASK | Gdk.EventMask.LEAVE_NOTIFY_MASK | Gdk.EventType.BUTTON_PRESS_MASK |
+                                Gdk.EventType.BUTTON_RELEASE_MASK | Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.SCROLL_MASK | Gdk.EventType.KEY_PRESS_MASK)
 
         def scrollbar_changed(self,value):
                 self.scroll = value
@@ -2732,13 +2732,13 @@ class MenuArea(gtk.DrawingArea):
                 return coords[0], coords[1], True
         
         def do_scroll_event(self,event):
-                if event.direction == gtk.gdk.SCROLL_UP:
+                if event.direction == Gdk.ScrollDirection.UP:
                         self.emit("scroll-scrollbar", -25)
-                elif event.direction == gtk.gdk.SCROLL_DOWN:
+                elif event.direction == Gdk.ScrollDirection.DOWN:
                         self.emit("scroll-scrollbar", 25)
-                elif event.direction == gtk.gtk.SCROLL_LEFT:
+                elif event.direction == Gdk.ScrollDirection.LEFT:
                         self.MenuEngine.Navigate_Back()
-                elif event.direction == gtk.gdk.SCROLL_RIGHT:
+                elif event.direction == Gdk.ScrollDirection.RIGHT:
                         if self.selected_button:
                                 self.MenuEngine.ButtonClicked(1, self.selected_button.xdgbutton)
 
@@ -2773,7 +2773,7 @@ class MenuArea(gtk.DrawingArea):
                 
         def force_redraw(self):
                 if self.window:
-                        rect = gtk.gdk.Rectangle(0, 0, *self.window.get_size())
+                        rect = Gdk.Rectangle(0, 0, *self.window.get_size())
                         self.window.invalidate_rect(rect, True)
 
 class internalbutton:
@@ -2877,9 +2877,9 @@ class CairoProgramList:
         
         def ConstructGTKObjectsMenu(self, Frame):
                 self.menu = CairoMenuObject()
-                self.menu.set_events(gtk.gdk.POINTER_MOTION_MASK |
-                              gtk.gdk.POINTER_MOTION_HINT_MASK |
-                              gtk.gdk.BUTTON_PRESS_MASK)
+                self.menu.set_events(Gdk.EventMask.POINTER_MOTION_MASK |
+                              Gdk.EventMask.POINTER_MOTION_HINT_MASK |
+                              Gdk.EventType.BUTTON_PRESS_MASK)
                 self.menu.connect("motion_notify_event", self.mousemove)
                 self.menu.connect("button-press-event", self.buttonpress)
                 self.menu.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])      
@@ -2948,7 +2948,7 @@ class CairoMenuObject(gtk.DrawingArea):
                 import math as math
                 self.math = math
                 gtk.DrawingArea.__init__(self)
-                self.connect("expose_event", self.expose)
+                self.connect("draw", self.expose)
                 # Screen dimensions
                 self.x,self.y=Globals.PG_buttonframe[0],Globals.PG_buttonframe[1]
                 self.w,self.h=Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1]
@@ -2965,9 +2965,9 @@ class CairoMenuObject(gtk.DrawingArea):
                 self.leftshifti=0
                 
     def expose(self, widget, event):
-        self.context = widget.window.cairo_create()
+        self.context = event
         # set a clip region for the expose event
-        self.context.rectangle(event.area.x, event.area.y,event.area.width, event.area.height)
+        self.context.rectangle(0, 0,widget.get_allocated_width(), widget.get_allocated_height())
         self.context.clip()
         self.draw(self.context)
         return False
