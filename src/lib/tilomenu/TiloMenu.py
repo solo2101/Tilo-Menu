@@ -152,7 +152,7 @@ class TiloMenu:
             self.Redraw_graphics()
         window = widget.get_window()
         if window is not None:
-            self.x, self.y = window.get_origin()
+            self.x, self.y = window.get_origin()[-2:]
             self.update_panel_position()
         else:
             self.x, self.y = 0, 0
@@ -236,7 +236,7 @@ class TiloMenu:
         if self.hwg:
             window = self.applet.get_window()
             if window is not None:
-                origin = window.get_origin()
+                origin = window.get_origin()[-2:]
                 if origin != getattr(Globals, 'SavedOriginState', None):
                     self.hwg.Adjust_Window_Dimensions(*origin)
                     Globals.SavedOriginState = origin
