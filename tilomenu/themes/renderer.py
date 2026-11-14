@@ -4,12 +4,17 @@ Each button's Image is its hover state, not a permanently visible fill.
 ImageBack is the optional resting background. Original Pango markup is honored.
 """
 import getpass
+import html
 import platform
+import shutil
+import subprocess
+import socket
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from gi.repository import GdkPixbuf, Gtk, Pango
 from ..icons import load_named_icon
+from .contrast import legible_markup
 
 
 def _pixbuf(directory, filename, size=None):
@@ -51,17 +56,50 @@ def _set_safe_markup(label, markup, fallback=""):
     label.set_markup(markup)
 
 
-def _markup(container, attrs, width, *, fallback=""):
+def _valid_markup(markup, fallback=""):
+    """Keep legacy typography if valid, otherwise show a readable label."""
+    if markup:
+        try:
+            ET.fromstring("<root>" + markup + "</root>")
+            return markup
+        except ET.ParseError:
+            pass
+    return html.escape(fallback)
+
+
+def _color_label(label, theme, markup, fallback, x, y, width,
+                 *, selected=False, invert_unselected=False, overlay="",
+                 overlay_x=0, overlay_y=0):
+    valid = _valid_markup(markup, fallback)
+    corrected = legible_markup(
+        theme, valid, x, y, width,
+        selected=selected, invert_unselected=invert_unselected,
+        overlay=overlay, overlay_x=overlay_x, overlay_y=overlay_y,
+    )
+    _set_safe_markup(label, corrected, fallback)
+
+
+def _markup(container, attrs, width, *, theme, x=0, y=0, fallback="",
+            selected=False, invert_unselected=False, overlay=""):
     markup = attrs.get("Markup", "")
     if not markup and not fallback:
-        return
+        return None
     label = Gtk.Label()
-    _set_safe_markup(label, markup, fallback)
-    label.set_xalign((0.0, 0.5, 1.0)[max(0, min(2, int(attrs.get("TextAlignment", "0"))))])
+    xoff = int(attrs.get("TextX", "0"))
+    yoff = int(attrs.get("TextY", "0"))
+    available = max(1, width - xoff - 4)
+    _color_label(
+        label, theme, markup, fallback, x + xoff, y + yoff, available,
+        selected=selected, invert_unselected=invert_unselected,
+        overlay=overlay, overlay_x=x, overlay_y=y,
+    )
+    label.set_xalign(
+        (0.0, 0.5, 1.0)[max(0, min(2, int(attrs.get("TextAlignment", "0"))))]
+    )
     label.set_ellipsize(Pango.EllipsizeMode.END)
-    x = int(attrs.get("TextX", "0"))
-    label.set_size_request(max(1, width - x - 4), -1)
-    container.put(label, x, int(attrs.get("TextY", "0")))
+    label.set_size_request(available, -1)
+    container.put(label, xoff, yoff)
+    return label
 
 
 def _event_box(child, width, height, name, callback):
@@ -112,14 +150,32 @@ def render_theme_buttons(layout: Gtk.Fixed, theme, on_activate=None) -> None:
                 int(attrs.get("ButtonIconX", "0")),
                 int(attrs.get("ButtonIconY", "0")),
             )
-        _markup(container, attrs, width)
+        x, y = element.integer("ButtonX"), element.integer("ButtonY")
+        label = _markup(
+            container, attrs, width, theme=theme, x=x, y=y,
+            overlay=attrs.get("ImageBack", ""),
+            fallback=attrs.get("Name", "") if attrs.get("Markup") else "",
+        )
         name = attrs.get("Name", "")
         eventbox = _event_box(container, width, height, name, on_activate)
         if name != ":SEPARATOR:":
             def change_state(hovered, foreground=foreground, icon=icon,
-                             picture=hover, default=default_icon, selected=selected_icon):
+                             picture=hover, default=default_icon,
+                             selected=selected_icon, text=label,
+                             attr=attrs, bx=x, by=y, w=width):
                 foreground.set_from_pixbuf(picture if hovered else None)
                 icon.set_from_pixbuf((selected or default) if hovered else default)
+                if text is not None:
+                    _color_label(
+                        text, theme, attr.get("Markup", ""), attr.get("Name", ""),
+                        bx + int(attr.get("TextX", "0")),
+                        by + int(attr.get("TextY", "0")),
+                        max(1, w - int(attr.get("TextX", "0")) - 4),
+                        selected=hovered,
+                        overlay=attr.get("Image", "") if hovered
+                                else attr.get("ImageBack", ""),
+                        overlay_x=bx, overlay_y=by,
+                    )
 
             eventbox.connect(
                 "enter-notify-event",
@@ -145,17 +201,53 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None) -> dict:
     for element in theme.labels:
         attrs = element.attributes
         markup = attrs.get("Markup", "")
-        name = attrs.get("Name", "")
-        replacement = (
-            getpass.getuser() if name == "Username"
-            else platform.system() if name == "System"
-            else name
-        )
-        text = markup.replace("[TEXT]", replacement)
+        command = attrs.get("Command", "").strip().casefold()
+        replacement = ""
+        if command == "whoami":
+            replacement = getpass.getuser()
+        elif "lsb_release" in command:
+            try:
+                replacement = platform.freedesktop_os_release().get(
+                    "PRETTY_NAME", platform.system()
+                )
+            except (OSError, AttributeError):
+                replacement = platform.system()
+        elif command.startswith("df "):
+            try:
+                disk = shutil.disk_usage("/")
+                replacement = f"{round(100 * disk.used / disk.total)}%"
+            except OSError:
+                replacement = "N/A"
+        elif command.startswith("/sbin/ip route") or command.startswith("ip route"):
+            try:
+                result = subprocess.run(
+                    ["ip", "-4", "-o", "addr", "show", "scope", "global"],
+                    capture_output=True, text=True, timeout=1, check=False,
+                )
+                replacement = next(
+                    (word.split("/")[0] for word in result.stdout.split()
+                     if word.count(".") == 3 and "/" in word),
+                    "N/A"
+                )
+            except (OSError, subprocess.TimeoutExpired):
+                replacement = "N/A"
+        elif attrs.get("Name") == "Username":
+            replacement = getpass.getuser()
+
+        text = markup.replace("[TEXT]", html.escape(replacement))
         label = Gtk.Label()
-        _set_safe_markup(label, text, replacement)
-        label.set_xalign((0.0, 0.5, 1.0)[max(0, min(2, int(attrs.get("TextAlignment", "0"))))])
-        layout.put(label, element.integer("LabelX"), element.integer("LabelY"))
+        x, y = element.integer("LabelX"), element.integer("LabelY")
+        width = max(1, theme.width - x - 4)
+        _color_label(
+            label, theme, text, attrs.get("Name", ""), x, y,
+            min(width, max(70, theme.width // 2)),
+        )
+        label.set_ellipsize(Pango.EllipsizeMode.END)
+        label.set_size_request(width, -1)
+        label.set_xalign(
+            (0.0, 0.5, 1.0)[max(0, min(2, int(attrs.get("TextAlignment", "0"))))]
+        )
+        layout.put(label, x, y)
 
     tabs = {}
     tab_names = [e.attributes.get("Name", "") for e in theme.tabs]
@@ -182,10 +274,32 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None) -> dict:
                 Gtk.Image.new_from_pixbuf(icon_pix),
                 int(attrs.get("TabIconX", "0")), int(attrs.get("TabIconY", "0")),
             )
-        _markup(container, attrs, width)
         name = attrs.get("Name", "")
-        def set_selected(value, picture=picture, normal=normal, selected=selected):
+        tx, ty = element.integer("TabX"), element.integer("TabY")
+        inverted = attrs.get("InvertTextColorOnSel", "0") == "1"
+        label = _markup(
+            container, attrs, width, theme=theme, x=tx, y=ty,
+            fallback=name,
+            selected=name == active, invert_unselected=inverted,
+            overlay=attrs.get("ImageSel", "") if name == active
+                    else attrs.get("Image", ""),
+        )
+
+        def set_selected(value, picture=picture, normal=normal, selected=selected,
+                         text=label, attr=attrs, bx=tx, by=ty, w=width,
+                         tab_name=name, invert=inverted):
             picture.set_from_pixbuf((selected or normal) if value else normal)
+            if text is not None:
+                _color_label(
+                    text, theme, attr.get("Markup", ""), tab_name,
+                    bx + int(attr.get("TextX", "0")),
+                    by + int(attr.get("TextY", "0")),
+                    max(1, w - int(attr.get("TextX", "0")) - 4),
+                    selected=value, invert_unselected=invert,
+                    overlay=attr.get("ImageSel", "") if value
+                            else attr.get("Image", ""),
+                    overlay_x=bx, overlay_y=by,
+                )
         tabs[name] = set_selected
         set_selected(name == active)
         box = _event_box(container, width, height, name, on_tab)
