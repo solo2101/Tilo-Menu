@@ -12,24 +12,15 @@
 # Menu parser
 # Part of the GnoMenu
 
-try:
-        import gmenu
-        print('gmenu found, using it as default menu parser')
-        has_gmenu = True
-except:
-        has_gmenu = False
-        import xdg.Menu
-        print('xdg found, using it as default menu parser')
+# Original GnoMenu fallback: pyxdg parses the freedesktop menu.
+# The obsolete Python 2 libgnome-menu "gmenu" binding is not available.
+import xdg.Menu
+has_gmenu = False
 
-import gobject
+from gi.repository import GObject as gobject, Gio as gio, GLib
 import xdg.BaseDirectory as bd
 
-try:
-        import gio
-        isgio = True
-except:
-        print('gio not found')
-        isgio = False
+isgio = True
 import os
 import Globals
 
@@ -37,7 +28,7 @@ import gc
 
 class MenuParser(gobject.GObject):
         __gsignals__ = {
-        'menu-changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        'menu-changed': (gobject.SignalFlags.RUN_LAST, None, ()),
         }
 
         def __init__(self):
@@ -108,20 +99,23 @@ class MenuParser(gobject.GObject):
                                                 print('unable to parse the settings menu')
 
                         self.AppsFile = self.CacheApplications.Filename
-                        self.SetFile = self.CacheSettings.Filename
+                        self._monitors = []
+                        self.SetFile = self.CacheSettings.Filename if getattr(self, 'CacheSettings', None) else None
 
                         if isgio:
-                                dirs = bd.xdg_data_dirs
+                                dirs = list(bd.xdg_data_dirs)
                                 if bd.xdg_data_home not in dirs:
                                         dirs.append(bd.xdg_data_home)
                                 for d in dirs:
                                         self.parentfile = d + '/applications'
                                         if os.path.isdir(self.parentfile) and os.path.exists(self.parentfile):
-                                                self.current_file1 = gio.File(self.parentfile).monitor_directory()
+                                                self.current_file1 = gio.File.new_for_path(self.parentfile).monitor_directory(gio.FileMonitorFlags.NONE, None)
                                                 self.current_file1.connect_after("changed", self.monitor_callback)
+                                        self._monitors.append(self.current_file1)
         
-                                self.current_file = gio.File(self.AppsFile).monitor_file()
+                                self.current_file = gio.File.new_for_path(self.AppsFile).monitor_file(gio.FileMonitorFlags.NONE, None)
                                 self.current_file.connect_after("changed", self.monitor_callback)
+                                self._monitors.append(self.current_file)
 
                         self.MenuInstance = xdg.Menu.Menu
                         self.EntryInstance = xdg.Menu.MenuEntry
@@ -171,7 +165,7 @@ class MenuParser(gobject.GObject):
                 
                 if not self.updating:
                         self.updating = True
-                        self.timeout = gobject.timeout_add(1000,self.MenuChanged)
+                        self.timeout = GLib.timeout_add(1000,self.MenuChanged)
 
         def MenuChanged(self):
                 """Called 1 second after menu changes"""
