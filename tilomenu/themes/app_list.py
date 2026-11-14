@@ -14,9 +14,18 @@ class ThemeAppList(Gtk.DrawingArea):
     ROW_HEIGHT = 32
     HEADER_HEIGHT = 30
 
-    def __init__(self, theme, on_launch, on_category, on_favorite):
+    def __init__(self, theme, on_launch, on_category, on_favorite,
+                 icon_size=20, show_tooltips=True):
         super().__init__()
         self.theme = theme
+        try:
+            self.icon_size = min(48, max(16, int(icon_size)))
+        except (TypeError, ValueError):
+            self.icon_size = 20
+        self.ROW_HEIGHT = max(32, self.icon_size + 8)
+        self.show_tooltips = bool(show_tooltips)
+        self.set_has_tooltip(self.show_tooltips)
+        self.connect('query-tooltip', self._tooltip)
         self.on_launch = on_launch
         self.on_category = on_category
         self.on_favorite = on_favorite
@@ -108,7 +117,7 @@ class ThemeAppList(Gtk.DrawingArea):
     def _icon(self, app):
         key = app.get_id() or app.get_name()
         if key not in self.icon_cache:
-            image = load_icon(app.get_icon(), 20)
+            image = load_icon(app.get_icon(), self.icon_size)
             self.icon_cache[key] = image.get_pixbuf() if image else None
         return self.icon_cache[key]
 
@@ -143,7 +152,7 @@ class ThemeAppList(Gtk.DrawingArea):
             light = self._light_text_at(min(55, width // 2), y + 15)
             item = self.rows[index]
             if self.show_categories:
-                self._label(cr, item, 10, y + 7, width - 20, light)
+                self._label(cr, item, 10, y + max(5, (self.ROW_HEIGHT - 17)//2), width - 20, light)
                 continue
             pixbuf = self._icon(item)
             if pixbuf is not None:
@@ -152,8 +161,9 @@ class ThemeAppList(Gtk.DrawingArea):
                 )
                 cr.paint()
             name = item.get_display_name() or item.get_name()
-            self._label(cr, name, 34 if pixbuf is not None else 10, y + 7,
-                        width - (47 if pixbuf is not None else 22), light)
+            text_x = 14 + self.icon_size if pixbuf is not None else 10
+            self._label(cr, name, text_x, y + max(5, (self.ROW_HEIGHT - 17)//2),
+                        width - text_x - 14, light)
         cr.restore()
         if len(self.rows) > count:
             track = max(1, height - self.HEADER_HEIGHT - 8)
@@ -209,6 +219,18 @@ class ThemeAppList(Gtk.DrawingArea):
         self.hover = -1
         self.queue_draw()
         return False
+
+    def _tooltip(self, _widget, x, y, _keyboard, tooltip):
+        if not self.show_tooltips or self.show_categories:
+            return False
+        index = self._index_at(y)
+        if index is None:
+            return False
+        entry = self.rows[index]
+        name = entry.get_display_name() or entry.get_name()
+        description = entry.get_description()
+        tooltip.set_text(name + ("\n" + description if description else ""))
+        return True
 
     def _scroll(self, _widget, event):
         step = 0

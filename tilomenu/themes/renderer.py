@@ -206,7 +206,8 @@ def render_theme_buttons(layout: Gtk.Fixed, theme, on_activate=None) -> None:
         layout.put(eventbox, element.integer("ButtonX"), element.integer("ButtonY"))
 
 
-def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None) -> dict:
+def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None,
+                         tab_hover=False) -> dict:
     """Draw XML static images, labels and tabs without desktop-theme styling."""
     for element in theme.images:
         picture = _pixbuf(theme.directory, element.attributes.get("Image", ""))
@@ -344,5 +345,10 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None) -> dict:
         tabs[name] = set_selected
         set_selected(name == active)
         box = _event_box(container, width, height, name, on_tab)
+        if tab_hover and on_tab is not None:
+            box.connect(
+                "enter-notify-event",
+                lambda _widget, _event, action=name: bool(on_tab(action))
+            )
         layout.put(box, element.integer("TabX"), element.integer("TabY"))
     return tabs

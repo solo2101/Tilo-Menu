@@ -26,12 +26,14 @@ from .icons import load_icon
 from .themes.app_list import ThemeAppList
 from .themes.search import ThemeSearch
 from .themes.avatar import render_user_face, open_mate_about_me
+from .preferences import load_settings
 
 
 class MenuWindow(Gtk.Window):
     def __init__(self, theme):
         super().__init__(title="Tilo Menu")
         self.theme = theme
+        self.user_options = load_settings()
         self.themes_dir = theme.directory.parent
         # GTK must not paint an opaque desktop-theme rectangle behind the PNG.
         # GnoMenu art already supplies the intended window shape and alpha.
@@ -102,7 +104,10 @@ class MenuWindow(Gtk.Window):
         # A single Cairo drawing area paints the original theme's pixels,
         # avoiding GTK light/dark controls inside the application list.
         self.apps = ThemeAppList(
-            theme, self._launch_from_list, self._select_from_list, self._favorite_from_list
+            theme, self._launch_from_list, self._select_from_list,
+            self._favorite_from_list,
+            icon_size=self.user_options.get('icon_size', 20),
+            show_tooltips=self.user_options.get('show_tooltips', True)
         )
         layout.put(self.apps, program.integer("X"), program.integer("Y"))
         self._populate()
@@ -115,7 +120,10 @@ class MenuWindow(Gtk.Window):
 
         render_theme_buttons(layout, theme, self._activate_shortcut)
         self.avatar = render_user_face(layout, theme, open_mate_about_me)
-        self.theme_tabs = render_theme_details(layout, theme, self._activate_theme_tab)
+        self.theme_tabs = render_theme_details(
+            layout, theme, self._activate_theme_tab,
+            tab_hover=bool(self.user_options.get('tab_hover', False)),
+        )
 
     def _paint_theme_background(self, _window, cr):
         # Clear the full RGBA surface first. set_app_paintable prevents GTK
