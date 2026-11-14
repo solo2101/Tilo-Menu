@@ -4,6 +4,7 @@ Original foreground colors are retained when readable. Transparency and tabs
 are sampled from the real artwork, never from the user's desktop GTK theme.
 """
 from functools import lru_cache
+from pathlib import Path
 import re
 
 from gi.repository import GdkPixbuf
@@ -66,14 +67,18 @@ def _pixel(pixbuf, x, y):
     return rgb, alpha
 
 
-def _image(theme, filename):
+@lru_cache(maxsize=256)
+def _trusted_image(root, filename):
     if not filename:
         return None
-    root = theme.directory.resolve()
     path = (root / filename).resolve()
     if not path.is_relative_to(root) or not path.is_file():
         return None
     return _asset(str(path))
+
+
+def _image(theme, filename):
+    return _trusted_image(theme.directory.resolve(), filename)
 
 
 def sample_background(theme, x, y, overlay="", overlay_x=0, overlay_y=0):

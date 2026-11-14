@@ -8,8 +8,8 @@ import html
 import platform
 import shutil
 import subprocess
-import socket
 import xml.etree.ElementTree as ET
+from functools import lru_cache
 from pathlib import Path
 
 from gi.repository import GdkPixbuf, Gtk, Pango
@@ -17,6 +17,7 @@ from ..icons import load_named_icon
 from .contrast import legible_markup
 
 
+@lru_cache(maxsize=256)
 def _pixbuf(directory, filename, size=None):
     if not filename:
         return None
@@ -32,6 +33,7 @@ def _pixbuf(directory, filename, size=None):
     return None
 
 
+@lru_cache(maxsize=256)
 def _icon(directory, filename, size=0):
     pix = _pixbuf(directory, filename, size if size > 0 else None)
     if pix is not None:
