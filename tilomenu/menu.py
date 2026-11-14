@@ -14,7 +14,7 @@ gi.require_version("Gdk", "3.0")
 gi.require_version("GdkPixbuf", "2.0")
 from gi.repository import GdkPixbuf, Gtk
 
-from .applications import installed_applications, launch_application
+from .applications import application_categories, installed_applications, launch_application
 from .themes import load_menu_theme
 from .themes.renderer import render_theme_buttons
 
@@ -41,10 +41,24 @@ class MenuWindow(Gtk.Window):
             layout.put(Gtk.Label(label="Missing theme background: " + theme.background), 0, 0)
 
         program = theme.program_list
+        self.all_apps = installed_applications()
+        self.category = "All Applications"
+        self.query = ""
+        category_names = sorted({
+            category for app in self.all_apps
+            for category in application_categories(app)
+        })
+        self.category_select = Gtk.ComboBoxText()
+        for name in ["All Applications", *category_names]:
+            self.category_select.append_text(name)
+        self.category_select.set_active(0)
+        self.category_select.set_size_request(program.integer("Width"), 30)
+        layout.put(self.category_select, program.integer("X"), program.integer("Y"))
+        self.category_select.connect("changed", self._change_category)
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scroll.set_size_request(program.integer("Width"), program.integer("Height"))
-        layout.put(scroll, program.integer("X"), program.integer("Y"))
+        scroll.set_size_request(program.integer("Width"), max(50, program.integer("Height") - 32))
+        layout.put(scroll, program.integer("X"), program.integer("Y") + 32)
         css = Gtk.CssProvider()
         css.load_from_data(b"""
             listbox, listbox row, scrolledwindow, viewport { background: transparent; border: none; }
@@ -68,16 +82,26 @@ class MenuWindow(Gtk.Window):
             entry.set_placeholder_text(search.attributes.get("InitialText", "Search"))
             entry.set_size_request(search.integer("Width"), search.integer("Height"))
             layout.put(entry, search.integer("X"), search.integer("Y"))
-            entry.connect("search-changed", lambda widget: self._populate(widget.get_text()))
+            entry.connect("search-changed", self._change_search)
 
         render_theme_buttons(layout, theme)
 
-    def _populate(self, query):
+    def _change_category(self, widget):
+        self.category = widget.get_active_text() or "All Applications"
+        self._populate()
+
+    def _change_search(self, widget):
+        self.query = widget.get_text().casefold()
+        self._populate()
+
+    def _populate(self, query=None):
         for child in self.apps.get_children():
             self.apps.remove(child)
-        for app in installed_applications():
+        for app in self.all_apps:
             name = app.get_display_name() or app.get_name()
-            if query and query.casefold() not in (name + " " + (app.get_description() or "")).casefold():
+            if self.category != "All Applications" and self.category not in application_categories(app):
+                continue
+            if self.query and self.query not in (name + " " + (app.get_description() or "")).casefold():
                 continue
             button = Gtk.Button()
             button.get_style_context().add_class("tilo-app")
