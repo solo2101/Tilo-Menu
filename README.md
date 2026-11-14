@@ -10,14 +10,14 @@ The ported Python 3 syntax is committed directly, instead of introducing a new m
 
 The original 2.9.1 modules are now tracked under `src/lib/tilomenu`.
 Python 2 syntax conversion is complete across the selected core modules.
-Migration of GTK2 calls to GTK3 and MATE is still in progress. **Do not install this as a working menu yet.**
+The original popup, application list and settings window now construct and open under GTK3 in automated Xvfb tests. MATE panel integration still needs testing on a real desktop.
 
 Implemented compatibility steps:
-- `TiloMenu.py`: original panel button and MATE factory registration.
+- `TiloMenu.py`: original MATE panel button, popup show/hide, state signal and settings command.
 - `backend.py`: original `load_setting` and `save_setting` now use GSettings/dconf, with XML fallback and legacy XML read.
 - `MenuParser.py`: original freedesktop XDG parser fallback and Gio directory monitoring.
 - `Launcher.py`, `IconFactory.py`, `utils.py`: Python3/GTK3 imports and compatibility substitutions.
-- `Menu_Main.py`, `Menu_Widgets.py`, `Menu_Items.py`, `Globals.py`, `TiloMenu-Settings.py`, `Popup_Menu.py`, `cairo_drawing.py`: original Python3-syntax source staged for GTK3 port.
+- `Menu_Main.py`, `Menu_Widgets.py`, `Menu_Items.py`, `Globals.py`, `TiloMenu-Settings.py`, `Popup_Menu.py`, `cairo_drawing.py`: original source with Python 3/GTK3 compatibility fixes. Original Xvfb startup, show/hide and settings window checks are enforced in GitHub Actions. More legacy widget paths remain to port.
 
 Original artwork and XML remain completely unchanged. `make prepare` extracts only the four original default theme sets (Menu, Button, Icon, Sound), graphics and GPL license from `~/Downloads/gnomenu-2.9.1.tar.gz`; it does not download KDE, XFCE, AWN or other desktop integrations.
 
@@ -31,7 +31,7 @@ make prepare
 make check
 ```
 
-We will finish the GTK3 conversion of the original widgets and popup before asking you to install or test the applet.
+When the desktop is available, the next test is the panel applet itself. CI already checks original window initialization and click/close behavior through the GTK3 testing sandpit.
 
 The previous working GTK3 revival is archived at
 `archive/gtk3-revival-2026-11-14`.

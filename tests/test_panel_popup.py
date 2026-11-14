@@ -36,13 +36,19 @@ assert menu.hwg is not None, "Original Main_Menu was not attached on map"
 assert menu.hwg.window is not None
 assert applet.actions.get_action('Props').get_sensitive()
 assert applet.actions.get_action('About').get_sensitive()
-menu.ShowMenu()
+from types import SimpleNamespace
+# Exercise the original button_press flow, not only the popup helpers.
+menu.button_press(applet, SimpleNamespace(button=1))
 while Gtk.events_pending():
     Gtk.main_iteration_do(False)
-assert menu.hwg.window.get_visible(), "Original popup did not open"
+assert menu.hwg.window.get_visible(), "Original left-click did not open the popup"
+assert menu.Button_state == 2
+menu.button_press(applet, SimpleNamespace(button=1))
+while Gtk.events_pending():
+    Gtk.main_iteration_do(False)
+assert not menu.hwg.window.get_visible(), "Original second left-click did not close the popup"
+assert menu.Button_state == 1
 menu.HideMenu()
-while Gtk.events_pending():
-    Gtk.main_iteration_do(False)
-assert not menu.hwg.window.get_visible(), "Original popup did not close"
+assert menu.Button_state == 0
 host.destroy()
 print('PASS: original panel button opens/closes original Main_Menu and exposes Settings')
