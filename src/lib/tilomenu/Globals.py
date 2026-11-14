@@ -100,11 +100,7 @@ def ReloadSettings():
         # context without changing the original menu artwork.
         menubar = gtk.MenuBar()
         bgcolor = menubar.get_style_context().get_background_color(gtk.StateFlags.NORMAL)
-        GtkColorCode = Gdk.Color(
-                pixel=0,
-                red=int(bgcolor.red * 65535),
-                green=int(bgcolor.green * 65535),
-                blue=int(bgcolor.blue * 65535))
+        GtkColorCode = Gdk.Color.from_floats(bgcolor.red, bgcolor.green, bgcolor.blue)
         orientation = None
         panel_size = 30
         flip = None
@@ -177,7 +173,7 @@ def ReloadSettings():
                         color_r = 65535 - int(color.red)
                         color_g = 65535 - int(color.green)
                         color_b = 65535 - int(color.blue)
-                        NegativeThemeColorCode = Gdk.Color(pixel=0, red=color_r, green=color_g, blue=color_b)
+                        NegativeThemeColorCode = Gdk.Color.from_floats(color_r / 65535.0, color_g / 65535.0, color_b / 65535.0)
                         Found = 1
                         break
         if Found==0:
