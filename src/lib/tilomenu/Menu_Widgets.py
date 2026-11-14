@@ -2511,10 +2511,12 @@ class ProgramList(gobject.GObject):
                         except:pass
 
         def SetFirstButton(self,event):
-                self.VBoxIn.get_children()[0].grab_focus()
+                if self.VBoxIn.get_children():
+                        self.VBoxIn.get_children()[0].grab_focus()
 
         def SetLastButton(self,event):
-                self.VBoxIn.get_children()[len(self.VBoxIn.get_children())-1].grab_focus()
+                if self.VBoxIn.get_children():
+                        self.VBoxIn.get_children()[len(self.VBoxIn.get_children())-1].grab_focus()
 
 #=================================================================  
 #EXTRA FUNCTION PASSTHROUGH TO XDG
