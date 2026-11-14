@@ -27,5 +27,5 @@ while Gtk.events_pending():
 assert menu.window.get_visible()
 menu.hide_window()
 assert not menu.window.get_visible()
-menu.window.destroy()
+# Allow the process to exit without gtk_main_quit on a non-running main loop.
 print("PASS: original Main_Menu constructor/show/hide under GTK3")

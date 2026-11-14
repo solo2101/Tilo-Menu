@@ -33,4 +33,4 @@ widget.CallSpecialMenu(5, "tilo")
 widget.CallSpecialMenu(5, "")
 print('PASS: original search and Back navigation')
 menu.hide_window()
-menu.window.destroy()
+# Allow the process to exit without gtk_main_quit on a non-running main loop.

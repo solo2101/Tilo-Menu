@@ -20,5 +20,5 @@ while Gtk.events_pending():
 assert menu.window.get_visible()
 assert menu.PGL is not None
 menu.hide_window()
-menu.window.destroy()
+# Allow the process to exit without gtk_main_quit on a non-running main loop.
 print(f'PASS: original Prog_List={mode} using {type(menu.PGL).__name__}')
