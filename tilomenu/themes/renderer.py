@@ -6,7 +6,6 @@ ImageBack is the optional resting background. Original Pango markup is honored.
 import getpass
 import html
 import platform
-import re
 import shutil
 import subprocess
 import xml.etree.ElementTree as ET
@@ -69,31 +68,6 @@ def _is_valid_markup(markup):
         return False
 
 
-def _readable_tab_markup(markup):
-    """Bring 6pt tab captions to a readable minimum without changing fonts."""
-    def adjust(match):
-        size = float(match.group(2))
-        return match.group(1) + ("8" if size < 8 else match.group(2)) + match.group(3)
-
-    return re.sub(
-        r"(font_desc\s*=\s*['\"][^'\"]*?\s)(\d+(?:\.\d+)?)(['\"])",
-        adjust, markup,
-    )
-
-
-def _tab_text_x(attrs, icon):
-    x = int(attrs.get("TextX", "0"))
-    if icon is None:
-        return x
-    iy = int(attrs.get("TabIconY", "0"))
-    ix = int(attrs.get("TabIconX", "0"))
-    ty = int(attrs.get("TextY", "0"))
-    overlap = min(iy + icon.get_height(), ty + 12) - max(iy, ty)
-    if overlap > 6:
-        return max(x, ix + icon.get_width() + 4)
-    return x
-
-
 def _valid_markup(markup, fallback=""):
     """Keep legacy typography if valid, otherwise show a readable label."""
     if markup:
@@ -129,7 +103,8 @@ def _markup(container, attrs, width, *, theme, x=0, y=0, fallback="",
     label = Gtk.Label()
     xoff = int(attrs.get("TextX", "0")) if text_x is None else text_x
     yoff = int(attrs.get("TextY", "0"))
-    available = max(1, width - xoff - 4)
+    # Match GnoMenu 2.9.1's symmetric horizontal text insets.
+    available = max(1, width - xoff * 2 - 2)
     _color_label(
         label, theme, markup, fallback, x + xoff, y + yoff, available,
         selected=selected, invert_unselected=invert_unselected,
@@ -285,26 +260,32 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None) -> dict:
             label, theme, text, attrs.get("Name", ""), x, y,
             min(220, max(70, theme.width // 2)),
         )
-        natural = label.get_preferred_size()[1].width
-        # LabelX is an anchor. Right-aligned labels extend to its left.
-        # Confine left-column system text to its XML-designated panel.
-        if alignment == 2:
-            allowed = max(1, min(natural, x - 4))
-            left = x - allowed
-        elif alignment == 1:
-            allowed = max(1, min(natural, 2 * min(x, theme.width - x) - 6))
-            left = x - allowed // 2
-        else:
-            available = max(1, theme.width - x - 4)
-            program_x = theme.program_list.integer("X")
-            if 0 < x < program_x and program_x - x > 30:
-                available = min(available, program_x - x - 6)
-            allowed = max(1, min(natural, available))
-            left = x
-        label.set_ellipsize(Pango.EllipsizeMode.END)
+
+        # The original GnoMenu uses the markup's natural pixel width to
+        # anchor center- and right-aligned labels. get_preferred_size() on an
+        # unparented GTK3 Label can be 0/1px: that caused every caption to
+        # collapse into a literal "..." ellipsis.
+        pango_layout = label.get_layout()
+        natural, _height = pango_layout.get_pixel_size()
+        if natural < 2 and label.get_text():
+            natural = max(20, len(label.get_text()) * 7)
+        natural = max(1, natural)
+        left = x - (natural if alignment == 2 else
+                    natural // 2 if alignment == 1 else 0)
+        left = max(0, left)
+
+        # Preserve authored text without shrinking it unless it would spill
+        # outside the original menu or cross into the application-list area.
+        boundary = theme.width - 4
+        program_x = theme.program_list.integer("X")
+        if 0 < left < program_x and program_x - left > 30:
+            boundary = min(boundary, program_x - 6)
+        allowed = max(1, min(natural, boundary - left))
+        if allowed < natural:
+            label.set_ellipsize(Pango.EllipsizeMode.END)
         label.set_size_request(allowed, -1)
         label.set_xalign((0.0, 0.5, 1.0)[alignment])
-        layout.put(label, max(0, left), y)
+        layout.put(label, left, y)
 
     tabs = {}
     tab_names = [e.attributes.get("Name", "") for e in theme.tabs]
@@ -335,27 +316,26 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None) -> dict:
         name = attrs.get("Name", "")
         tx, ty = element.integer("TabX"), element.integer("TabY")
         inverted = attrs.get("InvertTextColorOnSel", "0") == "1"
-        readable_markup = _readable_tab_markup(attrs.get("Markup", ""))
-        text_x = _tab_text_x(attrs, icon_pix)
+        # Original GnoMenu positions tab labels at TextX / TextY.
+        # Never move or enlarge the authored caption to fit an icon.
         label = _markup(
             container, attrs, width, theme=theme, x=tx, y=ty,
-            fallback="", markup_override=readable_markup, text_x=text_x,
-            selected=name == active, invert_unselected=inverted,
+            fallback="", selected=name == active,
+            invert_unselected=inverted,
             overlay=attrs.get("ImageSel", "") if name == active
                     else attrs.get("Image", ""),
         )
 
         def set_selected(value, picture=picture, normal=normal, selected=selected,
                          text=label, attr=attrs, bx=tx, by=ty, w=width,
-                         tab_name=name, invert=inverted,
-                         text_x=text_x, original_markup=readable_markup):
+                         tab_name=name, invert=inverted):
             picture.set_from_pixbuf((selected or normal) if value else normal)
             if text is not None:
                 _color_label(
-                    text, theme, original_markup, "",
-                    bx + text_x,
+                    text, theme, attr.get("Markup", ""), "",
+                    bx + int(attr.get("TextX", "0")),
                     by + int(attr.get("TextY", "0")),
-                    max(1, w - text_x - 4),
+                    max(1, w - 2 * int(attr.get("TextX", "0")) - 2),
                     selected=value, invert_unselected=invert,
                     overlay=attr.get("ImageSel", "") if value
                             else attr.get("Image", ""),
