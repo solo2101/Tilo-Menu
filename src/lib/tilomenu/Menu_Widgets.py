@@ -1396,7 +1396,7 @@ class TreeProgramList(gobject.GObject):
                 self.Separator = None
                 self.gtkicontheme = gtk.IconTheme.get_default()
                 self.gtkicontheme.connect('changed', self.update_icons) 
-                targets = [('text/uri-list', 0, 0)]
+                targets = [gtk.TargetEntry.new('text/uri-list',0,0)]
                 #self.tree1.connect("draw", self.expose)
                 #self.EBox.connect("draw", self.expose) 
                 #self.VBoxOut.connect("draw", self.expose)
@@ -1844,7 +1844,7 @@ class IconProgramList(gobject.GObject):
                 self.Separator = None
                 self.gtkicontheme = gtk.IconTheme.get_default()
                 self.gtkicontheme.connect('changed', self.update_icons) 
-                targets = [('text/uri-list', 0, 0)]
+                targets = [gtk.TargetEntry.new('text/uri-list',0,0)]
                 #self.tree1.connect("draw", self.expose)
                 #self.EBox.connect("draw", self.expose) 
                 #self.VBoxOut.connect("draw", self.expose)
@@ -2338,7 +2338,7 @@ class ProgramList(gobject.GObject):
                                 else:
                                         self.Button.set_tooltip_text(name)
                 self.Button.connect("drag-data-get", self.drag_data_get,i)
-                targets = [('text/uri-list', 0, 0)]
+                targets = [gtk.TargetEntry.new('text/uri-list',0,0)]
                 self.Button.drag_source_set(Gdk.ModifierType.BUTTON1_MASK,targets,Gdk.DragAction.COPY)
                 self.Button.drag_source_add_text_targets()
                 #self.tree1.connect("drag-begin", self.drag_begin)
