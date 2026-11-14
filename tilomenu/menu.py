@@ -16,6 +16,7 @@ from gi.repository import GdkPixbuf, Gtk
 
 from .applications import installed_applications, launch_application
 from .themes import load_menu_theme
+from .themes.renderer import render_theme_buttons
 
 
 class MenuWindow(Gtk.Window):
@@ -69,22 +70,7 @@ class MenuWindow(Gtk.Window):
             layout.put(entry, search.integer("X"), search.integer("Y"))
             entry.connect("search-changed", lambda widget: self._populate(widget.get_text()))
 
-        # Render theme-defined artwork. Legacy commands are intentionally not executed.
-        for button in theme.buttons:
-            filename = button.attributes.get("Image", "")
-            path = theme.directory / filename
-            if not filename or not path.is_file():
-                continue
-            image = Gtk.Image.new_from_file(str(path))
-            box = Gtk.Fixed()
-            box.put(image, 0, 0)
-            markup = button.attributes.get("Markup", "")
-            if markup:
-                label = Gtk.Label()
-                label.set_markup(markup)
-                box.put(label, button.integer("TextX"), button.integer("TextY"))
-            layout.put(box, button.integer("ButtonX"), button.integer("ButtonY"))
-            box.set_tooltip_text(button.attributes.get("Name", ""))
+        render_theme_buttons(layout, theme)
 
     def _populate(self, query):
         for child in self.apps.get_children():
@@ -96,13 +82,17 @@ class MenuWindow(Gtk.Window):
             button = Gtk.Button()
             button.get_style_context().add_class("tilo-app")
             button.set_relief(Gtk.ReliefStyle.NONE)
+            button.set_halign(Gtk.Align.FILL)
             content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+            content.set_halign(Gtk.Align.FILL)
             icon = app.get_icon()
             if icon is not None:
                 image = Gtk.Image.new_from_gicon(icon, Gtk.IconSize.MENU)
                 image.set_pixel_size(20)
                 content.pack_start(image, False, False, 0)
             label = Gtk.Label(label=name, xalign=0)
+            label.set_halign(Gtk.Align.START)
+            label.set_hexpand(True)
             label.set_ellipsize(3)
             content.pack_start(label, True, True, 0)
             button.add(content)
