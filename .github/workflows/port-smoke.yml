@@ -51,6 +51,13 @@ jobs:
           XDG_MENU_PREFIX: mate-
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_gui_import.py
+      - name: Construct original 959-line settings window under GTK3
+        continue-on-error: true
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_original_settings.py
       - name: Construct original popup, then show/hide under GTK3
         env:
           GSETTINGS_BACKEND: memory
