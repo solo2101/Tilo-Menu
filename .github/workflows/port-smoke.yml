@@ -27,3 +27,25 @@ jobs:
           GSETTINGS_SCHEMA_DIR: ${{ github.workspace }}/src/share/glib-2.0/schemas
           GSETTINGS_BACKEND: memory
         run: /usr/bin/python3 tests/test_source_port.py
+
+  original-gtk-import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install original Python/GI/GDK dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-gi python3-gi-cairo python3-cairo python3-xdg python3-dbus gir1.2-gtk-3.0 libglib2.0-bin xvfb dbus-x11 curl make
+      - name: Extract untouched GnoMenu themes and assets
+        run: |
+          curl --fail --location --retry 2 \
+            https://launchpad.net/gnomenu/trunk/2.9.1/+download/gnomenu-2.9.1.tar.gz \
+            --output /tmp/gnomenu-2.9.1.tar.gz
+          make prepare SOURCE_ARCHIVE=/tmp/gnomenu-2.9.1.tar.gz
+          sudo make install
+      - name: Import original menu components using GTK3
+        env:
+          GSETTINGS_BACKEND: memory
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_gui_import.py
