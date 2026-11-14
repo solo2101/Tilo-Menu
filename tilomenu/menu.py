@@ -10,7 +10,9 @@ from pathlib import Path
 import gi
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gdk, GdkPixbuf, Gtk
+gi.require_version("Gdk", "3.0")
+gi.require_version("GdkPixbuf", "2.0")
+from gi.repository import GdkPixbuf, Gtk
 
 from .applications import installed_applications, launch_application
 from .themes import load_menu_theme
