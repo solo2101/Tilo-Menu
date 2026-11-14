@@ -13,7 +13,7 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import GLib, Gtk
 
 from tilomenu.menu import MenuWindow
-from tilomenu.themes.avatar import face_file, face_candidates, _scaled_portrait
+from tilomenu.themes.avatar import face_file, face_candidates, _scaled_portrait, avatar_visible
 from tilomenu.themes import load_menu_theme
 from tilomenu.themes.contrast import (
     FOREGROUND, contrast_ratio, legible_markup, sample_background,
@@ -92,13 +92,17 @@ def main(root):
             check_tab_contrast(theme)
             window = MenuWindow(theme)
             window.show_all()
-            # Every original IconSettings with nonzero dimensions has an avatar.
-            if theme.icon is not None and all(
-                theme.icon.integer(key) > 0
-                for key in ("Width", "Height", "InsetWidth", "InsetHeight")
-            ):
-                assert window.avatar is not None, directory.name
+            # Some old IconSettings are outside the menu (Dock), or are
+            # covered by opaque artwork (Slab). They must not float over
+            # the original controls.
+            visible = avatar_visible(theme)
+            assert (window.avatar is not None) == visible, directory.name
+            if visible:
                 assert window.avatar.get_tooltip_text() == "About Me"
+            if directory.name in ("Dock", "Slab"):
+                assert not visible, directory.name
+            if directory.name == "Vista":
+                assert visible, directory.name
 
             # A regression once constrained every legacy label to 1 pixel,
             # displaying only "..." despite correct original XML markup.
