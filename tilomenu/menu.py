@@ -21,7 +21,7 @@ from gi.repository import Gdk, GdkPixbuf, Gtk, Gio
 
 from .applications import application_categories, installed_applications, launch_application
 from .themes import load_menu_theme
-from .themes.renderer import render_theme_buttons
+from .themes.renderer import render_theme_buttons, render_theme_details
 from .icons import load_icon
 from .themes.app_list import ThemeAppList
 from .themes.search import ThemeSearch
@@ -113,6 +113,7 @@ class MenuWindow(Gtk.Window):
             layout.put(self.search_control, search.integer("X"), search.integer("Y"))
 
         render_theme_buttons(layout, theme, self._activate_shortcut)
+        self.theme_tabs = render_theme_details(layout, theme, self._activate_theme_tab)
 
     def _paint_theme_background(self, _window, cr):
         # Clear the full RGBA surface first. set_app_paintable prevents GTK
@@ -125,6 +126,27 @@ class MenuWindow(Gtk.Window):
             Gdk.cairo_set_source_pixbuf(cr, self.background_pixbuf, 0, 0)
             cr.paint()
         return False
+
+    def _activate_theme_tab(self, name):
+        if name == "Favorites":
+            self.category = "Favorites"
+        elif name == "Applications":
+            self.category = "All Applications"
+        elif name in ("Computer", "Places"):
+            return self._activate_shortcut("Computer")
+        elif name in ("Recently Used", "Recent"):
+            return self._activate_shortcut("Show History")
+        else:
+            return False
+        self.show_categories = False
+        self._populate()
+        self._update_theme_tabs()
+        return True
+
+    def _update_theme_tabs(self):
+        selected = "Favorites" if self.category == "Favorites" else "Applications"
+        for name, set_selected in getattr(self, "theme_tabs", {}).items():
+            set_selected(name == selected)
 
     def _theme_context_menu(self, _widget, event):
         if event.button != 3 or event.window != self.get_window():
@@ -263,6 +285,7 @@ class MenuWindow(Gtk.Window):
             self.category = category
         self.show_categories = show_categories
         self._populate()
+        self._update_theme_tabs()
 
     def _launch_from_list(self, app):
         self._launch(None, app)
