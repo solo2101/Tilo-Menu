@@ -80,27 +80,27 @@ class Main_Menu(gobject.GObject):
                 self.window.set_keep_above(0) #Make this always above other windows
                 self.window.stick() #Make this appear on all desktops
                 self.window.set_default_size(Globals.MenuWidth,Globals.MenuHeight)
-                self.window.set_events(gtk.gdk.ALL_EVENTS_MASK)
+                self.window.set_events(Gdk.EventMask.ALL_EVENTS_MASK)
                 try:    # Workaround for Ubuntu Natty
                         self.window.set_property('has-resize-grip', False)
                 except TypeError:
                         pass
-                #if not self.window.window:
+                #if not self.window.get_window():
                 self.colorpb = None
                 self.setup()
-                self.window.connect("composited-changed", self.composite_changed)
-                self.window.connect("expose_event", self.expose)
+                self.window.get_screen().connect("composited-changed", self.composite_changed)
+                self.window.connect("draw", self.expose)
                 self.window.connect("destroy", gtk.main_quit)   #Fixme?
                 self.window.connect("focus-out-event", self.lose_focus)
                 self.window.connect("key-press-event", self.key_down)
                 self.gtk_screen = self.window.get_screen()
                 self.Launcher = Launcher.Launcher()
                 self.Launcher.connect('special-command',self.special_command)
-                colormap = self.gtk_screen.get_rgba_colormap()
-                if colormap is None:
-                        colormap = self.gtk_screen.get_rgb_colormap()
-                gtk.widget_set_default_colormap(colormap)  
-                if not self.window.is_composited():
+                # GTK3's RGBA visual replaces the GTK2 colormap API.
+                visual = self.gtk_screen.get_rgba_visual()
+                if visual and self.gtk_screen.is_composited():
+                        self.window.set_visual(visual)  
+                if not self.gtk_screen.is_composited():
 
                         self.supports_alpha = False
                 else:
@@ -157,7 +157,7 @@ class Main_Menu(gobject.GObject):
 
         def ToggleMenu(self):
                 print(self.visible)
-                if not self.window.window:
+                if not self.window.get_window():
                         self.emit('state-changed',2,2)
                         self.show_window()
                         self.visible = True
@@ -232,8 +232,8 @@ class Main_Menu(gobject.GObject):
 #=================================================================
 #WINDOW SETUP
 #=================================================================
-        def expose (self, widget, event):
-                self.ctx = widget.window.cairo_create()
+        def expose (self, widget, cr):
+                self.ctx = cr
                 # set a clip region for the expose event
                 if self.supports_alpha == False:
                         self.ctx.set_source_rgb(1, 1, 1)
@@ -256,9 +256,9 @@ class Main_Menu(gobject.GObject):
                 if h==0: h = 100
                 self.w = w
                 self.h = h
-                self.pixmap = gtk.gdk.Pixmap (None, w, h, 1)
-                ctx = self.pixmap.cairo_create()
-                self.bgpb = gtk.gdk.pixbuf_new_from_file(Globals.ImageDirectory + Globals.StartMenuTemplate)
+                self.pixmap = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
+                ctx = cairo.Context(self.pixmap)
+                self.bgpb = GdkPixbuf.Pixbuf.new_from_file(Globals.ImageDirectory + Globals.StartMenuTemplate)
                 if Globals.Settings['GtkColors'] == 1 and Globals.Has_Numpy:
                         if not self.colorpb:
                                 bgcolor = Globals.GtkColorCode
@@ -285,10 +285,9 @@ class Main_Menu(gobject.GObject):
                         cairo_drawing.draw_scaled_image(ctx,Globals.IconInX +Globals.UserIconFrameOffsetX,Globals.UserIconFrameOffsetY+Globals.IconInY,Globals.UserImage,Globals.IconInW ,Globals.IconInH)
                 cairo_drawing.draw_enhanced_image(ctx,0,0,Globals.ImageDirectory + Globals.StartMenuTemplate)
 
-                if self.window.is_composited():
-                        self.window.input_shape_combine_mask(self.pixmap,0,0)
-                else:
-                        self.window.shape_combine_mask(self.pixmap, 0, 0)
+                # GTK2 1-bit Pixmap masks are gone. GTK3 composited RGBA
+                # windows keep the original alpha from the PNG background.
+                # Input region shape parity is a separate GTK3 port task.
 
 
         def setup(self):
@@ -433,7 +432,7 @@ class Main_Menu(gobject.GObject):
         def composite_changed(self,widget):
                 self.hide_method()
                 self.show_window()      
-                if not self.window.is_composited():
+                if not self.gtk_screen.is_composited():
  
                         self.supports_alpha = False
                 else:
@@ -444,14 +443,14 @@ class Main_Menu(gobject.GObject):
                 # This will fail if focus stealing prevention is enabled!
                 print('show')
                 self.window.set_keep_above(1)
-                if not self.window.window:
+                if not self.window.get_window():
                         self.window.show_all()
                 else: 
                         try:
                                 self.window.present_with_time(int(time.time())/100)
                         except:
                                 self.window.present()
-                                self.window.window.focus(int(time.time())/100)
+                                self.window.get_window().focus(int(time.time())/100)
                 self.window.set_urgency_hint(1)
                 self.window.activate_focus()
                 #self.window.set_keep_above(0)
