@@ -25,6 +25,7 @@ from .themes.renderer import render_theme_buttons, render_theme_details
 from .icons import load_icon
 from .themes.app_list import ThemeAppList
 from .themes.search import ThemeSearch
+from .themes.avatar import render_user_face, open_mate_about_me
 
 
 class MenuWindow(Gtk.Window):
@@ -113,6 +114,7 @@ class MenuWindow(Gtk.Window):
             layout.put(self.search_control, search.integer("X"), search.integer("Y"))
 
         render_theme_buttons(layout, theme, self._activate_shortcut)
+        self.avatar = render_user_face(layout, theme, open_mate_about_me)
         self.theme_tabs = render_theme_details(layout, theme, self._activate_theme_tab)
 
     def _paint_theme_background(self, _window, cr):

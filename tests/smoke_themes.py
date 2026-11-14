@@ -4,6 +4,7 @@ Runs in Xvfb with GTK3; draws each theme briefly to catch parser,
 Pango markup, widget geometry, and Cairo painting exceptions.
 """
 import sys
+import tempfile
 from pathlib import Path
 
 import gi
@@ -12,6 +13,7 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import GLib, Gtk
 
 from tilomenu.menu import MenuWindow
+from tilomenu.themes.avatar import face_file, face_candidates, _scaled_portrait
 from tilomenu.themes import load_menu_theme
 from tilomenu.themes.contrast import (
     FOREGROUND, contrast_ratio, legible_markup, sample_background,
@@ -59,7 +61,24 @@ def check_tab_contrast(theme):
                 assert ratio > 2.0, (theme.directory.name, name, selected, ratio)
 
 
+def test_face_source():
+    """MATE's face takes priority and portrait crop preserves XML dimensions."""
+    with tempfile.TemporaryDirectory() as temporary:
+        home = Path(temporary)
+        assert next(face_candidates(home=home, username="test-user")) == home / ".face"
+        assert face_file(home=home, username="test-user") is None
+        png_path = home / ".face"
+        from gi.repository import GdkPixbuf
+        pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 20, 40)
+        pixbuf.fill(0xff3366ff)
+        pixbuf.savev(str(png_path), "png", [], [])
+        assert face_file(home=home, username="test-user") == png_path
+        cropped = _scaled_portrait(pixbuf, 46, 46)
+        assert cropped.get_width() == cropped.get_height() == 46
+
+
 def main(root):
+    test_face_source()
     directories = sorted(
         path for path in Path(root).iterdir()
         if path.is_dir() and (path / "themedata.xml").is_file()
@@ -73,6 +92,14 @@ def main(root):
             check_tab_contrast(theme)
             window = MenuWindow(theme)
             window.show_all()
+            # Every original IconSettings with nonzero dimensions has an avatar.
+            if theme.icon is not None and all(
+                theme.icon.integer(key) > 0
+                for key in ("Width", "Height", "InsetWidth", "InsetHeight")
+            ):
+                assert window.avatar is not None, directory.name
+                assert window.avatar.get_tooltip_text() == "About Me"
+
             # A regression once constrained every legacy label to 1 pixel,
             # displaying only "..." despite correct original XML markup.
             canvas = window.get_child()
