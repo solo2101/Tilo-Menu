@@ -88,6 +88,8 @@ class TiloMenu:
             self.applet.connect('change-orient', self.change_orientation)
         self.applet.connect('size-allocate', self.size_allocate_event)
         self.applet.connect('map-event', self.map_event)
+        # Gtk3 maps child widgets synchronously; keep original map-event too.
+        self.applet.connect('map', lambda widget: self.map_event(widget, None))
         self.EBox.add_events(
             Gdk.EventMask.BUTTON_PRESS_MASK |
             Gdk.EventMask.ENTER_NOTIFY_MASK |

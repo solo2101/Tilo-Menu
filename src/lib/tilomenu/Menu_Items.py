@@ -44,7 +44,7 @@ try:
 except: zg = None
 
 if Globals.FirstUse:
-        os.system("/bin/sh -c %s'/lib/%s/GnoMenu-Settings.py --welcome' &" % (INSTALL_PREFIX, Globals.appdirname))
+        os.system("/bin/sh -c %s'/lib/%s/TiloMenu-Settings.py --welcome' &" % (INSTALL_PREFIX, Globals.appdirname))
 
 import gettext
 gettext.textdomain('gnomenu')
@@ -260,7 +260,7 @@ class XDGMenu(gobject.GObject):
                         self.addtomenu(_("Menu editor"),"alacarte",6,"","alacarte")
                         self.addtomenu(_("Screensaver"),"preferences-desktop-screensaver",5,"","gnome-screensaver-preferences")
                         self.addtomenu(_("System Monitor"),"utilities-system-monitor",5,"","gnome-system-monitor")
-                        self.addtomenu(_("GnoMenu settings utility"),"%slogo.png" % Globals.GraphicsDirectory,7,"","%sGnoMenu-Settings.py" % Globals.ProgramDirectory)
+                        self.addtomenu(_("GnoMenu settings utility"),"%slogo.png" % Globals.GraphicsDirectory,7,"","%sTiloMenu-Settings.py" % Globals.ProgramDirectory)
                 #==============================================================
                 #FAVORITES ITEMS MENU
                 #==============================================================
