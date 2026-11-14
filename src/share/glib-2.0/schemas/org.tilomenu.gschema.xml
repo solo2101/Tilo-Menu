@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.tilomenu" path="/org/tilomenu/">
+    <!-- Original GnoMenu settings keys are dynamic and must retain their
+         spelling for the direct source port. -->
+    <key name="values" type="a{sv}">
+      <default>{}</default>
+      <summary>Original GnoMenu preferences</summary>
+      <description>Dynamic GnoMenu preferences stored using GSettings and dconf.</description>
+    </key>
+  </schema>
+</schemalist>

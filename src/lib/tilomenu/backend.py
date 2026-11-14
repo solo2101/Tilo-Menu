@@ -1,146 +1,160 @@
-#!/usr/bin/env python
-
-# This application is released under the GNU General Public License 
-# v3 (or, at your option, any later version). You can find the full 
-# text of the license under http://www.gnu.org/licenses/gpl.txt. 
-# By using, editing and/or distributing this software you agree to 
-# the terms and conditions of this license. 
-# Thank you for using free software!
+#!/usr/bin/env python3
 #
-#(c) Whise 2009 <helderfraga@gmail.com>
+# This application is released under the GNU General Public License
+# v3 (or, at your option, any later version).
+#
+# (c) Whise 2009 <helderfraga@gmail.com>
 #
 # backend for saving and loading settings
-# Part of the GnoMenu
+# Part of the TiloMenu, ported from GnoMenu 2.9.1.
+#
+# GConf -> GSettings (normally backed by dconf), with original XML fallback.
+# Keep save_setting, load_setting, and the mail/browser APIs unchanged.
 
 import os
+import xml.dom.minidom
 
 try:
-        import gconf
-        gconf_client = gconf.client_get_default()
-        BACKEND = 'gconf'
-        print("gconf backend")
-except:
-        BACKEND = 'xml'
-        import xml.dom.minidom
-        print("xml backend")
+    from gi.repository import Gio, GLib
+except ImportError:
+    Gio = None
+    GLib = None
 
 HomeDirectory = os.path.expanduser("~")
-ConfigDirectory = HomeDirectory + '/.gnomenu'
-gconf_app_key = '/apps/gnomenu'
+ConfigDirectory = HomeDirectory + '/.tilomenu'
+gconf_app_key = '/apps/tilomenu'  # Legacy API variable, no longer used by Gio.
+_SCHEMA = 'org.tilomenu'
+_VALUES = 'values'
 
-def save_setting(name,value):
 
-        if BACKEND == 'gconf':
-                if isinstance(value, int) or isinstance(value, float):
-                        gconf_client.set_int(gconf_app_key + '/' + name , int(value))
-                elif isinstance(value, str):
-                        gconf_client.set_string(gconf_app_key + '/' + name , str(value))
-                elif isinstance(value, list):
-                        gconf_client.set_list(gconf_app_key + '/' + name ,1, value)
+def _gsettings():
+    if Gio is None:
+        return None
+    source = Gio.SettingsSchemaSource.get_default()
+    schema = source.lookup(_SCHEMA, True) if source else None
+    if schema is None:
+        return None
+    return Gio.Settings.new_full(schema, None, None)
 
-        elif BACKEND == 'xml':
-                if name == '': return
-                if os.path.isfile(ConfigDirectory + "/.GnoMenu-Settings.xml"):
-                        XMLSettings = xml.dom.minidom.parse(ConfigDirectory + "/.GnoMenu-Settings.xml")
-                        XBase = XMLSettings.getElementsByTagName('GnoMenu')[0]
-                else:
-                        XMLSettings = xml.dom.minidom.Document()
-                        XBase = XMLSettings.createElement('GnoMenu')
 
-                try:
-                        node = XMLSettings.getElementsByTagName('settings')[0]
-                except:
-                        node = XMLSettings.createElement('settings')
-                node.setAttribute(name, str(value))
-                XBase.appendChild(node)
-                XMLSettings.appendChild(XBase)
-                file = open(ConfigDirectory + "/.GnoMenu-Settings.xml","w")
-                XMLSettings.writexml(file, "    ", "", "", "UTF-8")
-                XMLSettings.unlink()
+settings = _gsettings()
+BACKEND = 'gsettings' if settings is not None else 'xml'
 
-        else:
-                pass
 
+def _variant(value):
+    if isinstance(value, bool):
+        return GLib.Variant('i', int(value))
+    if isinstance(value, int):
+        return GLib.Variant('i', value)
+    if isinstance(value, float):
+        return GLib.Variant('d', value)
+    if isinstance(value, (list, tuple)):
+        return GLib.Variant('as', [str(entry) for entry in value])
+    return GLib.Variant('s', str(value))
+
+
+def _xml_file():
+    return os.path.join(ConfigDirectory, '.TiloMenu-Settings.xml')
+
+
+def _xml_load():
+    filenames = (
+        _xml_file(),
+        os.path.join(HomeDirectory, '.gnomenu', '.GnoMenu-Settings.xml'),
+    )
+    for filename in filenames:
+        if not os.path.isfile(filename):
+            continue
+        try:
+            document = xml.dom.minidom.parse(filename)
+            nodes = document.getElementsByTagName('settings')
+            if nodes:
+                return {key: nodes[0].getAttribute(key)
+                        for key in nodes[0].attributes.keys()}
+        except (OSError, ValueError, xml.dom.DOMException):
+            continue
+    return {}
+
+
+def _from_xml(name, value):
+    if name == 'favorites':
+        if not value or value == '[]':
+            return []
+        # Original GnoMenu wrote favorites as a Python repr; preserve the
+        # representation without running arbitrary data as executable code.
+        import ast
+        try:
+            result = ast.literal_eval(value)
+            if isinstance(result, list):
+                return result
+        except (ValueError, SyntaxError):
+            pass
+        return [item.strip(" '\"") for item in value.strip('[]').split(',')
+                if item.strip(" '\"")]
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return value
+
+
+def save_setting(name, value):
+    """Original save_setting(name,value) contract, using GSettings/dconf."""
+    if not name:
+        return
+    if BACKEND == 'gsettings':
+        # GSettings uses a declared key. A{sv} preserves the original dynamic
+        # setting names and int/string/list values without renaming the API.
+        old = settings.get_value(_VALUES).unpack()
+        values = {key: item if isinstance(item, GLib.Variant) else _variant(item)
+                  for key, item in old.items()}
+        values[name] = _variant(value)
+        settings.set_value(_VALUES, GLib.Variant('a{sv}', values))
+    else:
+        os.makedirs(ConfigDirectory, exist_ok=True)
+        document = xml.dom.minidom.Document()
+        root = document.createElement('TiloMenu')
+        node = document.createElement('settings')
+        old = _xml_load()
+        old[name] = str(value)
+        for key, item in old.items():
+            node.setAttribute(key, item)
+        root.appendChild(node)
+        document.appendChild(root)
+        with open(_xml_file(), 'w', encoding='utf-8') as output:
+            document.writexml(output, '', '', '', 'UTF-8')
+        document.unlink()
 
 
 def load_setting(name):
-        if BACKEND == 'gconf':
-                try:
-                        typ =  gconf_client.get_without_default(gconf_app_key + "/" + name).type
-                        
-                        if typ == 1:
-                                return gconf_client.get_string(gconf_app_key + "/" + name)
-        
-                        elif typ == 2:
-                                return gconf_client.get_int(gconf_app_key + "/" + name)
-        
-                        elif typ == 6:
-                                return gconf_client.get_list(gconf_app_key + "/" + name,1)
-        
-        
-        
-                        else: 
-                                if name == 'favorites': return []
-                                return None
-
-                except : 
-                        if name == 'favorites': return []
-                return None
-
-
-
-        elif BACKEND == 'xml':
-                if os.path.isfile(ConfigDirectory + "/.GnoMenu-Settings.xml"):
-                        XMLSettings = xml.dom.minidom.parse(ConfigDirectory + "/.GnoMenu-Settings.xml")
-                        #print XMLSettings.getElementsByTagName('GnoMenu')[0].childNodes[0].localName
-                        x = XMLSettings.getElementsByTagName('GnoMenu')[0].getElementsByTagName("settings")[0]
-                        try:
-                                x = x.attributes[name].value
-                                try: 
-                                        a = int(x)
-                                        
-                                except:
-                                        if str(x).find('[]') != -1 and name == 'favorites': return []
-                                        
-
-                                        if str(x).find(':') != -1:
-                                                
-                                                x = str(x).replace(" u'","").replace("u'","").replace("[","").replace("]","").replace("'","").replace('&quot;','"')
-                                                a = x.split(',')
-                                                print(a                         )
-                                        else:
-                                                a = str(x)
-                                        
-                                
-                                return a
-
-
-                        except: 
-                                if name == 'favorites': return []
-                                return None
-
-                else: 
-                        return None
-
-        else:
-                pass
+    """Original load_setting(name) contract, including [] for favorites."""
+    if BACKEND == 'gsettings':
+        stored = settings.get_value(_VALUES).lookup_value(name, None)
+        if stored is not None:
+            return stored.unpack()
+        # Import existing XML settings the first time a setting is requested.
+        xml_values = _xml_load()
+        if name in xml_values:
+            value = _from_xml(name, xml_values[name])
+            save_setting(name, value)
+            return value
+    else:
+        values = _xml_load()
+        if name in values:
+            return _from_xml(name, values[name])
+    return [] if name == 'favorites' else None
 
 
 def get_default_mail_client():
+    if Gio is not None:
+        app = Gio.AppInfo.get_default_for_uri_scheme('mailto')
+        if app:
+            return app.get_commandline() or 'xdg-open mailto:'
+    return 'xdg-open mailto:'
 
-        if BACKEND == 'gconf':
-                return gconf_client.get_string("/desktop/gnome/url-handlers/mailto/command")
-        elif BACKEND == 'xml':
-                return "xdg-open mailto:"
-        else:
-                pass
 
 def get_default_internet_browser():
-
-        if BACKEND == 'gconf':
-                return gconf_client.get_string("/desktop/gnome/url-handlers/http/command")#"/desktop/gnome/applications/browser/exec")
-        elif BACKEND == 'xml':
-                return "xdg-open http:"
-        else:
-                pass
-
+    if Gio is not None:
+        app = Gio.AppInfo.get_default_for_uri_scheme('http')
+        if app:
+            return app.get_commandline() or 'xdg-open http:'
+    return 'xdg-open http:'
