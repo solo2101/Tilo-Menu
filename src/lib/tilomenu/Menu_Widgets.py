@@ -1444,11 +1444,11 @@ class TreeProgramList(gobject.GObject):
                 if Globals.Settings['GtkColors'] == 0:
                         self.EBox.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
                         #self.cell1.set_property('background', Globals.ThemeColorCode)
-                        self.cell1.set_property('cell-background', Globals.ThemeColorCode)
-                        self.render.set_property('cell-background', Globals.ThemeColorCode)
+                        self.cell1.set_property('cell-background', Globals.ThemeColorHtml)
+                        self.render.set_property('cell-background', Globals.ThemeColorHtml)
                         #self.tree1.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
                         self.tree1.modify_base(gtk.StateType.NORMAL, Globals.ThemeColorCode)
-                        self.cell1.set_property('foreground',Globals.NegativeThemeColorCode)
+                        self.cell1.set_property('foreground',Globals.NegativeThemeColorCode.to_string())
 
                 self.tree1.set_hover_selection(True)
                 
@@ -1886,11 +1886,11 @@ class IconProgramList(gobject.GObject):
                 except:pass
                 self.tree1.get_cells()[0].set_property('xpad', 6)
                 if Globals.Settings['GtkColors'] == 0:
-                        cell.set_property('cell-background', Globals.ThemeColorCode)
-                        self.tree1.get_cells()[1].set_property('cell-background', Globals.ThemeColorCode)
+                        cell.set_property('cell-background', Globals.ThemeColorHtml)
+                        self.tree1.get_cells()[1].set_property('cell-background', Globals.ThemeColorHtml)
                         #self.tree1.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
                         self.tree1.modify_base(gtk.StateType.NORMAL, Globals.ThemeColorCode)
-                        cell.set_property('foreground',Globals.NegativeThemeColorCode)
+                        cell.set_property('foreground',Globals.NegativeThemeColorCode.to_string())
                 
                 self.tree1.set_row_spacing(0)
                 self.tree1.set_margin(0)
