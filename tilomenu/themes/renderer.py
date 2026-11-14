@@ -345,7 +345,9 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None,
         tabs[name] = set_selected
         set_selected(name == active)
         box = _event_box(container, width, height, name, on_tab)
-        if tab_hover and on_tab is not None:
+        # Hover is only for switching tab pages, never for launching Places,
+        # Recent or system actions when the pointer merely passes over them.
+        if tab_hover and on_tab is not None and name in ('Favorites', 'Applications'):
             box.connect(
                 "enter-notify-event",
                 lambda _widget, _event, action=name: bool(on_tab(action))
