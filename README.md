@@ -1,26 +1,18 @@
 # Tilo-Menu
 
-A clean, MATE-only application menu for Fedora.
+A clean, MATE-only rebuild of the original GnoMenu for Fedora.
 
-## Status
+The project uses Python 3, GTK 3, GIO, and the original GnoMenu XML theme layout. It does not include AWN, Cairo-Dock, Docky, KDE, XFCE, or GNOME 2/Bonobo integrations.
 
-Early development. Not installable as a panel applet yet.
+## Development preview
 
-## Scope
+Install GTK 3 Python bindings on Fedora, then extract your original GnoMenu 2.9.1 archive. From the repository directory:
 
-- MATE panel only
-- Installed applications, search, and launching
-- Favorites and original GnoMenu-inspired themes later
+```bash
+sudo dnf install python3-gobject gtk3
+python3 -m tilomenu.menu /path/to/gnomenu/src/share/gnomenu/Themes/Menu/Vista
+```
 
-No AWN, Cairo-Dock, Docky, KDE, XFCE, or GNOME 2 integration.
+The standalone preview draws the theme background and menu artwork, positions the application list and search field using XML coordinates, and launches installed applications through GIO.
 
-## Source
-
-Rebuild inspired by [original GnoMenu](https://github.com/jindongyang/gnomenu).
-The original GTK 2 / Python 2 code is being reviewed, not copied wholesale.
-Modern implementation uses Python 3, PyGObject, and GIO.
-
-## Current module
-
-`tilomenu/applications.py` implements application discovery, search, and launching.
-Next: implement a MATE panel applet and popup using the panel APIs available on Fedora 43.
+This is an early preview, not a panel applet or an installable application. Theme-defined system buttons are decorative until safe MATE actions are implemented. The original theme artwork is not bundled yet.
