@@ -1,0 +1,29 @@
+name: Direct GnoMenu source port checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  port-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python GI/GSettings dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-gi libglib2.0-bin
+      - name: Compile Python 3 source
+        run: /usr/bin/python3 -m compileall -q src/lib/tilomenu src/bin
+      - name: Compile GSettings schema
+        run: glib-compile-schemas --strict src/share/glib-2.0/schemas
+      - name: Preserve original class signatures and settings behavior
+        env:
+          GSETTINGS_SCHEMA_DIR: ${{ github.workspace }}/src/share/glib-2.0/schemas
+          GSETTINGS_BACKEND: memory
+        run: /usr/bin/python3 tests/test_source_port.py
