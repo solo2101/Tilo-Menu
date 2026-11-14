@@ -38,9 +38,9 @@ def face_file(home=None, username=None):
     for path in face_candidates(home=home, username=username):
         try:
             if path.is_file():
-                GdkPixbuf.Pixbuf.new_from_file_info(str(path))
+                GdkPixbuf.Pixbuf.new_from_file(str(path))
                 return path
-        except (OSError, ValueError, Exception):
+        except Exception:
             continue
     return None
 
