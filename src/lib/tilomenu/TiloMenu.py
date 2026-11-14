@@ -24,6 +24,9 @@ gi.require_version('GdkPixbuf', '2.0')
 gi.require_version('MatePanelApplet', '4.0')
 from gi.repository import Gdk, GdkPixbuf, Gtk, MatePanelApplet
 
+import Globals
+from Menu_Main import Main_Menu
+
 
 name = 'TiloMenu'
 APPLET_IID = 'TiloMenuApplet'
@@ -61,11 +64,11 @@ class TiloMenu:
         self.applet.set_name(name)
         self.remove_applet_border()
         self.panel_id = None
-        self.hwg = None  # Original Main_Menu has not yet been ported.
+        self.hwg = None
         self.orientation = None
         self.change_orientation()
         self.size = self.get_panel_size()
-        self.StartButton = start_button_images()
+        self.StartButton = Globals.StartButton
         self.scale = 1.0
 
         self.Fixed = Gtk.Fixed()
@@ -127,12 +130,17 @@ class TiloMenu:
             self.orientation = 'top' if int(orient) == 1 else 'bottom'
         except (AttributeError, TypeError, ValueError):
             self.orientation = 'bottom'
+        Globals.flip = False if self.orientation == 'top' else None
         return True
 
     def map_event(self, widget, event):
+        # The original GnoMenu constructs the menu when the panel maps.
         self.Redraw_graphics()
-        # Original: self.hwg = Main_Menu(self.HideMenu)
-        # Deferred until src/lib/tilomenu/Menu_Main.py is ported.
+        if self.hwg is None:
+            self.hwg = Main_Menu(self.HideMenu)
+            self.hwg.connect('state-changed', self.button_changed)
+        self.hwg.Adjust_Window_Dimensions(self.x, self.y)
+        Globals.SavedOriginState = self.x, self.y
         return False
 
     def size_allocate_event(self, widget, allocation):
@@ -143,16 +151,23 @@ class TiloMenu:
         window = widget.get_window()
         if window is not None:
             self.x, self.y = window.get_origin()
+            self.update_panel_position()
         else:
             self.x, self.y = 0, 0
         return False
 
+    def update_panel_position(self):
+        # Preserve original panel-to-popup repositioning on resize/move.
+        if self.x != self.oldx and self.hwg is not None:
+            self.hwg.Adjust_Window_Dimensions(self.x, self.y)
+            Globals.SavedOriginState = self.x, self.y
+            self.oldx = self.x
+
     def button_press(self, widget, event):
         if event.button == 1:
-            # Do not fabricate a popup; restore original ShowMenu/HideMenu
-            # logic when porting Menu_Main.py.
             if self.hwg is None:
-                return True
+                self.map_event(widget, event)
+            self.hwg.Adjust_Window_Dimensions(self.x, self.y)
             if self.Button_state == 2:
                 self.HideMenu()
                 self.Button_state = 1
@@ -183,8 +198,9 @@ class TiloMenu:
         for key, icon, label, callback in actions:
             action = Gtk.Action(key, label, None, icon)
             action.connect('activate', callback)
-            # No fake settings; enable after porting original settings.
-            action.set_sensitive(False)
+            # Settings uses the original TiloMenu-Settings.py window.
+            # The original external MenuEditor remains deferred.
+            action.set_sensitive(key in ('Props', 'About'))
             self.verbs.add_action(action)
         self.applet.setup_menu(self.propxml, self.verbs)
 
@@ -216,12 +232,23 @@ class TiloMenu:
 
     def ShowMenu(self):
         if self.hwg:
+            window = self.applet.get_window()
+            if window is not None:
+                origin = window.get_origin()
+                if origin != getattr(Globals, 'SavedOriginState', None):
+                    self.hwg.Adjust_Window_Dimensions(*origin)
+                    Globals.SavedOriginState = origin
             self.hwg.show_window()
 
     def HideMenu(self):
         if self.hwg:
             self.hwg.hide_window()
         self.Button_state = 0
+        self.Redraw_graphics()
+
+    def button_changed(self, event, button, button1):
+        # Original Main_Menu's "state-changed" signal resets the orb.
+        self.Button_state = button
         self.Redraw_graphics()
 
     def Redraw_graphics(self):
