@@ -3,30 +3,30 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 data="${XDG_DATA_HOME:-$HOME/.local/share}"
 target="$data/tilo-menu"
-assets="$root/data/themes/Menu/Vista"
+assets="$root/data/themes/Menu"
 archive="${TILO_GNOMENU_ARCHIVE:-$HOME/Downloads/gnomenu-2.9.1.tar.gz}"
 
-if [[ ! -f "$assets/themedata.xml" ]]; then
+if [[ ! -f "$assets/Vista/themedata.xml" || ! -f "$assets/Slab/themedata.xml" ]]; then
   mkdir -p "$assets"
   temp="$(mktemp -d)"
   trap 'rm -rf "$temp"' EXIT
   if [[ ! -f "$archive" ]]; then
     archive="$temp/gnomenu-2.9.1.tar.gz"
-    echo 'Downloading original GnoMenu 2.9.1 Vista artwork from Launchpad...'
+    echo 'Downloading original GnoMenu 2.9.1 menu themes from Launchpad...'
     curl --fail --location --retry 2 --output "$archive" 'https://launchpad.net/gnomenu/trunk/2.9.1/+download/gnomenu-2.9.1.tar.gz'
   fi
-  tar -xzf "$archive" -C "$temp" --wildcards 'gnomenu/src/share/gnomenu/Themes/Menu/Vista/*'
-  cp -a "$temp/gnomenu/src/share/gnomenu/Themes/Menu/Vista/." "$assets/"
+  tar -xzf "$archive" -C "$temp" --wildcards 'gnomenu/src/share/gnomenu/Themes/Menu/*'
+  cp -a "$temp/gnomenu/src/share/gnomenu/Themes/Menu/." "$assets/"
 fi
 
 mkdir -p "$target" "$data/applications" "$HOME/.local/bin"
 cp -a "$root/tilomenu" "$target/"
 mkdir -p "$target/data/themes/Menu"
-cp -a "$assets" "$target/data/themes/Menu/"
+cp -a "$assets/." "$target/data/themes/Menu/"
 cat > "$HOME/.local/bin/tilo-menu" <<EOF
 #!/usr/bin/env bash
 export PYTHONPATH="$target\${PYTHONPATH:+:\$PYTHONPATH}"
-exec /usr/bin/python3 -m tilomenu.menu "$target/data/themes/Menu/Vista" "\$@"
+exec /usr/bin/python3 -m tilomenu.menu --themes-dir "$target/data/themes/Menu" "\$@"
 EOF
 chmod +x "$HOME/.local/bin/tilo-menu"
 cat > "$data/applications/tilo-menu.desktop" <<EOF

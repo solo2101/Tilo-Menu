@@ -33,9 +33,10 @@ def load_menu_theme(directory: str | Path, color: str = "white") -> MenuTheme:
         (node for node in variants if node.get("color") in (color, "All")),
         None,
     )
+    if selected is None and variants:
+        selected = variants[0]
     if selected is None:
-        available = ", ".join(node.get("color", "") for node in variants)
-        raise ValueError(f"Theme color {color!r} unavailable; choices: {available}")
+        raise ValueError("Theme contains no color variants")
 
     background = _required(selected, "Background").attrib["Image"]
     dimensions = _required(selected, "WindowDimensions")

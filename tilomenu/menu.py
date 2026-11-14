@@ -28,10 +28,12 @@ class MenuWindow(Gtk.Window):
     def __init__(self, theme):
         super().__init__(title="Tilo Menu")
         self.theme = theme
+        self.themes_dir = theme.directory.parent
         self.set_default_size(theme.width, theme.height)
         self.set_resizable(False)
         self.set_decorated(False)
         self.connect("destroy", Gtk.main_quit)
+        self.connect("button-press-event", self._theme_context_menu)
 
         layout = Gtk.Fixed()
         self.add(layout)
@@ -92,6 +94,35 @@ class MenuWindow(Gtk.Window):
             entry.connect("search-changed", self._change_search)
 
         render_theme_buttons(layout, theme, self._activate_shortcut)
+
+    def _theme_context_menu(self, _widget, event):
+        if event.button != 3 or event.window != self.get_window():
+            return False
+        menu = Gtk.Menu()
+        submenu = Gtk.Menu()
+        for path in sorted(self.themes_dir.iterdir(), key=lambda p: p.name.casefold()):
+            if not path.is_dir() or not (path / "themedata.xml").is_file():
+                continue
+            item = Gtk.MenuItem(label=path.name)
+            item.set_sensitive(path != self.theme.directory)
+            item.connect("activate", self._switch_theme, path)
+            submenu.append(item)
+        parent = Gtk.MenuItem(label="Change Theme")
+        parent.set_submenu(submenu)
+        menu.append(parent)
+        menu.show_all()
+        menu.popup_at_pointer(event)
+        return True
+
+    def _switch_theme(self, _item, path):
+        settings = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "tilo-menu" / "settings.json"
+        try:
+            settings.parent.mkdir(parents=True, exist_ok=True)
+            settings.write_text(json.dumps({"theme": path.name}, indent=2) + "\n", encoding="utf-8")
+            subprocess.Popen([str(Path.home() / ".local/bin/tilo-menu")], start_new_session=True)
+            self.close()
+        except OSError as error:
+            print(f"Tilo Menu: theme switch failed: {error}")
 
     def _activate_shortcut(self, name):
         """Open MATE destinations using a fixed allowlist, never theme commands."""
@@ -254,10 +285,27 @@ class MenuWindow(Gtk.Window):
 
 def main():
     parser = argparse.ArgumentParser(description="Preview a GnoMenu XML menu theme")
-    parser.add_argument("theme_directory", type=Path)
+    parser.add_argument("theme_directory", nargs="?", type=Path)
+    parser.add_argument("--themes-dir", type=Path)
+    parser.add_argument("--theme", help="Select a theme by directory name")
+    parser.add_argument("--list-themes", action="store_true")
     parser.add_argument("--color", default="white")
     args = parser.parse_args()
-    window = MenuWindow(load_menu_theme(args.theme_directory, args.color))
+    themes_dir = args.themes_dir or (args.theme_directory.parent if args.theme_directory else Path.home() / ".local/share/tilo-menu/data/themes/Menu")
+    themes = {p.name: p for p in themes_dir.iterdir() if p.is_dir() and (p / "themedata.xml").is_file()} if themes_dir.is_dir() else {}
+    if args.list_themes:
+        print("\n".join(sorted(themes)))
+        return
+    settings = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "tilo-menu" / "settings.json"
+    try:
+        saved = json.loads(settings.read_text(encoding="utf-8")).get("theme", "Vista")
+    except (OSError, ValueError, AttributeError):
+        saved = "Vista"
+    chosen = args.theme or saved
+    path = args.theme_directory or themes.get(chosen) or themes.get("Vista")
+    if path is None:
+        parser.error("No installed menu themes found. Run make install.")
+    window = MenuWindow(load_menu_theme(path, args.color))
     window.show_all()
     Gtk.main()
 
