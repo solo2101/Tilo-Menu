@@ -38,9 +38,10 @@ class ThemeAppList(Gtk.DrawingArea):
         self.connect("scroll-event", self._scroll)
         self.background = None
         try:
-            self.background = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                str(theme.directory / theme.background),
-                theme.width, theme.height, False,
+            # Keep the original PNG dimensions. Some XML window dimensions
+            # differ from the artwork (Dock is one example).
+            self.background = GdkPixbuf.Pixbuf.new_from_file(
+                str(theme.directory / theme.background)
             )
         except Exception:
             pass
@@ -67,12 +68,22 @@ class ThemeAppList(Gtk.DrawingArea):
         layout.set_font_description(Pango.FontDescription("Sans 9"))
         layout.set_width(max(1, max_width) * Pango.SCALE)
         layout.set_ellipsize(Pango.EllipsizeMode.END)
+        cr.move_to(x, y)
+        # A fine contrasting outline keeps text readable on partly
+        # transparent images, regardless of the desktop wallpaper.
+        PangoCairo.layout_path(cr, layout)
+        cr.set_line_width(1.6)
+        cr.set_line_join(1)
+        if light_text:
+            cr.set_source_rgba(0.0, 0.0, 0.0, 0.75)
+        else:
+            cr.set_source_rgba(1.0, 1.0, 1.0, 0.8)
+        cr.stroke_preserve()
         if light_text:
             cr.set_source_rgb(0.97, 0.97, 0.97)
         else:
             cr.set_source_rgb(0.09, 0.09, 0.09)
-        cr.move_to(x, y)
-        PangoCairo.show_layout(cr, layout)
+        cr.fill()
 
     def _light_text_at(self, x, y):
         """Match each text row against its real background pixel."""

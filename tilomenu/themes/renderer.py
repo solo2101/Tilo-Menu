@@ -26,7 +26,7 @@ def _pixbuf(directory, filename, size=None):
     return None
 
 
-def _icon(directory, filename, size=16):
+def _icon(directory, filename, size=0):
     pix = _pixbuf(directory, filename, size if size > 0 else None)
     if pix is not None:
         return pix
@@ -59,6 +59,7 @@ def _markup(container, attrs, width, *, fallback=""):
 def _event_box(child, width, height, name, callback):
     eventbox = Gtk.EventBox()
     eventbox.set_visible_window(False)
+    eventbox.set_above_child(True)
     eventbox.set_size_request(width, height)
     eventbox.add(child)
     if name and name != ":SEPARATOR:":
