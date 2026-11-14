@@ -95,6 +95,9 @@ class MenuWindow(Gtk.Window):
 
     def _activate_shortcut(self, name):
         """Open MATE destinations using a fixed allowlist, never theme commands."""
+        action = name.strip().lower().replace("_", " ").strip(":")
+        if action in ("power", "shutdown", "shut down", "power off", "reboot", "restart", "lock", "lock screen", "logout", "log out", "logoff"):
+            return self._system_action(action)
         home = Path.home()
         folders = {
             "Home Folder": home,
@@ -132,6 +135,41 @@ class MenuWindow(Gtk.Window):
                 except OSError as error:
                     print(f"Tilo Menu: unable to start {command}: {error}")
                 return True
+        return True
+
+    def _system_action(self, action):
+        """Confirm session actions and delegate to MATE or logind."""
+        if action in ("power", "shutdown", "shut down", "power off"):
+            title, command = "Shut down", ["systemctl", "poweroff"]
+        elif action in ("reboot", "restart"):
+            title, command = "Restart", ["systemctl", "reboot"]
+        elif action in ("logout", "log out", "logoff"):
+            title, command = "Log out", ["mate-session-save", "--logout"]
+        else:
+            title, command = "Lock screen", ["xdg-screensaver", "lock"]
+
+        if title in ("Shut down", "Restart"):
+            dialog = Gtk.MessageDialog(
+                transient_for=self, modal=True,
+                message_type=Gtk.MessageType.QUESTION,
+                buttons=Gtk.ButtonsType.NONE,
+                text=f"{title} the computer?",
+            )
+            dialog.format_secondary_text("Unsaved work may be lost.")
+            dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+            dialog.add_button(title, Gtk.ResponseType.OK)
+            response = dialog.run()
+            dialog.destroy()
+            if response != Gtk.ResponseType.OK:
+                return True
+        if not shutil.which(command[0]):
+            print(f"Tilo Menu: {command[0]} is not installed")
+            return True
+        try:
+            subprocess.Popen(command, start_new_session=True)
+            self.close()
+        except OSError as error:
+            print(f"Tilo Menu: {title} failed: {error}")
         return True
 
     def _load_favorites(self):
