@@ -3,6 +3,9 @@
 GTK handles input, not the list's pixels. Appearance never inherits the MATE
 GTK theme, keeping text legible after switching between light and dark styles.
 """
+import gi
+
+gi.require_version('PangoCairo', '1.0')
 from gi.repository import Gdk, GdkPixbuf, Gtk, Pango, PangoCairo
 from ..icons import load_icon
 

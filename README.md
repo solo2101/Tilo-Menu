@@ -5,7 +5,7 @@ Python 3 / GTK 3 standalone preview of the original GnoMenu menu for Fedora MATE
 ## Install from GitHub
 
 ```bash
-sudo dnf install git make curl python3-gobject gtk3
+sudo dnf install git make curl python3-gobject python3-cairo gtk3
 cd ~/Downloads
 git clone https://github.com/solo2101/Tilo-Menu.git
 cd Tilo-Menu
@@ -19,8 +19,12 @@ The installer downloads the original GnoMenu 2.9.1 source archive from Launchpad
 make uninstall
 ```
 
-This is an early preview. System shortcuts and the original themed controls are not fully functional yet. The original theme artwork belongs to its respective authors and is not included in the GitHub source tree.
+This is an early preview, not a MATE panel applet. The program list is painted with Cairo, the search entry uses original theme imagery, and button and tab chrome follows the original GnoMenu XML. Some theme-specific actions are not yet implemented. The original theme artwork belongs to its respective authors and is not included in the GitHub source tree.
 
 ## Themes
 
 Right-click the menu background and choose **Change Theme**. Your selection is saved for the next launch. Vista remains the default. Run `~/.local/bin/tilo-menu --list-themes` to see installed themes, or `~/.local/bin/tilo-menu --theme Slab` to preview a specific theme without changing the saved choice. Themes use the original XML geometry; visual compatibility varies by theme.
+
+## Rendering regression test
+
+The GitHub Actions workflow downloads the original 2.9.1 theme bundle and starts all 15 themes under Xvfb using Python 3 and GTK 3. This checks for startup, XML, and drawing errors. Visual validation on Fedora MATE is still required for composited transparency and alignment.

@@ -5,6 +5,7 @@ ImageBack is the optional resting background. Original Pango markup is honored.
 """
 import getpass
 import platform
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from gi.repository import GdkPixbuf, Gtk, Pango
@@ -37,18 +38,25 @@ def _icon(directory, filename, size=0):
     return None
 
 
+def _set_safe_markup(label, markup, fallback=""):
+    """Ignore malformed legacy markup rather than issuing GTK warnings."""
+    if not markup:
+        label.set_text(fallback)
+        return
+    try:
+        ET.fromstring("<root>" + markup + "</root>")
+    except ET.ParseError:
+        label.set_text(fallback)
+        return
+    label.set_markup(markup)
+
+
 def _markup(container, attrs, width, *, fallback=""):
     markup = attrs.get("Markup", "")
     if not markup and not fallback:
         return
     label = Gtk.Label()
-    try:
-        if markup:
-            label.set_markup(markup)
-        else:
-            label.set_text(fallback)
-    except Exception:
-        label.set_text(fallback)
+    _set_safe_markup(label, markup, fallback)
     label.set_xalign((0.0, 0.5, 1.0)[max(0, min(2, int(attrs.get("TextAlignment", "0"))))])
     label.set_ellipsize(Pango.EllipsizeMode.END)
     x = int(attrs.get("TextX", "0"))
@@ -145,10 +153,7 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None) -> dict:
         )
         text = markup.replace("[TEXT]", replacement)
         label = Gtk.Label()
-        try:
-            label.set_markup(text)
-        except Exception:
-            label.set_text(replacement)
+        _set_safe_markup(label, text, replacement)
         label.set_xalign((0.0, 0.5, 1.0)[max(0, min(2, int(attrs.get("TextAlignment", "0"))))])
         layout.put(label, element.integer("LabelX"), element.integer("LabelY"))
 
