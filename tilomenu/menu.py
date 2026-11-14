@@ -22,7 +22,7 @@ from .applications import application_categories, installed_applications, launch
 from .themes import load_menu_theme
 from .themes.renderer import render_theme_buttons
 from .icons import load_icon
-from .themes.palette import program_colors
+from .themes.app_list import ThemeAppList
 
 
 class MenuWindow(Gtk.Window):
@@ -66,38 +66,13 @@ class MenuWindow(Gtk.Window):
         })
         self.categories = ["All Applications", "Favorites", *category_names]
         self.show_categories = False
-        self.category_select = Gtk.Button(label="All Applications  ▾")
-        self.category_select.get_style_context().add_class("tilo-category")
-        self.category_select.set_relief(Gtk.ReliefStyle.NONE)
-        self.category_select.set_size_request(program.integer("Width"), 30)
-        layout.put(self.category_select, program.integer("X"), program.integer("Y"))
-        self.category_select.connect("clicked", self._toggle_categories)
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scroll.get_style_context().add_class("tilo-app-scroll")
-        scroll.set_size_request(program.integer("Width"), max(20, program.integer("Height") - 32))
-        layout.put(scroll, program.integer("X"), program.integer("Y") + 32)
-        text_color, hover_color = program_colors(theme)
-        css = Gtk.CssProvider()
-        css.load_from_data(("""
-            window.tilo-window, window.tilo-window > fixed.tilo-layout { background: transparent; background-color: transparent; }
-            .tilo-window button.tilo-category { background: transparent; background-image: none; border: 0; border-radius: 0; box-shadow: none; padding: 2px 6px; color: TEXT_COLOR; }
-            .tilo-window button.tilo-category:hover { background: HOVER_COLOR; }
-            .tilo-window entry { box-shadow: none; }
-            .tilo-window listbox, .tilo-window listbox row, .tilo-window scrolledwindow, .tilo-window viewport { background: transparent; border: none; box-shadow: none; }
-            .tilo-window listbox row { padding: 0; min-height: 0; }
-            .tilo-window button.tilo-app { background: transparent; background-image: none; border: none;
-                box-shadow: none; border-radius: 0; padding: 3px 5px; min-height: 26px; }
-            .tilo-window button.tilo-app:hover { background: HOVER_COLOR; }
-            .tilo-window button.tilo-app label { font-size: 12px; color: TEXT_COLOR; text-shadow: none; }
-        """.replace("TEXT_COLOR", text_color).replace("HOVER_COLOR", hover_color)).encode("utf-8"))
-        Gtk.StyleContext.add_provider_for_screen(
-            self.get_screen(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        # A single Cairo drawing area paints the original theme's pixels,
+        # avoiding GTK light/dark controls inside the application list.
+        self.apps = ThemeAppList(
+            theme, self._launch_from_list, self._select_from_list, self._favorite_from_list
         )
-        self.apps = Gtk.ListBox()
-        self.apps.set_selection_mode(Gtk.SelectionMode.NONE)
-        scroll.add(self.apps)
-        self._populate("")
+        layout.put(self.apps, program.integer("X"), program.integer("Y"))
+        self._populate()
 
         search = theme.search
         if search.attributes.get("Widget") != "None":
@@ -242,71 +217,39 @@ class MenuWindow(Gtk.Window):
             print(f"Tilo Menu: unable to save favorites: {error}")
         self._populate()
 
-    def _app_context_menu(self, widget, event, app):
-        if event.button != 3 or not app.get_id():
-            return False
-        menu = Gtk.Menu()
-        label = "Remove from Favorites" if app.get_id() in self.favorites else "Add to Favorites"
-        item = Gtk.MenuItem(label=label)
-        item.connect("activate", self._toggle_favorite, app)
-        menu.append(item)
-        menu.show_all()
-        menu.popup_at_widget(widget, 2, 3, event)
-        return True
-
-    def _toggle_categories(self, _button):
-        self.show_categories = not self.show_categories
+    def _select_from_list(self, category, show_categories):
+        if category is not None:
+            self.category = category
+        self.show_categories = show_categories
         self._populate()
 
-    def _choose_category(self, _button, category):
-        self.category = category
-        self.show_categories = False
-        self.category_select.set_label(category + "  ▾")
-        self._populate()
+    def _launch_from_list(self, app):
+        self._launch(None, app)
+
+    def _favorite_from_list(self, app):
+        self._toggle_favorite(None, app)
 
     def _change_search(self, widget):
         self.query = widget.get_text().casefold()
         self._populate()
 
-    def _populate(self, query=None):
-        for child in self.apps.get_children():
-            self.apps.remove(child)
+    def _populate(self):
         if self.show_categories:
-            for category in self.categories:
-                button = Gtk.Button(label=category)
-                button.get_style_context().add_class("tilo-app")
-                button.set_relief(Gtk.ReliefStyle.NONE)
-                button.connect("clicked", self._choose_category, category)
-                self.apps.add(button)
-            self.apps.show_all()
-            return
-        for app in self.all_apps:
-            name = app.get_display_name() or app.get_name()
-            if self.category == "Favorites" and app.get_id() not in self.favorites:
-                continue
-            if self.category not in ("All Applications", "Favorites") and self.category not in application_categories(app):
-                continue
-            if self.query and self.query not in (name + " " + (app.get_description() or "")).casefold():
-                continue
-            button = Gtk.Button()
-            button.get_style_context().add_class("tilo-app")
-            button.set_relief(Gtk.ReliefStyle.NONE)
-            button.set_halign(Gtk.Align.FILL)
-            content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-            content.set_halign(Gtk.Align.FILL)
-            image = load_icon(app.get_icon(), 20)
-            if image is not None:
-                content.pack_start(image, False, False, 0)
-            label = Gtk.Label(label=name, xalign=0)
-            label.set_halign(Gtk.Align.START)
-            label.set_hexpand(True)
-            label.set_ellipsize(3)
-            content.pack_start(label, True, True, 0)
-            button.add(content)
-            button.connect("clicked", self._launch, app)
-            button.connect("button-press-event", self._app_context_menu, app)
-            self.apps.add(button)
-        self.apps.show_all()
+            rows = self.categories
+        else:
+            rows = []
+            for app in self.all_apps:
+                name = app.get_display_name() or app.get_name()
+                if self.category == "Favorites" and app.get_id() not in self.favorites:
+                    continue
+                if (self.category not in ("All Applications", "Favorites")
+                        and self.category not in application_categories(app)):
+                    continue
+                if self.query and self.query not in (
+                        name + " " + (app.get_description() or "")).casefold():
+                    continue
+                rows.append(app)
+        self.apps.set_content(rows, self.category, self.show_categories, self.favorites)
 
     def _launch(self, _button, app):
         launch_application(app)
