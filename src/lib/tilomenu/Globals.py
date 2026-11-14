@@ -14,7 +14,7 @@
 # Part of the GnoMenu
 
 
-import gtk
+from gi.repository import Gtk as gtk, Gdk, GdkPixbuf
 import gc
 import os
 import xml.dom.minidom
@@ -32,23 +32,23 @@ except:
         Has_Numpy = False
         print('python numpy not installed , some effects and gtk native colors wont be available')
 import gettext
-gettext.textdomain('gnomenu')
-gettext.install('gnomenu', INSTALL_PREFIX +  '/share/locale')
-gettext.bindtextdomain('gnomenu', INSTALL_PREFIX +  '/share/locale')
+gettext.textdomain('tilomenu')
+gettext.install('tilomenu', INSTALL_PREFIX +  '/share/locale')
+gettext.bindtextdomain('tilomenu', INSTALL_PREFIX +  '/share/locale')
 
 def _(s):
         return gettext.gettext(s)
 
 global name,version,appdirname 
-name = "GnoMenu"
+name = "TiloMenu"
 version = "2.9"
-appdirname="gnomenu"
+appdirname="tilomenu"
 print('%s %s' % (name, version))
 ############ Set up global directories #########################
 ################################################################
 HomeDirectory = os.path.expanduser("~")
 if not os.path.exists('%s/.%s' % (HomeDirectory, appdirname)) or not os.path.isdir('%s/.%s' % (HomeDirectory,appdirname)):
-        os.system('mkdir ~/.%s' % appdirname)
+        os.makedirs(os.path.join(HomeDirectory, '.' + appdirname), exist_ok=True)
 ConfigDirectory = '%s/.%s'  % (HomeDirectory,appdirname)
 AutoStartDirectory = '%s/.config/autostart/' % HomeDirectory
 ProgramDirectory = "%s/lib/%s/" % (INSTALL_PREFIX, appdirname)
@@ -96,11 +96,15 @@ def ReloadSettings():
 # Loads the main configuration and settings file to their respective values
         global orientation, panel_size, flip, MenuActions, MenuCommands, ImageDirectory, Actions, IconDirectory, MenuButtonDirectory, ThemeColor, ShowTop, FirstUse, Hibernate, StartMenuTemplate, ThemeColorCode,ThemeColorHtml, NegativeThemeColorCode, MenuWidth, MenuHeight, IconW, IconH, IconInX, IconInY, IconInW, IconInH, SearchX, SearchY, SearchW, SearchH, SearchIX, SearchIY, SearchInitialText,SearchTextColor, SearchBackground, SearchWidget, SearchWidgetPath, UserIconFrameOffsetX, UserIconFrameOffsetY, UserIconFrameOffsetH, UserIconFrameOffsetW, PG_buttonframe, PG_buttonframedimensions, MenuHasSearch, MenuHasIcon, MenuHasFade , OnlyShowFavs, OnlyShowRecentApps, CairoSearchTextColor, CairoSearchBackColor, CairoSearchBorderColor, CairoSearchRoundAngle, PG_iconsize,RI_numberofitems, MenuButtonCount, MenuButtonNames, MenuButtonMarkup, MenuButtonNameOffsetX, MenuButtonNameOffsetY, MenuButtonCommands, MenuButtonX,MenuButtonY, MenuButtonImage, MenuButtonImageBack, MenuButtonIcon, MenuButtonIconSel, MenuButtonIconX,MenuButtonIconY,MenuButtonIconSize,MenuButtonExecOnHover, MenuButtonSub,MenuButtonClose, MenuCairoIconButton, MenuLabelCount, MenuLabelNames, MenuLabelMarkup, MenuLabelX, MenuLabelY, MenuLabelCommands, MenuTabCount, MenuTabNames, MenuTabMarkup, MenuTabNameOffsetX, MenuTabNameOffsetY, MenuTabCommands,MenuTabX,MenuTabY,MenuTabImage, MenuTabIcon, MenuTabImageSel, MenuTabSub,MenuTabClose, MenuCairoIconTab, MenuCairoIcontabX, MenuCairoIcontabY,MenuCairoIcontabSize, MenuTabInvertTextColorSel, MenuImageCount, MenuImageNames, MenuImageX, MenuImageY, MenuImage, ButtonHasTop, ButtonLabelCount, ButtonBackground, ButtonTop, StartButton, StartButtonTop, ButtonHasBottom, ButtonLabelName, ButtonLabelMarkup, ButtonLabelX, ButtonLabelY, MenuButtonNameAlignment, MenuTabNameAlignment,MenuLabelNameAlignment, GtkColorCode
 
+        # GTK2 rc_get_style() was removed. Use the current GTK3 style
+        # context without changing the original menu artwork.
         menubar = gtk.MenuBar()
-        try:
-                GtkColorCode = menubar.rc_get_style().bg[gtk.STATE_NORMAL]
-        except:
-                GtkColorCode = menubar.get_style().bg[gtk.STATE_NORMAL]
+        bgcolor = menubar.get_style_context().get_background_color(gtk.StateFlags.NORMAL)
+        GtkColorCode = Gdk.Color(
+                pixel=0,
+                red=int(bgcolor.red * 65535),
+                green=int(bgcolor.green * 65535),
+                blue=int(bgcolor.blue * 65535))
         orientation = None
         panel_size = 30
         flip = None
@@ -168,12 +172,12 @@ def ReloadSettings():
                 if node.attributes["color"].value == ThemeColor or node.attributes["color"].value == "All":
                         XBase = node
                         ThemeColorHtml = node.attributes["colorvalue"].value
-                        ThemeColorCode = gtk.gdk.color_parse(ThemeColorHtml)
+                        ThemeColorCode = Gdk.Color.parse(ThemeColorHtml)[1]
                         color = ThemeColorCode
                         color_r = 65535 - int(color.red)
                         color_g = 65535 - int(color.green)
                         color_b = 65535 - int(color.blue)
-                        NegativeThemeColorCode = gtk.gdk.Color(color_r,color_g,color_b,0)
+                        NegativeThemeColorCode = Gdk.Color(pixel=0, red=color_r, green=color_g, blue=color_b)
                         Found = 1
                         break
         if Found==0:
@@ -188,7 +192,7 @@ def ReloadSettings():
         StartMenuTemplate = SBase[0].attributes["Image"].value
         
         try:
-                im = gtk.gdk.pixbuf_new_from_file('%s%s' % (ImageDirectory, StartMenuTemplate))
+                im = GdkPixbuf.Pixbuf.new_from_file('%s%s' % (ImageDirectory, StartMenuTemplate))
                 MenuWidth = im.get_width()
                 MenuHeight = im.get_height()
         except:
@@ -304,7 +308,7 @@ def ReloadSettings():
 
         for node in MenuButtons:
                 try:
-                        im = gtk.gdk.pixbuf_new_from_file(ImageDirectory + node.attributes["Image"].value)
+                        im = GdkPixbuf.Pixbuf.new_from_file(ImageDirectory + node.attributes["Image"].value)
                 except:
                         print('Warning - Error loading theme, reverting to defaults')
                         SetDefaultSettings()
@@ -411,10 +415,10 @@ def ReloadSettings():
         for node in MenuTabs:
 
                 try:
-                        im = gtk.gdk.pixbuf_new_from_file(ImageDirectory + node.attributes["Image"].value)
+                        im = GdkPixbuf.Pixbuf.new_from_file(ImageDirectory + node.attributes["Image"].value)
                         h = im.get_height()
                 except:
-                        im = gtk.gdk.pixbuf_new_from_file(ImageDirectory + node.attributes["ImageSel"].value)
+                        im = GdkPixbuf.Pixbuf.new_from_file(ImageDirectory + node.attributes["ImageSel"].value)
                         h = im.get_height()             
                 MenuTabNames.append(node.attributes["Name"].value)
                 MenuTabMarkup.append(node.attributes["Markup"].value)
@@ -486,7 +490,7 @@ def ReloadSettings():
         MenuImage = []
         for node in MenuImages:
 
-                im = gtk.gdk.pixbuf_new_from_file(ImageDirectory + node.attributes["Image"].value)
+                im = GdkPixbuf.Pixbuf.new_from_file(ImageDirectory + node.attributes["Image"].value)
                 h = im.get_height()
                 
                 MenuImageNames.append(node.attributes["Name"].value)
@@ -576,17 +580,19 @@ except:
 #logging.debug('Globals - 10')
 
 #Screen width/height
-__screen = gtk.gdk.screen_get_default()
-geom = gtk.gdk.Screen.get_monitor_geometry(__screen, 0)
+__screen = Gdk.Screen.get_default()
+geom = __screen.get_monitor_geometry(0)
 screenwidth = geom.width
 screenheight = geom.height
 
 # Obtain OS default icon theme
-DefaultIconTheme = gtk.settings_get_default().get_property("gtk-icon-theme-name")
-GtkIconTheme = gtk.icon_theme_get_default()
+DefaultIconTheme = gtk.Settings.get_default().get_property("gtk-icon-theme-name")
+GtkIconTheme = gtk.IconTheme.get_default()
 #logging.debug('Globals - 11')
 
-distro_logo = gtk.icon_theme_get_default().lookup_icon('distributor-logo',48,gtk.ICON_LOOKUP_FORCE_SVG).get_filename()
+distro_info = gtk.IconTheme.get_default().lookup_icon(
+        'distributor-logo', 48, gtk.IconLookupFlags.FORCE_SVG)
+distro_logo = distro_info.get_filename() if distro_info else GraphicsDirectory + 'logo.png'
 #Main Start Button
 #States:
 # 0 = Normal
