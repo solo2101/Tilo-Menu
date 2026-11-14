@@ -7,6 +7,8 @@ from pathlib import Path
 
 from gi.repository import GdkPixbuf, Gtk, Pango
 
+from ..icons import load_named_icon
+
 
 def _image(directory, filename):
     if not filename:
@@ -51,12 +53,11 @@ def render_theme_buttons(layout: Gtk.Fixed, theme) -> None:
         if icon_name:
             icon = _image(theme.directory, icon_name)
             if icon is None:
-                icon = Gtk.Image.new_from_icon_name(
-                    Path(icon_name).stem, Gtk.IconSize.MENU
-                )
-            icon_x = element.integer("IconX", 4)
-            icon_y = element.integer("IconY", max(0, (height - 16) // 2))
-            container.put(icon, icon_x, icon_y)
+                icon = load_named_icon(Path(icon_name).stem, 16)
+            if icon is not None:
+                icon_x = element.integer("IconX", 4)
+                icon_y = element.integer("IconY", max(0, (height - 16) // 2))
+                container.put(icon, icon_x, icon_y)
 
         markup = attrs.get("Markup", "")
         if markup:

@@ -17,6 +17,7 @@ from gi.repository import GdkPixbuf, Gtk
 from .applications import application_categories, installed_applications, launch_application
 from .themes import load_menu_theme
 from .themes.renderer import render_theme_buttons
+from .icons import load_icon
 
 
 class MenuWindow(Gtk.Window):
@@ -109,10 +110,8 @@ class MenuWindow(Gtk.Window):
             button.set_halign(Gtk.Align.FILL)
             content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
             content.set_halign(Gtk.Align.FILL)
-            icon = app.get_icon()
-            if icon is not None:
-                image = Gtk.Image.new_from_gicon(icon, Gtk.IconSize.MENU)
-                image.set_pixel_size(20)
+            image = load_icon(app.get_icon(), 20)
+            if image is not None:
                 content.pack_start(image, False, False, 0)
             label = Gtk.Label(label=name, xalign=0)
             label.set_halign(Gtk.Align.START)
