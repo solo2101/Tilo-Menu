@@ -34,7 +34,7 @@ except:
         has_gst = False
 
 try:
-        INSTALL_PREFIX = open("/etc/gnomenu/prefix").read()[:-1] 
+        INSTALL_PREFIX = open("/etc/tilomenu/prefix").read()[:-1] 
 except:
         INSTALL_PREFIX = '/usr'
 
@@ -71,7 +71,7 @@ class Main_Menu(gobject.GObject):
                 #Set the main working directory to home
                 os.chdir(Globals.HomeDirectory)
                 self.window = gtk.Window(gtk.WindowType.TOPLEVEL)
-                self.window.set_title('GnoMenu')
+                self.window.set_title('TiloMenu')
                 self.window.set_focus_on_map(1)
                 self.window.set_app_paintable(1)
                 self.window.set_skip_taskbar_hint(1)
@@ -711,13 +711,13 @@ class Main_Menu(gobject.GObject):
 
                 if Globals.Settings['Sound_Theme'] != 'None':
                         if sound == 0:
-                                uri = 'file://%s/share/gnomenu/Themes/Sound/%s/show-menu.ogg' % (INSTALL_PREFIX, Globals.Settings['Sound_Theme'])
+                                uri = 'file://%s/share/tilomenu/Themes/Sound/%s/show-menu.ogg' % (INSTALL_PREFIX, Globals.Settings['Sound_Theme'])
                         elif sound == 1:
-                                uri = 'file://%s/share/gnomenu/Themes/Sound/%s/hide-menu.ogg' % (INSTALL_PREFIX, Globals.Settings['Sound_Theme'])
+                                uri = 'file://%s/share/tilomenu/Themes/Sound/%s/hide-menu.ogg' % (INSTALL_PREFIX, Globals.Settings['Sound_Theme'])
                         elif sound == 2:
-                                uri = 'file://%s/share/gnomenu/Themes/Sound/%s/button-pressed.ogg' % (INSTALL_PREFIX, Globals.Settings['Sound_Theme'])
+                                uri = 'file://%s/share/tilomenu/Themes/Sound/%s/button-pressed.ogg' % (INSTALL_PREFIX, Globals.Settings['Sound_Theme'])
                         elif sound == 3:
-                                uri = 'file://%s/share/gnomenu/Themes/Sound/%s/tab-pressed.ogg' % (INSTALL_PREFIX, Globals.Settings['Sound_Theme'])
+                                uri = 'file://%s/share/tilomenu/Themes/Sound/%s/tab-pressed.ogg' % (INSTALL_PREFIX, Globals.Settings['Sound_Theme'])
 
                         if has_gst:
                                 self.player.set_state(gst.STATE_NULL)

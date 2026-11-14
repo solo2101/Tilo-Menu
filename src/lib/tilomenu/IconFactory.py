@@ -26,7 +26,7 @@ isgio = True
 Icontype = ["png", "xpm", "svg"]
 
 try:
-        INSTALL_PREFIX = open("/etc/gnomenu/prefix").read()[:-1] 
+        INSTALL_PREFIX = open("/etc/tilomenu/prefix").read()[:-1] 
 except:
         INSTALL_PREFIX = '/usr'
 

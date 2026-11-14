@@ -28,7 +28,7 @@ import cairo_drawing
 
 
 try:
-        INSTALL_PREFIX = open("/etc/gnomenu/prefix").read()[:-1] 
+        INSTALL_PREFIX = open("/etc/tilomenu/prefix").read()[:-1] 
 except:
         INSTALL_PREFIX = '/usr'
 
@@ -684,7 +684,7 @@ class ImageFrame:
                         try:
                                 self.temp = GdkPixbuf.Pixbuf.new_from_file_at_size(imagefile, self.w, self.h)
                         except:
-                                print('Warning: icon %s not found in gnomenu icons, trying system icons instead!' % imagefile)
+                                print('Warning: icon %s not found in TiloMenu icons, trying system icons instead!' % imagefile)
                                 image = IconFactory.GetSystemIcon(imagefile.split('/').pop())
                                 if not image:
                                         print('Warning: icon %s was not found in system icons either!' % imagefile)

@@ -36,7 +36,7 @@ from gi.repository import Gio as gio
 isgio = True
 
 try:
-        INSTALL_PREFIX = open("/etc/gnomenu/prefix").read()[:-1] 
+        INSTALL_PREFIX = open("/etc/tilomenu/prefix").read()[:-1] 
 except:
         INSTALL_PREFIX = '/usr'
 try:
@@ -260,7 +260,7 @@ class XDGMenu(gobject.GObject):
                         self.addtomenu(_("Menu editor"),"alacarte",6,"","alacarte")
                         self.addtomenu(_("Screensaver"),"preferences-desktop-screensaver",5,"","gnome-screensaver-preferences")
                         self.addtomenu(_("System Monitor"),"utilities-system-monitor",5,"","gnome-system-monitor")
-                        self.addtomenu(_("GnoMenu settings utility"),"%slogo.png" % Globals.GraphicsDirectory,7,"","%sTiloMenu-Settings.py" % Globals.ProgramDirectory)
+                        self.addtomenu(_("TiloMenu settings utility"),"%slogo.png" % Globals.GraphicsDirectory,7,"","%sTiloMenu-Settings.py" % Globals.ProgramDirectory)
                 #==============================================================
                 #FAVORITES ITEMS MENU
                 #==============================================================

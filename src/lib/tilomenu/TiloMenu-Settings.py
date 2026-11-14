@@ -33,7 +33,7 @@ except:
 import urllib.parse as urllib
 
 try:
-        INSTALL_PREFIX = open("/etc/gnomenu/prefix").read()[:-1] 
+        INSTALL_PREFIX = open("/etc/tilomenu/prefix").read()[:-1] 
 except:
         INSTALL_PREFIX = '/usr'
 
@@ -291,10 +291,10 @@ class TiloMenuSettings:
                 self.check7 = gtk.CheckButton(label=_('Show tooltips in program list'))
                 self.check7.set_active(int(Globals.Settings['Show_Tips']))
 
-                self.check8 = gtk.CheckButton(label=_('Activate Compiz blur effect on GnoMenu window'))
+                self.check8 = gtk.CheckButton(label=_('Activate Compiz blur effect on TiloMenu window'))
                 self.Compiz_Blur =  utils.compiz_call('blur/screen0/focus_blur_match','get')
                 if self.Compiz_Blur == '' :self.check8.set_sensitive(0)
-                if self.Compiz_Blur.find('class=GnoMenu.py') != -1:
+                if self.Compiz_Blur.find('class=TiloMenu.py') != -1:
                         self.check8.set_active(True)
                 else:
                         self.check8.set_active(False)
@@ -534,7 +534,7 @@ class TiloMenuSettings:
                 self.image_logo.set_size_request(80,80)
                 self.Applogo = GdkPixbuf.Pixbuf.new_from_file_at_size(Globals.Applogo,80,80)
                 self.image_logo.set_from_pixbuf(self.Applogo)
-                self.label_app = gtk.Label(label="GnoMenu %s" % Globals.version)
+                self.label_app = gtk.Label(label="TiloMenu %s" % Globals.version)
                 self.label_credits = gtk.Label(label="Consolidated menu for the GNOME desktop.\nBy Helder Fraga aka Whise <helderfraga@gmail.com>\n Please Donate")
                 self.font_desc = pango.FontDescription('sans bold 14')
                 self.label_app.modify_font(self.font_desc)
@@ -545,7 +545,7 @@ class TiloMenuSettings:
                 self.button4 = gtk.Button(label=_('Download More Themes'))
                 self.button4.set_border_width(5)
                 self.button4.connect('clicked', self.button_clicked, 'Download')
-                self.button9 = gtk.Button(label=_('GnoMenu Themes Specifications'))
+                self.button9 = gtk.Button(label=_('TiloMenu Theme Specifications'))
                 self.button9.set_border_width(5)
                 self.button9.connect('clicked', self.button_clicked, 'Specs')
                 self.button5 = gtk.Button(label=_('Report Bug'))
@@ -576,7 +576,7 @@ class TiloMenuSettings:
                 if id == 'ok':
                         self.SaveSettings()
                         if utils.show_question(_('Menu needs to restart , restart now?')) is True:
-                                x = commands.getoutput("""ps axo "%p,%a" | grep "GnoMenu.py" | grep -v grep|cut -d',' -f1""")
+                                x = commands.getoutput("""ps axo "%p,%a" | grep "TiloMenu.py" | grep -v grep|cut -d',' -f1""")
                                 os.system('kill -9 ' + x)
                         gtk.main_quit()
 
@@ -940,11 +940,11 @@ class TiloMenuSettings:
 
                 if self.check8.get_active():
                         
-                        if self.Compiz_Blur.find('class=GnoMenu.py') == -1:
-                                utils.compiz_call('blur/screen0/focus_blur_match','set',self.Compiz_Blur + "| class=GnoMenu.py")                
+                        if self.Compiz_Blur.find('class=TiloMenu.py') == -1:
+                                utils.compiz_call('blur/screen0/focus_blur_match','set',self.Compiz_Blur + "| class=TiloMenu.py")                
                 else: 
-                        if self.Compiz_Blur.find('class=GnoMenu.py') != -1:
-                                utils.compiz_call('blur/screen0/focus_blur_match','set',self.Compiz_Blur.replace("class=GnoMenu.py",''))
+                        if self.Compiz_Blur.find('class=TiloMenu.py') != -1:
+                                utils.compiz_call('blur/screen0/focus_blur_match','set',self.Compiz_Blur.replace("class=TiloMenu.py",''))
 
 
 def main():

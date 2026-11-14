@@ -21,7 +21,7 @@ import xml.dom.minidom
 import backend
 import sys
 try:
-        INSTALL_PREFIX = open("/etc/gnomenu/prefix").read()[:-1] 
+        INSTALL_PREFIX = open("/etc/tilomenu/prefix").read()[:-1] 
 except:
         INSTALL_PREFIX = '/usr'
 import utils
@@ -70,7 +70,7 @@ MaliciousStrings =['rm ','sudo ','gksudo ','gksu ','su ','mkfs','/dev',':(){:|:'
 def SecurityCheck(command):
         for st in MaliciousStrings:
                 if command.find(st) != -1:
-                        utils.show_warning(_('GnoMenu detected a malicious script in this theme.\nThe script was blocked!\nYou should uninstall the selected theme and contact the website where you got it.\n\nThe script that tried to run was:')+ ' ' + command.replace('&',''))
+                        utils.show_warning(_('TiloMenu detected a malicious script in this theme.\nThe script was blocked!\nYou should uninstall the selected theme and contact the website where you got it.\n\nThe script that tried to run was:')+ ' ' + command.replace('&',''))
                         return ''
         return command
 

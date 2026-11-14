@@ -28,7 +28,7 @@ try:
 except:pass
 
                 
-def show_message (message, title='GnoMenu'):
+def show_message (message, title='TiloMenu'):
 
         md = gtk.MessageDialog(None, message_type=gtk.MessageType.INFO, 
                         buttons=gtk.ButtonsType.OK)
@@ -37,7 +37,7 @@ def show_message (message, title='GnoMenu'):
         md.run()
         md.destroy()
 
-def show_warning (message, title='GnoMenu'):
+def show_warning (message, title='TiloMenu'):
 
         md = gtk.MessageDialog(None, message_type=gtk.MessageType.WARNING, 
                         buttons=gtk.BUTTONS_OK)
@@ -48,7 +48,7 @@ def show_warning (message, title='GnoMenu'):
         md.destroy()
 
 
-def show_question (message, title='GnoMenu'):
+def show_question (message, title='TiloMenu'):
         md = gtk.MessageDialog(None, message_type=gtk.MessageType.QUESTION, 
                         buttons=gtk.ButtonsType.YES_NO)
         md.set_title(title)
@@ -160,7 +160,7 @@ class Notifier(object):
                 timeout can be set to the desired displaying time in milliseconds."""
                 try:
                         if self.bus and self.notifications:
-                                self.notifications.Notify('GnoMenu', 0, icon, title, message, 
+                                self.notifications.Notify('TiloMenu', 0, icon, title, message, 
                                         [], {}, timeout)
                                 return True
                         else:
