@@ -72,7 +72,6 @@ jobs:
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_panel_popup.py
 
       - name: Construct original GTK2 program-list implementations under GTK3
-        continue-on-error: true
         env:
           GSETTINGS_BACKEND: memory
           XDG_MENU_PREFIX: mate-
@@ -81,3 +80,11 @@ jobs:
             echo "Original Prog_List mode ${mode}"
             dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_program_list_modes.py "$mode" || exit 1
           done
+
+      - name: Exercise original XDG menu special-page navigation
+        continue-on-error: true
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_special_menus.py
