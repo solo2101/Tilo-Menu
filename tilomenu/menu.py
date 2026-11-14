@@ -52,7 +52,7 @@ class MenuWindow(Gtk.Window):
             button.tilo-app { background: transparent; background-image: none; border: none;
                 box-shadow: none; border-radius: 0; padding: 3px 5px; min-height: 26px; }
             button.tilo-app:hover { background: rgba(90, 145, 210, 0.35); }
-            button.tilo-app label { font-size: 12px; color: #222; }
+            button.tilo-app label { font-size: 12px; color: #f4f4f4; text-shadow: 0 1px 1px #111; }
         """)
         Gtk.StyleContext.add_provider_for_screen(
             self.get_screen(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION

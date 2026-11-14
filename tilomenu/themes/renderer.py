@@ -6,7 +6,7 @@ No Vista-specific coordinates or command execution.
 
 from pathlib import Path
 
-from gi.repository import GdkPixbuf, Gtk
+from gi.repository import Gtk
 
 
 def _image(directory: Path, filename: str):
@@ -43,7 +43,9 @@ def render_theme_buttons(layout: Gtk.Fixed, theme) -> None:
                 icon = Gtk.Image.new_from_icon_name(
                     Path(icon_name).stem, Gtk.IconSize.MENU
                 )
-            container.put(icon, 5, 6)
+            container.put(
+                icon, element.integer("IconX", 5), element.integer("IconY", 6)
+            )
 
         markup = attrs.get("Markup", "")
         if markup:
