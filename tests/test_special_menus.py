@@ -32,5 +32,21 @@ for code, label in (
 widget.CallSpecialMenu(5, "tilo")
 widget.CallSpecialMenu(5, "")
 print('PASS: original search and Back navigation')
+
+# Test the original four-field "::" favorites format through the original
+# XDGMenu.addfav/removefav methods, without an external notification daemon.
+import backend
+xdg.notifier.notify = lambda *args, **kwargs: None
+xdg.addfav(None, None, "Test Favorite", "/usr/bin/true",
+           "application-x-executable", 1)
+fav = "Test Favorite::/usr/bin/true::application-x-executable::1"
+assert fav in backend.load_setting('favorites')
+xdg.Restart('favorites')
+assert "Test Favorite" in xdg.L_Names
+xdg.removefav(None, None, "Test Favorite", "/usr/bin/true",
+              "application-x-executable", 1)
+assert fav not in backend.load_setting('favorites')
+print('PASS: original add/remove Favorites and GSettings persistence')
+
 menu.hide_window()
 # Allow the process to exit without gtk_main_quit on a non-running main loop.
