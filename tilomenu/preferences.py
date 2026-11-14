@@ -68,7 +68,7 @@ class PreferencesWindow(Gtk.Window):
         outer.pack_start(header, False, False, 0)
 
         description = Gtk.Label(
-            label="Select an original GnoMenu XML theme, or import a downloaded theme archive."
+            label="Select a Menu theme or install a theme archive, as in the original GnoMenu settings."
         )
         description.set_line_wrap(True)
         description.set_xalign(0)
@@ -78,7 +78,7 @@ class PreferencesWindow(Gtk.Window):
         self.choice.connect("changed", self._preview)
         outer.pack_start(self.choice, False, False, 0)
 
-        frame = Gtk.Frame()
+        frame = Gtk.Frame(label="Original Menu Theme Preview")
         frame.set_shadow_type(Gtk.ShadowType.IN)
         outer.pack_start(frame, True, True, 0)
         self.preview = Gtk.Image()
@@ -94,18 +94,15 @@ class PreferencesWindow(Gtk.Window):
 
         actions = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         outer.pack_start(actions, False, False, 0)
-        add = Gtk.Button(label="Import Theme…")
+        add = Gtk.Button(label="Install Theme…")
         add.connect("clicked", self._import_archive)
         actions.pack_start(add, False, False, 0)
         open_folder = Gtk.Button(label="Open Theme Folder")
         open_folder.connect("clicked", self._open_folder)
         actions.pack_start(open_folder, False, False, 0)
-        actions.pack_end(Gtk.Button.new_with_label("Close"), False, False, 0)
-        close = actions.get_children()[0]
-        # pack_end places Close first in Gtk.Box's child collection.
-        for child in actions.get_children():
-            if child.get_label() == "Close":
-                child.connect("clicked", lambda _button: self.close())
+        close = Gtk.Button(label="Close")
+        close.connect("clicked", lambda _button: self.close())
+        actions.pack_end(close, False, False, 0)
 
         bottom = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         outer.pack_start(bottom, False, False, 0)
@@ -137,8 +134,13 @@ class PreferencesWindow(Gtk.Window):
             return
         try:
             theme = load_menu_theme(self.themes_dir / name)
+            # GnoMenu-Settings.py uses the original themepreview.png
+            # instead of a screenshot of the running GTK window.
+            preview = theme.directory / "themepreview.png"
+            if not preview.is_file():
+                preview = theme.directory / theme.background
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                str(theme.directory / theme.background), 315, 320, True,
+                str(preview), 315, 320, True,
             )
             self.preview.set_from_pixbuf(pixbuf)
             author = theme.metadata.get("Author", "Unknown author")

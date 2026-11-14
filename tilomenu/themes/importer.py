@@ -66,6 +66,8 @@ def _unpack(archive, staging):
     if tarfile.is_tarfile(archive):
         with tarfile.open(archive, "r:*") as package:
             for member in package:
+                if member.isdir() and member.name in (".", "./"):
+                    continue
                 _member_path(member.name)
                 if member.isdir():
                     continue
@@ -114,6 +116,11 @@ def _menu_directories(staging):
             theme = load_menu_theme(directory)
         except (OSError, ValueError, KeyError, ET.ParseError) as error:
             raise ThemeImportError(f"Unsupported Menu theme: {error}") from error
+        # Only reference artwork within the original theme folder.
+        artwork = PurePosixPath(theme.background)
+        if (artwork.is_absolute() or ".." in artwork.parts
+                or not (directory / theme.background).resolve().is_relative_to(directory.resolve())):
+            raise ThemeImportError("Theme XML references artwork outside its folder")
         # An XML theme without its original background will not render.
         if not (directory / theme.background).is_file():
             raise ThemeImportError(f"Missing original artwork: {theme.background}")

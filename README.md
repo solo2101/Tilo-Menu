@@ -28,3 +28,7 @@ Right-click the menu background and choose **Change Theme**. Your selection is s
 ## Rendering regression test
 
 The GitHub Actions workflow downloads the original 2.9.1 theme bundle and starts all 15 themes under Xvfb using Python 3 and GTK 3. This checks for startup, XML, and drawing errors. Visual validation on Fedora MATE is still required for composited transparency and alignment.
+
+## Theme Preferences (original GnoMenu-style)
+
+Run `~/.local/bin/tilo-menu --settings`, or right-click the menu background and choose **Preferences**. The Menu selection tab shows the original `themepreview.png` (when supplied), theme credits, and an **Install Theme** button. The installer reads `themedata.xml` from the archive and installs its unmodified files in `~/.local/share/tilo-menu/data/themes/Menu/<theme>`. It safely rejects archive traversal/symlinks, preserves installed themes, and never selects a theme without clicking **Apply Theme**. This currently supports Menu themes; the original separate Button, Icon and Sound theme selectors are future work. The archive `118852-DarkCandy_2.2_by_jonian.tar` is not installed automatically.
