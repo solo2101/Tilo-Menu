@@ -1,64 +1,77 @@
-"""GTK 3 renderer for GnoMenu XML-defined button artwork.
+"""Render original GnoMenu 2.9.1 XML button geometry with GTK 3.
 
-All positions, images, icons and label markup come from the selected theme.
-No Vista-specific coordinates or command execution.
+Theme images and markup are kept intact. No per-theme hardcoded positions.
 """
 
 from pathlib import Path
 
-from gi.repository import Gtk
+from gi.repository import GdkPixbuf, Gtk, Pango
 
 
-def _image(directory: Path, filename: str):
+def _image(directory, filename):
     if not filename:
         return None
-    path = (directory / filename).resolve()
-    if not path.is_relative_to(directory.resolve()) or not path.is_file():
+    root = directory.resolve()
+    path = (root / filename).resolve()
+    if not path.is_relative_to(root) or not path.is_file():
         return None
-    return Gtk.Image.new_from_file(str(path))
+    try:
+        return Gtk.Image.new_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file(str(path)))
+    except Exception:
+        return None
+
+
+def _dimensions(image):
+    pixbuf = image.get_pixbuf()
+    return (pixbuf.get_width(), pixbuf.get_height()) if pixbuf else (0, 0)
 
 
 def render_theme_buttons(layout: Gtk.Fixed, theme) -> None:
-    """Render buttons, separators and theme-provided icons and text."""
+    """Position original backgrounds, overlays, icons and labels."""
     for element in theme.buttons:
         attrs = element.attributes
         base = _image(theme.directory, attrs.get("Image", ""))
         if base is None:
             continue
 
+        width, height = _dimensions(base)
         container = Gtk.Fixed()
+        container.set_size_request(width, height)
         container.put(base, 0, 0)
 
-        # Original themes use a separate foreground image for icon-only controls.
         overlay = _image(theme.directory, attrs.get("ButtonIcon", ""))
         if overlay is not None:
-            container.put(overlay, 0, 0)
+            container.put(
+                overlay, element.integer("ButtonIconX"), element.integer("ButtonIconY")
+            )
 
+        # Icon is a named theme icon. ButtonIcon is a separate overlay image.
         icon_name = attrs.get("Icon", "")
+        icon = None
         if icon_name:
-            icon_path = _image(theme.directory, icon_name)
-            if icon_path is not None:
-                icon = icon_path
-            else:
+            icon = _image(theme.directory, icon_name)
+            if icon is None:
                 icon = Gtk.Image.new_from_icon_name(
                     Path(icon_name).stem, Gtk.IconSize.MENU
                 )
-            container.put(
-                icon, element.integer("IconX", 5), element.integer("IconY", 6)
-            )
+            icon_x = element.integer("IconX", 4)
+            icon_y = element.integer("IconY", max(0, (height - 16) // 2))
+            container.put(icon, icon_x, icon_y)
 
         markup = attrs.get("Markup", "")
         if markup:
             label = Gtk.Label()
-            label.set_use_markup(True)
             label.set_markup(markup)
-            label.set_halign(Gtk.Align.START)
-            container.put(
-                label, element.integer("TextX"), element.integer("TextY")
-            )
+            label.set_xalign(0)
+            label.set_ellipsize(Pango.EllipsizeMode.END)
+            text_x = element.integer("TextX")
+            # Reserve room for the icon when the XML text inset overlaps it.
+            if icon is not None:
+                icon_width = _dimensions(icon)[0] or 16
+                text_x = max(text_x, icon_x + icon_width + 4)
+            label.set_size_request(max(1, width - text_x - 4), -1)
+            container.put(label, text_x, element.integer("TextY"))
 
-        layout.put(
-            container, element.integer("ButtonX"), element.integer("ButtonY")
-        )
+        layout.put(container, element.integer("ButtonX"), element.integer("ButtonY"))
         if attrs.get("Name") != ":SEPARATOR:":
             container.set_tooltip_text(attrs.get("Name", ""))
