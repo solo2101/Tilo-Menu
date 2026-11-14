@@ -13,7 +13,8 @@
 #       once there is a suitable alternative ...
 #
 
-import glob, gtk
+import glob
+from gi.repository import Gtk as gtk, Gdk, GdkPixbuf
 import xml.dom.minidom
 from xml.dom.minidom import Node
 import os

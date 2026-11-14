@@ -12,11 +12,9 @@
 # Cairo drawing helpers
 # Part of the GnoMenu
 
-import pygtk
-pygtk.require('2.0')
 import Globals
 import cairo
-import gtk
+from gi.repository import Gtk as gtk, Gdk, GdkPixbuf
 
 
 def draw_scaled_image(ctx,x,y, pix, w, h):

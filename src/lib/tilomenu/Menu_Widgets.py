@@ -12,16 +12,14 @@
 # GnoMenu widgets
 # Part of the GnoMenu
 
-import pygtk
-pygtk.require("2.0")
-import gtk
+from gi.repository import Gtk as gtk, Gdk, GdkPixbuf
 import cairo
-import gobject
-from gtk import gdk
-import pango
+from gi.repository import GObject as gobject, GLib
+from gi.repository import Gdk as gdk
+from gi.repository import Pango as pango
 from Menu_Items import XDGMenu
 import os
-import commands
+import subprocess as commands
 import Globals
 import IconFactory
 import cairo_drawing
@@ -1736,7 +1734,7 @@ class TreeProgramList(gobject.GObject):
 
 
 
-class CellRendererImage(gtk.GenericCellRenderer):
+class CellRendererImage(gtk.CellRenderer):
 
         __gproperties__ = {
                 "image": (gobject.TYPE_OBJECT, "Image",

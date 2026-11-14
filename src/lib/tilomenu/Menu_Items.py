@@ -13,12 +13,12 @@
 # XDG Menu Functions
 # Part of the GnoMenu
 
-import gtk
+from gi.repository import Gtk as gtk, Gdk, GdkPixbuf
 import backend
 import os
-import urllib
+import urllib.parse as urllib
 import utils
-import gobject
+from gi.repository import GObject as gobject, GLib
 from Popup_Menu import add_menuitem, add_image_menuitem
 import gc
 import Globals
@@ -31,12 +31,9 @@ try:
         import bookmarks
 except:print('error importing webbookmarks')
 
-try:
-        import gio
-        isgio = True
-except:
-        print('gio not found')
-        isgio = False
+from gi.repository import Gio as gio
+isgio = True
+
 try:
         INSTALL_PREFIX = open("/etc/gnomenu/prefix").read()[:-1] 
 except:

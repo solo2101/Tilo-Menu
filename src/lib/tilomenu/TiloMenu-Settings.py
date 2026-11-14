@@ -13,13 +13,11 @@
 # Part of the GnoMenu
 
 
-import pygtk
-pygtk.require('2.0')
-import gtk
+from gi.repository import Gtk as gtk, Gdk, GdkPixbuf
 import os
-import commands
+import subprocess as commands
 import sys
-import pango
+from gi.repository import Pango as pango
 import Globals
 if len(sys.argv) == 2 and sys.argv[1] == "--welcome":
         Globals.FirstUse = True
@@ -32,7 +30,7 @@ try:
         hastar = True
 except:
         hastar = False
-import urllib
+import urllib.parse as urllib
 
 try:
         INSTALL_PREFIX = open("/etc/gnomenu/prefix").read()[:-1] 
@@ -49,7 +47,7 @@ def _(s):
         return gettext.gettext(s)
 
 
-class GnoMenuSettings:
+class TiloMenuSettings:
 
 
         def delete(self, widget, event=None):
@@ -57,7 +55,7 @@ class GnoMenuSettings:
                 return False
 
         def __init__(self):
-                self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+                self.window = gtk.Window(gtk.WindowType.TOPLEVEL)
                 self.window.set_title(_('GnoMenu Settings'))
                 self.window.set_icon(gtk.gdk.pixbuf_new_from_file(Globals.Applogo))
                 self.window.connect("delete_event", self.delete)
@@ -954,6 +952,6 @@ def main():
         return 0
 
 if __name__ == "__main__":
-        GnoMenuSettings()
+        TiloMenuSettings()
         main()
 

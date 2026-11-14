@@ -14,19 +14,17 @@
 # Part of the GnoMenu
 
 import sys
-import pygtk
-pygtk.require("2.0")
-import gtk
-import gobject
+from gi.repository import Gtk as gtk, Gdk, GdkPixbuf
+from gi.repository import GObject as gobject, GLib
 import cairo
 import os
-import pango
+from gi.repository import Pango as pango
 from Menu_Widgets import MenuButton , Separator, ImageFrame, ProgramList, IconProgramList,MenuTab, MenuLabel, MenuImage,TreeProgramList, CairoProgramList
 import Globals
 import cairo_drawing
 import utils
 import Launcher
-import commands
+import subprocess as commands
 import IconFactory
 
 try:
@@ -72,7 +70,7 @@ class Main_Menu(gobject.GObject):
                 self.hide_method = hide_method
                 #Set the main working directory to home
                 os.chdir(Globals.HomeDirectory)
-                self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+                self.window = gtk.Window(gtk.WindowType.TOPLEVEL)
                 self.window.set_title('GnoMenu')
                 self.window.set_focus_on_map(1)
                 self.window.set_app_paintable(1)
