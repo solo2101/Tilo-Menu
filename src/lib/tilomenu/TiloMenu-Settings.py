@@ -39,9 +39,9 @@ except:
 
 import gettext
 
-gettext.textdomain('gnomenu')
-gettext.install('gnomenu', INSTALL_PREFIX +  '/share/locale')
-gettext.bindtextdomain('gnomenu', INSTALL_PREFIX +  '/share/locale')
+gettext.textdomain('tilomenu')
+gettext.install('tilomenu', INSTALL_PREFIX +  '/share/locale')
+gettext.bindtextdomain('tilomenu', INSTALL_PREFIX +  '/share/locale')
 
 def _(s):
         return gettext.gettext(s)
@@ -56,8 +56,8 @@ class TiloMenuSettings:
 
         def __init__(self):
                 self.window = gtk.Window(gtk.WindowType.TOPLEVEL)
-                self.window.set_title(_('GnoMenu Settings'))
-                self.window.set_icon(gtk.gdk.pixbuf_new_from_file(Globals.Applogo))
+                self.window.set_title(_('TiloMenu Settings'))
+                self.window.set_icon(GdkPixbuf.Pixbuf.new_from_file(Globals.Applogo))
                 self.window.connect("delete_event", self.delete)
                 self.window.set_border_width(4)
                 self.load_settings
@@ -66,7 +66,7 @@ class TiloMenuSettings:
                 self.vbox = gtk.VBox()
                 self.vbox.pack_start(self.notebook, True, True)
                 self.window.add(self.vbox)
-                self.window.set_position(gtk.WIN_POS_CENTER)
+                self.window.set_position(gtk.WindowPosition.CENTER)
                 self.notebook.show()
                 # TAB 1
                 self.add_theme_tab()
@@ -96,7 +96,7 @@ class TiloMenuSettings:
                 self.notebook.append_page(self.vbox_comm,self.label_tab4)
                 self.notebook.append_page(self.vbox_about,self.label_tab3)
                 self.window.show_all()
-                if self.window.size_request()[1] +50 > gtk.gdk.screen_height():
+                if self.window.get_preferred_size()[0].height +50 > Gdk.Screen.get_default().get_height():
                         self.notebook.set_tab_pos(0)
                 if len(sys.argv) == 2 and sys.argv[1] == "--about":
                         self.notebook.set_current_page(3)
@@ -136,7 +136,7 @@ class TiloMenuSettings:
                 self.button_menu.connect('clicked', self.button_clicked, 'install_menu')
                 self.button_menu2 = gtk.Button(_('Uninstall'))
                 self.button_menu2.connect('clicked', self.button_clicked, 'uninstall_menu')
-                self.combo_menu = gtk.combo_box_new_text()
+                self.combo_menu = gtk.ComboBoxText()
                 self.hbox_menu2.pack_start(self.button_menu,0,0)
                 self.hbox_menu2.pack_start(self.button_menu2,0,0)
                 self.hbox_menu2.pack_start(self.combo_menu,1,1)
@@ -164,7 +164,7 @@ class TiloMenuSettings:
                 self.button_button.connect('clicked', self.button_clicked, 'install_but')
                 self.button_button2 = gtk.Button(_('Uninstall'))
                 self.button_button2.connect('clicked', self.button_clicked, 'uninstall_but')
-                self.combo_button = gtk.combo_box_new_text()
+                self.combo_button = gtk.ComboBoxText()
                 self.hbox_button2.pack_start(self.button_button, False, False)
                 self.hbox_button2.pack_start(self.button_button2, False, False)
                 self.hbox_button2.pack_start(self.combo_button, True, True)
@@ -194,7 +194,7 @@ class TiloMenuSettings:
                 self.button_icon.connect('clicked', self.button_clicked, 'install_ico')
                 self.button_icon2 = gtk.Button(_('Uninstall'))
                 self.button_icon2.connect('clicked', self.button_clicked, 'uninstall_ico')
-                self.combo_icon = gtk.combo_box_new_text()
+                self.combo_icon = gtk.ComboBoxText()
                 self.hbox_icon2.pack_start(self.button_icon, False, False)
                 self.hbox_icon2.pack_start(self.button_icon2, False, False)
                 self.hbox_icon2.pack_start(self.combo_icon, True, True)
@@ -206,7 +206,7 @@ class TiloMenuSettings:
                 self.image_icon.set_size_request(64,64)
 
                 #SOUND
-                self.combo_sound = gtk.combo_box_new_text()
+                self.combo_sound = gtk.ComboBoxText()
                 self.reload_themes('Sound')
                 self.frame_sound = gtk.Frame('<b>%s</b>' % _('Sound theme'))
                 self.frame_sound.get_label_widget().set_use_markup(1)
@@ -249,9 +249,9 @@ class TiloMenuSettings:
                 self.hbox15 = gtk.HBox()
                 self.hbox16 = gtk.HBox()
                 self.label11 = gtk.Label(_('Icon Size in Program List'))
-                self.label11.set_justify(gtk.JUSTIFY_LEFT)
+                self.label11.set_justify(gtk.Justification.LEFT)
                 self.label12 = gtk.Label(_('Number of Items in Recent Items List'))
-                self.label12.set_justify(gtk.JUSTIFY_LEFT)
+                self.label12.set_justify(gtk.Justification.LEFT)
                 self.spinbutton1 = gtk.SpinButton()
                 self.spinbutton1.set_digits(1)
                 self.spinbutton1.set_increments(1, int(256))
@@ -263,7 +263,7 @@ class TiloMenuSettings:
                 self.spinbutton2.set_increments(1, int(100))
                 self.spinbutton2.set_range(1, 50)
                 self.spinbutton2.set_value(Globals.Settings['ListSize'])
-                self.combo4 = gtk.combo_box_new_text()
+                self.combo4 = gtk.ComboBoxText()
                 self.combo4.append_text(_('Listview'))
                 self.combo4.append_text(_('Buttons (expanded)'))
                 self.combo4.append_text(_('Buttons (fixed)'))
@@ -272,7 +272,7 @@ class TiloMenuSettings:
                 self.combo4.set_active(Globals.Settings['Prog_List'])
 
                 self.label14 = gtk.Label(_('Tab hover effect'))
-                self.combo6 = gtk.combo_box_new_text()
+                self.combo6 = gtk.ComboBoxText()
                 self.combo6.append_text(_('None'))
                 self.combo6.append_text(_('Grow'))
                 self.combo6.append_text(_('Black and White'))
@@ -338,7 +338,7 @@ class TiloMenuSettings:
                 self.hbox2 = gtk.HBox()
                 self.hbox2.set_border_width(0)
                 self.label1 = gtk.Label(_('Search'))
-                self.label1.set_justify(gtk.JUSTIFY_LEFT)
+                self.label1.set_justify(gtk.Justification.LEFT)
                 self.label1.set_size_request(50,-1)
                 self.entry1 = gtk.Entry()
                 self.entry1.set_text(Globals.Settings['Search'])
@@ -348,7 +348,7 @@ class TiloMenuSettings:
                 self.hbox4 = gtk.HBox()
                 self.hbox4.set_border_width(0)
                 self.label3 = gtk.Label(_('Network Config'))
-                self.label3.set_justify(gtk.JUSTIFY_LEFT)
+                self.label3.set_justify(gtk.Justification.LEFT)
                 self.label3.set_size_request(50,-1)
                 self.entry3 = gtk.Entry()
                 self.entry3.set_text(Globals.Settings['Network_Config'])
@@ -358,7 +358,7 @@ class TiloMenuSettings:
                 self.hbox5 = gtk.HBox()
                 self.hbox5.set_border_width(0)
                 self.label4 = gtk.Label(_('Control Panel'))
-                self.label4.set_justify(gtk.JUSTIFY_LEFT)
+                self.label4.set_justify(gtk.Justification.LEFT)
                 self.label4.set_size_request(50,-1)
                 self.entry4 = gtk.Entry()
                 self.entry4.set_text(Globals.Settings['Control_Panel'])
@@ -368,7 +368,7 @@ class TiloMenuSettings:
                 self.hbox6 = gtk.HBox()
                 self.hbox6.set_border_width(0)
                 self.label5 = gtk.Label(_('Package Manager'))
-                self.label5.set_justify(gtk.JUSTIFY_LEFT)
+                self.label5.set_justify(gtk.Justification.LEFT)
                 self.label5.set_size_request(50,-1)
                 self.entry5 = gtk.Entry()
                 self.entry5.set_text(Globals.Settings['Package_Manager'])
@@ -378,7 +378,7 @@ class TiloMenuSettings:
                 self.hbox7 = gtk.HBox()
                 self.hbox7.set_border_width(0)
                 self.label6 = gtk.Label(_('Help'))
-                self.label6.set_justify(gtk.JUSTIFY_LEFT)
+                self.label6.set_justify(gtk.Justification.LEFT)
                 self.label6.set_size_request(50,-1)
                 self.entry6 = gtk.Entry()
                 self.entry6.set_text(Globals.Settings['Help'])
@@ -388,7 +388,7 @@ class TiloMenuSettings:
                 self.hbox8 = gtk.HBox()
                 self.hbox8.set_border_width(0)
                 self.label7 = gtk.Label(_('Shutdown Dialog'))
-                self.label7.set_justify(gtk.JUSTIFY_LEFT)
+                self.label7.set_justify(gtk.Justification.LEFT)
                 self.label7.set_size_request(50,-1)
                 self.entry7 = gtk.Entry()
                 self.entry7.set_text(Globals.Settings['Power'])
@@ -398,7 +398,7 @@ class TiloMenuSettings:
                 self.hbox9 = gtk.HBox()
                 self.hbox9.set_border_width(0)
                 self.label8 = gtk.Label(_('Lock Screen'))
-                self.label8.set_justify(gtk.JUSTIFY_LEFT)
+                self.label8.set_justify(gtk.Justification.LEFT)
                 self.label8.set_size_request(50,-1)
                 self.entry8 = gtk.Entry()
                 self.entry8.set_text(Globals.Settings['Lock'])
@@ -408,7 +408,7 @@ class TiloMenuSettings:
                 self.hbox36 = gtk.HBox()
                 self.hbox36.set_border_width(0)
                 self.label26 = gtk.Label(_("Logout"))
-                self.label26.set_justify(gtk.JUSTIFY_LEFT)
+                self.label26.set_justify(gtk.Justification.LEFT)
                 self.label26.set_size_request(50,-1)
                 self.entry26 = gtk.Entry()
                 self.entry26.set_text(Globals.Settings['LogoutNow'])
@@ -418,7 +418,7 @@ class TiloMenuSettings:
                 self.hbox10= gtk.HBox()
                 self.hbox10.set_border_width(0)
                 self.label9 = gtk.Label(_('Logout Dialog'))
-                self.label9.set_justify(gtk.JUSTIFY_LEFT)
+                self.label9.set_justify(gtk.Justification.LEFT)
                 self.label9.set_size_request(50,-1)
                 self.entry9 = gtk.Entry()
                 self.entry9.set_text(Globals.Settings['Logout'])
@@ -428,7 +428,7 @@ class TiloMenuSettings:
                 self.hbox3 = gtk.HBox()
                 self.hbox3.set_border_width(0)
                 self.label2 = gtk.Label(_('Restart'))
-                self.label2.set_justify(gtk.JUSTIFY_LEFT)
+                self.label2.set_justify(gtk.Justification.LEFT)
                 self.label2.set_size_request(50,-1)
                 self.entry2 = gtk.Entry()
                 self.entry2.set_text(Globals.Settings['Restart'])
@@ -439,7 +439,7 @@ class TiloMenuSettings:
                 self.hbox30 = gtk.HBox()
                 self.hbox30.set_border_width(0)
                 self.label20 = gtk.Label(_('Suspend'))
-                self.label20.set_justify(gtk.JUSTIFY_LEFT)
+                self.label20.set_justify(gtk.Justification.LEFT)
                 self.label20.set_size_request(50,-1)
                 self.entry20 = gtk.Entry()
                 self.entry20.set_text(Globals.Settings['Suspend'])
@@ -449,7 +449,7 @@ class TiloMenuSettings:
                 self.hbox31 = gtk.HBox()
                 self.hbox31.set_border_width(0)
                 self.label21 = gtk.Label(_('Hibernate'))
-                self.label21.set_justify(gtk.JUSTIFY_LEFT)
+                self.label21.set_justify(gtk.Justification.LEFT)
                 self.label21.set_size_request(50,-1)
                 self.entry21 = gtk.Entry()
                 self.entry21.set_text(Globals.Settings['Hibernate'])
@@ -460,7 +460,7 @@ class TiloMenuSettings:
                 self.hbox32 = gtk.HBox()
                 self.hbox32.set_border_width(0)
                 self.label22 = gtk.Label(_('Run'))
-                self.label22.set_justify(gtk.JUSTIFY_LEFT)
+                self.label22.set_justify(gtk.Justification.LEFT)
                 self.label22.set_size_request(50,-1)
                 self.entry22 = gtk.Entry()
                 self.entry22.set_text(Globals.Settings['Run'])
@@ -470,7 +470,7 @@ class TiloMenuSettings:
                 self.hbox33 = gtk.HBox()
                 self.hbox33.set_border_width(0)
                 self.label23 = gtk.Label(_('Shutdown'))
-                self.label23.set_justify(gtk.JUSTIFY_LEFT)
+                self.label23.set_justify(gtk.Justification.LEFT)
                 self.label23.set_size_request(50,-1)
                 self.entry23 = gtk.Entry()
                 self.entry23.set_text(Globals.Settings['Shutdown'])
@@ -480,7 +480,7 @@ class TiloMenuSettings:
                 self.hbox34 = gtk.HBox()
                 self.hbox34.set_border_width(0)
                 self.label24 = gtk.Label(_('User about'))
-                self.label24.set_justify(gtk.JUSTIFY_LEFT)
+                self.label24.set_justify(gtk.Justification.LEFT)
                 self.label24.set_size_request(50,-1)
                 self.entry24 = gtk.Entry()
                 self.entry24.set_text(Globals.Settings['User'])
@@ -490,7 +490,7 @@ class TiloMenuSettings:
                 self.hbox35 = gtk.HBox()
                 self.hbox35.set_border_width(0)
                 self.label25 = gtk.Label(_("Open as Administrator"))
-                self.label25.set_justify(gtk.JUSTIFY_LEFT)
+                self.label25.set_justify(gtk.Justification.LEFT)
                 self.label25.set_size_request(50,-1)
                 self.entry25 = gtk.Entry()
                 self.entry25.set_text(Globals.Settings['AdminRun'])
@@ -500,7 +500,7 @@ class TiloMenuSettings:
                 self.hbox37 = gtk.HBox()
                 self.hbox37.set_border_width(0)
                 self.label27 = gtk.Label(_("Menu Editor"))
-                self.label27.set_justify(gtk.JUSTIFY_LEFT)
+                self.label27.set_justify(gtk.Justification.LEFT)
                 self.label27.set_size_request(50,-1)
                 self.entry27 = gtk.Entry()
                 self.entry27.set_text(Globals.Settings['MenuEditor'])
@@ -532,13 +532,13 @@ class TiloMenuSettings:
                 self.vbox_about = gtk.VBox()
                 self.image_logo = gtk.Image()
                 self.image_logo.set_size_request(80,80)
-                self.Applogo = gtk.gdk.pixbuf_new_from_file_at_size(Globals.Applogo,80,80)
+                self.Applogo = GdkPixbuf.Pixbuf.new_from_file_at_size(Globals.Applogo,80,80)
                 self.image_logo.set_from_pixbuf(self.Applogo)
                 self.label_app = gtk.Label("GnoMenu %s" % Globals.version)
                 self.label_credits = gtk.Label("Consolidated menu for the GNOME desktop.\nBy Helder Fraga aka Whise <helderfraga@gmail.com>\n Please Donate")
                 self.font_desc = pango.FontDescription('sans bold 14')
                 self.label_app.modify_font(self.font_desc)
-                self.label_credits.set_justify(gtk.JUSTIFY_CENTER)
+                self.label_credits.set_justify(gtk.Justification.CENTER)
                 self.button3 = gtk.Button(_('Donate'))
                 self.button3.set_border_width(5)
                 self.button3.connect('clicked', self.button_clicked, 'Donate')
@@ -606,7 +606,7 @@ class TiloMenuSettings:
                 elif id == 'Credits':
                         try:
                                 import gnome.ui
-                                self.Applogo = gtk.gdk.pixbuf_new_from_file_at_size(Globals.Applogo,80,80)
+                                self.Applogo = GdkPixbuf.Pixbuf.new_from_file_at_size(Globals.Applogo,80,80)
                                 about = gnome.ui.About(Globals.name,Globals.version,"GPL","Consolidated menu for the GNOME desktop.",["Helder Fraga aka Whise <helderfraga@gmail.com>" , "https://launchpad.net/~gnomenu-team"],["https://launchpad.net/~gnomenu-team"],"https://translations.launchpad.net/gnomenu/trunk/+pots/gnomenu", self.Applogo)
                                 about.show()
                         except:pass
@@ -698,10 +698,10 @@ class TiloMenuSettings:
                 if widget.get_active_text() is None: return
                 if id == 'Menu':
                         try:
-                                Pixbuf = gtk.gdk.pixbuf_new_from_file_at_size("%sMenu/%s/themepreview.png" % (Globals.ThemeDirectory, widget.get_active_text()),200,230)
+                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("%sMenu/%s/themepreview.png" % (Globals.ThemeDirectory, widget.get_active_text()),200,230)
                                 #self.image_menu.set_
                         except:
-                                Pixbuf = gtk.gdk.pixbuf_new_from_file("%stheme.png" % Globals.GraphicsDirectory)
+                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file("%stheme.png" % Globals.GraphicsDirectory)
                         XMLCredits = xml.dom.minidom.parse("%sMenu/%s/themedata.xml" % (Globals.ThemeDirectory, widget.get_active_text()))
                         XBase = XMLCredits.childNodes[0]
                         SBase = XBase.getElementsByTagName("ContentData")
@@ -714,9 +714,9 @@ class TiloMenuSettings:
                         self.image_menu.set_size_request(200,230)
                 elif id == 'Button':
                         try:
-                                Pixbuf = gtk.gdk.pixbuf_new_from_file_at_size("%sButton/%s/themepreview.png" % (Globals.ThemeDirectory, widget.get_active_text()),64,64)
+                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("%sButton/%s/themepreview.png" % (Globals.ThemeDirectory, widget.get_active_text()),64,64)
                         except:
-                                Pixbuf = gtk.gdk.pixbuf_new_from_file("%stheme.png" % Globals.GraphicsDirectory)
+                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file("%stheme.png" % Globals.GraphicsDirectory)
                         XMLCredits = xml.dom.minidom.parse("%sButton/%s/themedata.xml" % (Globals.ThemeDirectory, widget.get_active_text()))
                         XBase = XMLCredits.childNodes[0]
                         SBase = XBase.getElementsByTagName("ContentData")
@@ -729,9 +729,9 @@ class TiloMenuSettings:
                         self.image_button.set_size_request(64,64)
                 elif id == 'Icon':
                         try:
-                                Pixbuf = gtk.gdk.pixbuf_new_from_file_at_size("%sIcon/%s/themepreview.png" % (Globals.ThemeDirectory, widget.get_active_text()),64,64)
+                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("%sIcon/%s/themepreview.png" % (Globals.ThemeDirectory, widget.get_active_text()),64,64)
                         except:
-                                Pixbuf = gtk.gdk.pixbuf_new_from_file("%stheme.png" % Globals.GraphicsDirectory)
+                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file("%stheme.png" % Globals.GraphicsDirectory)
                         XMLCredits = xml.dom.minidom.parse("%sIcon/%s/themedata.xml" % (Globals.ThemeDirectory, widget.get_active_text()))
                         XBase = XMLCredits.childNodes[0]
                         SBase = XBase.getElementsByTagName("ContentData")
@@ -781,7 +781,7 @@ class TiloMenuSettings:
                 flt.add_pattern('*.tar')
                 # create dialog
                 dlg = gtk.FileChooserDialog(buttons=(gtk.STOCK_CANCEL, 
-                                gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+                                gtk.ResponseType.CANCEL, gtk.STOCK_OPEN, gtk.ResponseType.OK))
                 dlg.set_current_folder(self.folder)
                 dlg.set_title(_('Install a new theme'))
                 dlg.set_filter(flt)
@@ -790,13 +790,13 @@ class TiloMenuSettings:
                 filename        = dlg.get_filename()
                 self.folder = dlg.get_current_folder()
                 dlg.destroy()
-                if resp == gtk.RESPONSE_OK:
+                if resp == gtk.ResponseType.OK:
                         # create new installer
                         
                         # try installing and show result dialog
-                        self.window.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+                        self.window.get_window().set_cursor(Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.WATCH))
                         self.install (filename) 
-                        self.window.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+                        self.window.get_window().set_cursor(Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.LEFT_PTR))
                         
 
         def install(self,filename):
