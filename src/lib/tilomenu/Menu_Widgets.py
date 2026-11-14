@@ -469,7 +469,7 @@ class MenuTab:
         def color_to_hex(self, color):
                 hexstring = ""
                 for col in 'red','green','blue':
-                    hexfrag = hex(getattr(color,col) / (16 * 16)).split("x")[1]
+                    hexfrag = hex(getattr(color,col) // (16 * 16)).split("x")[1]
                     if len(hexfrag) < 2: hexfrag = "0" + hexfrag
                     hexstring += hexfrag
                 #print 'returning hexstring: ',hexstring
