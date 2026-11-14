@@ -31,3 +31,11 @@ jobs:
           PYTHONPATH: .
         run: |
           xvfb-run -a /usr/bin/python3 tests/smoke_themes.py             /tmp/gnomenu-source/gnomenu/src/share/gnomenu/Themes/Menu
+
+      - name: Validate original GnoMenu archive installation and settings applet
+        env:
+          PYTHONPATH: .
+        run: |
+          xvfb-run -a /usr/bin/python3 tests/test_theme_install.py \
+            /tmp/gnomenu-2.9.1.tar.gz \
+            /tmp/gnomenu-source/gnomenu/src/share/gnomenu/Themes/Menu
