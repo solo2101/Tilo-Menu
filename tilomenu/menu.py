@@ -165,9 +165,20 @@ class MenuWindow(Gtk.Window):
         parent = Gtk.MenuItem(label="Change Theme")
         parent.set_submenu(submenu)
         menu.append(parent)
+        preferences = Gtk.MenuItem(label="Preferences…")
+        preferences.connect("activate", self._open_preferences)
+        menu.append(preferences)
         menu.show_all()
         menu.popup_at_pointer(event)
         return True
+
+    def _open_preferences(self, _item):
+        launcher = Path.home() / ".local/bin/tilo-menu"
+        try:
+            subprocess.Popen([str(launcher), "--settings"], start_new_session=True)
+            self.close()
+        except OSError as error:
+            print(f"Tilo Menu: unable to open preferences: {error}")
 
     def _switch_theme(self, _item, path):
         settings = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "tilo-menu" / "settings.json"
@@ -328,12 +339,26 @@ def main():
     parser.add_argument("--themes-dir", type=Path)
     parser.add_argument("--theme", help="Select a theme by directory name")
     parser.add_argument("--list-themes", action="store_true")
+    parser.add_argument("--settings", action="store_true", help="Open GnoMenu theme preferences")
+    parser.add_argument("--import-theme", type=Path, help="Import an original GnoMenu archive")
     parser.add_argument("--color", default="white")
     args = parser.parse_args()
     themes_dir = args.themes_dir or (args.theme_directory.parent if args.theme_directory else Path.home() / ".local/share/tilo-menu/data/themes/Menu")
     themes = {p.name: p for p in themes_dir.iterdir() if p.is_dir() and (p / "themedata.xml").is_file()} if themes_dir.is_dir() else {}
     if args.list_themes:
         print("\n".join(sorted(themes)))
+        return
+    if args.import_theme:
+        from .themes.importer import ThemeImportError, import_theme_archive
+        try:
+            imported = import_theme_archive(args.import_theme, themes_dir)
+        except (ThemeImportError, OSError) as error:
+            parser.error(str(error))
+        print("Imported Menu theme(s): " + ", ".join(imported))
+        return
+    if args.settings:
+        from .preferences import show_preferences
+        show_preferences(themes_dir)
         return
     settings = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "tilo-menu" / "settings.json"
     try:
