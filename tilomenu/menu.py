@@ -22,6 +22,7 @@ from .applications import application_categories, installed_applications, launch
 from .themes import load_menu_theme
 from .themes.renderer import render_theme_buttons
 from .icons import load_icon
+from .themes.palette import program_colors
 
 
 class MenuWindow(Gtk.Window):
@@ -76,16 +77,20 @@ class MenuWindow(Gtk.Window):
         scroll.get_style_context().add_class("tilo-app-scroll")
         scroll.set_size_request(program.integer("Width"), max(20, program.integer("Height") - 32))
         layout.put(scroll, program.integer("X"), program.integer("Y") + 32)
+        text_color, hover_color = program_colors(theme)
         css = Gtk.CssProvider()
-        css.load_from_data(b"""\n            window.tilo-window, window.tilo-window > fixed.tilo-layout { background: transparent; background-color: transparent; }\n            .tilo-window button.tilo-category { background: transparent; background-image: none; border: 0; border-radius: 0; box-shadow: none; padding: 2px 6px; color: #f4f4f4; }
-            .tilo-window button.tilo-category:hover { background: rgba(100, 130, 170, 0.25); }\n            .tilo-window entry { box-shadow: none; }
+        css.load_from_data(("""
+            window.tilo-window, window.tilo-window > fixed.tilo-layout { background: transparent; background-color: transparent; }
+            .tilo-window button.tilo-category { background: transparent; background-image: none; border: 0; border-radius: 0; box-shadow: none; padding: 2px 6px; color: TEXT_COLOR; }
+            .tilo-window button.tilo-category:hover { background: HOVER_COLOR; }
+            .tilo-window entry { box-shadow: none; }
             .tilo-window listbox, .tilo-window listbox row, .tilo-window scrolledwindow, .tilo-window viewport { background: transparent; border: none; box-shadow: none; }
             .tilo-window listbox row { padding: 0; min-height: 0; }
             .tilo-window button.tilo-app { background: transparent; background-image: none; border: none;
                 box-shadow: none; border-radius: 0; padding: 3px 5px; min-height: 26px; }
-            .tilo-window button.tilo-app:hover { background: rgba(90, 145, 210, 0.35); }
-            .tilo-window button.tilo-app label { font-size: 12px; color: #f4f4f4; text-shadow: 0 1px 1px #111; }
-        """)
+            .tilo-window button.tilo-app:hover { background: HOVER_COLOR; }
+            .tilo-window button.tilo-app label { font-size: 12px; color: TEXT_COLOR; text-shadow: none; }
+        """.replace("TEXT_COLOR", text_color).replace("HOVER_COLOR", hover_color)).encode("utf-8"))
         Gtk.StyleContext.add_provider_for_screen(
             self.get_screen(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
