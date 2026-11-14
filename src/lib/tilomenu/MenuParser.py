@@ -115,7 +115,7 @@ class MenuParser(gobject.GObject):
                                         if os.path.isdir(self.parentfile) and os.path.exists(self.parentfile):
                                                 self.current_file1 = gio.File.new_for_path(self.parentfile).monitor_directory(gio.FileMonitorFlags.NONE, None)
                                                 self.current_file1.connect_after("changed", self.monitor_callback)
-                                        self._monitors.append(self.current_file1)
+                                                self._monitors.append(self.current_file1)
         
                                 self.current_file = gio.File.new_for_path(self.AppsFile).monitor_file(gio.FileMonitorFlags.NONE, None)
                                 self.current_file.connect_after("changed", self.monitor_callback)
