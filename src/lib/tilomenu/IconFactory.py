@@ -12,7 +12,7 @@
 # Icon factory
 # Part of the GnoMenu
 
-from gi.repository import Gtk as gtk, GObject as gobject, Gio as gio
+from gi.repository import Gtk as gtk, GObject as gobject, Gio as gio, GdkPixbuf
 import os
 import xml.dom.minidom
 import utils
@@ -94,7 +94,7 @@ class IconFactory(gobject.GObject):
                                 thumbfile = self.info.get_attribute_as_string(gio.FILE_ATTRIBUTE_THUMBNAIL_PATH)
                                 if thumbfile:
                                         if os.path.isfile(thumbfile): 
-                                                return gtk.gdk.pixbuf_new_from_file_at_size(thumbfile, Globals.PG_iconsize, Globals.PG_iconsize)
+                                                return GdkPixbuf.Pixbuf.new_from_file_at_size(thumbfile, Globals.PG_iconsize, Globals.PG_iconsize)
                                         else:return item.get_icon(Globals.PG_iconsize)
                                 else:return item.get_icon(Globals.PG_iconsize)
 
@@ -112,7 +112,7 @@ class IconFactory(gobject.GObject):
 
         def geticonfile(self,icon):
                         if self.gtkicontheme.has_icon(icon):
-                                pix = self.gtkicontheme.load_icon(icon,Globals.PG_iconsize,gtk.ICON_LOOKUP_FORCE_SIZE)
+                                pix = self.gtkicontheme.load_icon(icon,Globals.PG_iconsize,gtk.IconLookupFlags.FORCE_SIZE)
                                 return pix
                         # lockup icon in xdg icon theme
                         else:
@@ -120,12 +120,12 @@ class IconFactory(gobject.GObject):
                                         for subdir in ('pixmaps', 'icons'):
                                                 path = os.path.join(dir_, subdir, icon)
                                                 if os.path.isfile(path):
-                                                        pix = gtk.gdk.pixbuf_new_from_file_at_size(path,Globals.PG_iconsize,Globals.PG_iconsize)
+                                                        pix = GdkPixbuf.Pixbuf.new_from_file_at_size(path,Globals.PG_iconsize,Globals.PG_iconsize)
                                                         return pix
                         if os.path.isfile(icon):
-                                pix = gtk.gdk.pixbuf_new_from_file_at_size(icon, Globals.PG_iconsize, Globals.PG_iconsize)
+                                pix = GdkPixbuf.Pixbuf.new_from_file_at_size(icon, Globals.PG_iconsize, Globals.PG_iconsize)
                                 return pix
-                        pix = self.gtkicontheme.load_icon('gtk-missing-image',Globals.PG_iconsize,gtk.ICON_LOOKUP_FORCE_SIZE)
+                        pix = self.gtkicontheme.load_icon('gtk-missing-image',Globals.PG_iconsize,gtk.IconLookupFlags.FORCE_SIZE)
                         return pix
 
 
