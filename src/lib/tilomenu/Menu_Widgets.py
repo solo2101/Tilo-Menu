@@ -1869,7 +1869,7 @@ class IconProgramList(gobject.GObject):
                 self.tree1.set_size_request(Globals.PG_buttonframedimensions[0], -1)
 
                 
-                self.tree1.set_orientation( gtk.Orientation.HORIZONTAL)
+                self.tree1.set_item_orientation(gtk.Orientation.HORIZONTAL)
                 if Globals.Settings['Show_Tips']:
                         self.tree1.set_tooltip_column (1)
                 #Globals.PG_buttonframedimensions[0],self.ScrollFrame.get_size_request()[1]
@@ -1879,7 +1879,7 @@ class IconProgramList(gobject.GObject):
                 cell = self.tree1.get_cells()[0]
                 cell.set_property('ellipsize', pango.EllipsizeMode.END)
                 cell.set_fixed_size(-1,Globals.PG_iconsize)#+((Globals.PG_iconsize *8)/28))
-                cell.set_property('ypad', (Globals.PG_iconsize *8)/28)
+                cell.set_property('ypad', (Globals.PG_iconsize *8)//28)
                 #self.tree1.get_cells()[0].set_property('yalign', 0.1)
                 try:
                         self.tree1.set_item_padding(0)
