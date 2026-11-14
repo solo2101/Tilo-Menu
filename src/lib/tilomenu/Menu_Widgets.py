@@ -66,10 +66,10 @@ class MenuButton:
                 self.h = self.Pic.get_height()
                 if self.backimagearea is None:
                         if Globals.flip == False:
-                                self.backimagearea = backimage.subpixbuf(Globals.MenuButtonX[i],Globals.MenuHeight - Globals.MenuButtonY[i] - self.h,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.MenuButtonX[i],Globals.MenuHeight - Globals.MenuButtonY[i] - self.h,self.w,self.h)
                                 self.backimagearea = self.backimagearea.flip(Globals.flip)
                         else:
-                                self.backimagearea = backimage.subpixbuf(Globals.MenuButtonX[i],Globals.MenuButtonY[i] ,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.MenuButtonX[i],Globals.MenuButtonY[i] ,self.w,self.h)
                 # Set the background which is always present
                 self.BackgroundImage = gtk.Image()
                 if Globals.MenuButtonImageBack[i] != '':
@@ -178,10 +178,10 @@ class MenuImage:
 
                 if self.backimagearea is None:
                         if Globals.flip == False:
-                                self.backimagearea = backimage.subpixbuf(Globals.MenuImageX[i],Globals.MenuHeight - Globals.MenuImageY[i] - self.h,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.MenuImageX[i],Globals.MenuHeight - Globals.MenuImageY[i] - self.h,self.w,self.h)
                                 self.backimagearea = self.backimagearea.flip(Globals.flip)
                         else:
-                                self.backimagearea = backimage.subpixbuf(Globals.MenuImageX[i],Globals.MenuImageY[i] ,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.MenuImageX[i],Globals.MenuImageY[i] ,self.w,self.h)
                 self.Pic.composite(self.backimagearea, 0, 0, self.w, self.h, 0, 0, 1, 1, GdkPixbuf.InterpType.BILINEAR, 255)
                 # Set the background which is always present
                 self.Image.set_from_pixbuf(self.backimagearea)
@@ -243,10 +243,10 @@ class MenuTab:
 
                 if self.backimagearea is None:
                         if Globals.flip == False:
-                                self.backimagearea = backimage.subpixbuf(Globals.MenuTabX[i],Globals.MenuHeight - Globals.MenuTabY[i] - self.h,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.MenuTabX[i],Globals.MenuHeight - Globals.MenuTabY[i] - self.h,self.w,self.h)
                                 self.backimagearea = self.backimagearea.flip(Globals.flip)
                         else:
-                                self.backimagearea = backimage.subpixbuf(Globals.MenuTabX[i],Globals.MenuTabY[i] ,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.MenuTabX[i],Globals.MenuTabY[i] ,self.w,self.h)
                 # Set the background which is always present
                 self.Image.set_size_request(self.w,self.h)
                 self.Frame.set_size_request(self.w,self.h)
@@ -557,11 +557,11 @@ class ImageFrame:
         
                         if Globals.flip == False:
 
-                                self.backimagearea = backimage.subpixbuf(Globals.UserIconFrameOffsetX,Globals.MenuHeight - Globals.UserIconFrameOffsetY - self.h,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.UserIconFrameOffsetX,Globals.MenuHeight - Globals.UserIconFrameOffsetY - self.h,self.w,self.h)
                                 self.backimagearea = self.backimagearea.flip(Globals.flip)
         
                         else:
-                                self.backimagearea = backimage.subpixbuf(Globals.UserIconFrameOffsetX,Globals.UserIconFrameOffsetY,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.UserIconFrameOffsetX,Globals.UserIconFrameOffsetY,self.w,self.h)
                 # Set the background which is always present
                 self.Image.set_size_request(self.w,self.h)
                 self.Frame.set_size_request(self.w,self.h)              
@@ -733,11 +733,11 @@ class ImageFrame_cairo_surface:#flickers
         
                         if Globals.flip == False:
 
-                                self.backimagearea = backimage.subpixbuf(Globals.UserIconFrameOffsetX,Globals.MenuHeight - Globals.UserIconFrameOffsetY - self.h,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.UserIconFrameOffsetX,Globals.MenuHeight - Globals.UserIconFrameOffsetY - self.h,self.w,self.h)
                                 self.backimagearea = self.backimagearea.flip(Globals.flip)
         
                         else:
-                                self.backimagearea = backimage.subpixbuf(Globals.UserIconFrameOffsetX,Globals.UserIconFrameOffsetY,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.UserIconFrameOffsetX,Globals.UserIconFrameOffsetY,self.w,self.h)
                 self.resizematch(self.w,self.h)         
                 self.iconopacity = [0,0,0,0]
                 self.step = [0,0,0,0]
@@ -908,11 +908,11 @@ class ImageFrame_new:
         
                         if Globals.flip == False:
 
-                                self.backimagearea = backimage.subpixbuf(Globals.UserIconFrameOffsetX,Globals.MenuHeight - Globals.UserIconFrameOffsetY - self.h,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.UserIconFrameOffsetX,Globals.MenuHeight - Globals.UserIconFrameOffsetY - self.h,self.w,self.h)
                                 self.backimagearea = self.backimagearea.flip(Globals.flip)
         
                         else:
-                                self.backimagearea = backimage.subpixbuf(Globals.UserIconFrameOffsetX,Globals.UserIconFrameOffsetY,self.w,self.h)
+                                self.backimagearea = backimage.new_subpixbuf(Globals.UserIconFrameOffsetX,Globals.UserIconFrameOffsetY,self.w,self.h)
                 self.resizematch(self.w,self.h)         
                 self.iconopacity = [0,0,0,0]
                 self.step = [0,0,0,0]
@@ -1199,11 +1199,11 @@ class CustomSearchBar(gtk.DrawingArea):
                 self.BackImageBuffer = None
                 if Globals.flip == False:
 
-                        self.backimagearea = self.colorpb.subpixbuf(self.sx,Globals.MenuHeight - self.sy-self.sh,self.sw,self.sh)
+                        self.backimagearea = self.colorpb.new_subpixbuf(self.sx,Globals.MenuHeight - self.sy-self.sh,self.sw,self.sh)
                         self.backimagearea = self.backimagearea.flip(Globals.flip)
         
                 else:
-                        self.backimagearea = self.colorpb.subpixbuf(self.sx,self.sy,self.sw,self.sh)
+                        self.backimagearea = self.colorpb.new_subpixbuf(self.sx,self.sy,self.sw,self.sh)
                 if not self.is_composited():
          
                         self.supports_alpha = False
@@ -1364,10 +1364,10 @@ class TreeProgramList(gobject.GObject):
                 self.XDG = XDGMenu()
                 self.XDG.connect('changed', self.menu_callback)
                 #if Globals.flip == False:
-                #       self.backimagearea = backimage.subpixbuf(Globals.PG_buttonframe[0],Globals.MenuHeight - Globals.PG_buttonframe[1] - Globals.PG_buttonframedimensions[1],Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
+                #       self.backimagearea = backimage.new_subpixbuf(Globals.PG_buttonframe[0],Globals.MenuHeight - Globals.PG_buttonframe[1] - Globals.PG_buttonframedimensions[1],Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
                 #       self.backimagearea = self.backimagearea.flip(Globals.flip)
                 #else:
-                #       self.backimagearea = backimage.subpixbuf(Globals.PG_buttonframe[0],Globals.PG_buttonframe[1] ,Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
+                #       self.backimagearea = backimage.new_subpixbuf(Globals.PG_buttonframe[0],Globals.PG_buttonframe[1] ,Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
 #=================================================================  
 #GRAPHICAL CODE FOR MENU
 #=================================================================  
@@ -1816,10 +1816,10 @@ class IconProgramList(gobject.GObject):
                 self.XDG = XDGMenu()
                 self.XDG.connect('changed', self.menu_callback)
                 #if Globals.flip == False:
-                #       self.backimagearea = backimage.subpixbuf(Globals.PG_buttonframe[0],Globals.MenuHeight - Globals.PG_buttonframe[1] - Globals.PG_buttonframedimensions[1],Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
+                #       self.backimagearea = backimage.new_subpixbuf(Globals.PG_buttonframe[0],Globals.MenuHeight - Globals.PG_buttonframe[1] - Globals.PG_buttonframedimensions[1],Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
                 #       self.backimagearea = self.backimagearea.flip(Globals.flip)
                 #else:
-                #       self.backimagearea = backimage.subpixbuf(Globals.PG_buttonframe[0],Globals.PG_buttonframe[1] ,Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
+                #       self.backimagearea = backimage.new_subpixbuf(Globals.PG_buttonframe[0],Globals.PG_buttonframe[1] ,Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
 #=================================================================  
 #GRAPHICAL CODE FOR MENU
 #=================================================================  
@@ -2194,10 +2194,10 @@ class ProgramList(gobject.GObject):
                 self.XDG.connect('changed', self.menu_callback)
                 self.Buttonlist = []
                 #if Globals.flip == False:
-                #       self.backimagearea = backimage.subpixbuf(Globals.PG_buttonframe[0],Globals.MenuHeight - Globals.PG_buttonframe[1] - Globals.PG_buttonframedimensions[1],Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
+                #       self.backimagearea = backimage.new_subpixbuf(Globals.PG_buttonframe[0],Globals.MenuHeight - Globals.PG_buttonframe[1] - Globals.PG_buttonframedimensions[1],Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
                 #       self.backimagearea = self.backimagearea.flip(Globals.flip)
                 #else:
-                #       self.backimagearea = backimage.subpixbuf(Globals.PG_buttonframe[0],Globals.PG_buttonframe[1] ,Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
+                #       self.backimagearea = backimage.new_subpixbuf(Globals.PG_buttonframe[0],Globals.PG_buttonframe[1] ,Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])
 #=================================================================  
 #GRAPHICAL CODE FOR MENU
 #=================================================================  
