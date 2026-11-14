@@ -1,51 +1,37 @@
-# TiloMenu, original-source port (step 1)
+# TiloMenu
 
-Direct port of the **GnoMenu 2.9.1 panel button** to Python 3, GTK3
-and MatePanelApplet 4.0. Original class and method names are retained wherever
-practical. The project's name is now **TiloMenu**.
+Direct source port of GnoMenu 2.9.1 to Python 3, GTK3 and the MATE panel.
 
-The original GnoBlue button theme is loaded through its unchanged XML.
-`make prepare` extracts the original artwork and GPL COPYING license
-byte-for-byte from the original source archive.
+The original `src/lib`, `src/bin` and `src/share` directory layout is retained.
+Original authors, GPL notices, class names and original menu algorithms are preserved.
+The ported Python 3 syntax is committed directly, instead of introducing a new menu rendering engine.
 
-## First test: original panel button only
+## Port status
 
-Run this before installing anything into the panel:
+The original 2.9.1 modules are now tracked under `src/lib/tilomenu`.
+Python 2 syntax conversion is complete across the selected core modules.
+Migration of GTK2 calls to GTK3 and MATE is still in progress. **Do not install this as a working menu yet.**
 
-```bash
-clear
-cd ~/Downloads/Tilo-Menu
-git pull
-make prepare
-/usr/bin/python3 src/lib/tilomenu/TiloMenu.py run-in-window
-```
+Implemented compatibility steps:
+- `TiloMenu.py`: original panel button and MATE factory registration.
+- `backend.py`: original `load_setting` and `save_setting` now use GSettings/dconf, with XML fallback and legacy XML read.
+- `MenuParser.py`: original freedesktop XDG parser fallback and Gio directory monitoring.
+- `Launcher.py`, `IconFactory.py`, `utils.py`: Python3/GTK3 imports and compatibility substitutions.
+- `Menu_Main.py`, `Menu_Widgets.py`, `Menu_Items.py`, `Globals.py`, `TiloMenu-Settings.py`, `Popup_Menu.py`, `cairo_drawing.py`: original Python3-syntax source staged for GTK3 port.
 
-This opens the original testing sandpit with the GnoBlue button. Move the
-mouse over the button to check its normal and hover PNGs. The popup menu and
-settings are deliberately not yet ported.
+Original artwork and XML remain completely unchanged. `make prepare` extracts only the four original default theme sets (Menu, Button, Icon, Sound), graphics and GPL license from `~/Downloads/gnomenu-2.9.1.tar.gz`; it does not download KDE, XFCE, AWN or other desktop integrations.
 
-## Prepare on Fedora MATE
+## Developer preparation
 
 ```bash
 clear
 cd ~/Downloads/Tilo-Menu
 git pull
 make prepare
-sudo make install
+make check
 ```
 
-The source archive must exist at `~/Downloads/gnomenu-2.9.1.tar.gz`.
-In MATE, right-click the panel, select **Add to Panel**, and select **TiloMenu**.
+We will finish the GTK3 conversion of the original widgets and popup before asking you to install or test the applet.
 
-## Current stage
-
-The panel button loads and uses the three original GnoBlue artwork states.
-The original right-click menu entries are registered but disabled until
-their settings/editor modules are ported. **Left click does not open a menu
-yet.** We will port `Menu_Main.py` and `Menu_Widgets.py` from original
-GnoMenu next, instead of creating another rendering engine.
-
-No existing user installation or archived branch is modified by this commit.
-
-Original authors: QB89Dragon and Whise. GPL-3.0-or-later. Full license
-text is extracted to `COPYING` with `make prepare`.
+The previous working GTK3 revival is archived at
+`archive/gtk3-revival-2026-11-14`.
