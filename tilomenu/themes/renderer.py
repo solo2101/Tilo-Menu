@@ -28,7 +28,7 @@ def _dimensions(image):
     return (pixbuf.get_width(), pixbuf.get_height()) if pixbuf else (0, 0)
 
 
-def render_theme_buttons(layout: Gtk.Fixed, theme) -> None:
+def render_theme_buttons(layout: Gtk.Fixed, theme, on_activate=None) -> None:
     """Position original backgrounds, overlays, icons and labels."""
     for element in theme.buttons:
         attrs = element.attributes
@@ -75,4 +75,12 @@ def render_theme_buttons(layout: Gtk.Fixed, theme) -> None:
 
         layout.put(container, element.integer("ButtonX"), element.integer("ButtonY"))
         if attrs.get("Name") != ":SEPARATOR:":
-            container.set_tooltip_text(attrs.get("Name", ""))
+            name = attrs.get("Name", "")
+            container.set_tooltip_text(name)
+            if on_activate is not None:
+                hitbox = Gtk.EventBox()
+                hitbox.set_visible_window(False)
+                hitbox.set_size_request(width, height)
+                hitbox.connect("button-release-event",
+                    lambda _widget, event, action=name: on_activate(action) if event.button == 1 else False)
+                layout.put(hitbox, element.integer("ButtonX"), element.integer("ButtonY"))

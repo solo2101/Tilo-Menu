@@ -5,6 +5,8 @@ Run: python3 -m tilomenu.menu /path/to/Menu/Vista
 """
 
 import argparse
+import shutil
+import subprocess
 from pathlib import Path
 
 import gi
@@ -12,7 +14,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version("Gdk", "3.0")
 gi.require_version("GdkPixbuf", "2.0")
-from gi.repository import GdkPixbuf, Gtk
+from gi.repository import GdkPixbuf, Gtk, Gio
 
 from .applications import application_categories, installed_applications, launch_application
 from .themes import load_menu_theme
@@ -85,7 +87,48 @@ class MenuWindow(Gtk.Window):
             layout.put(entry, search.integer("X"), search.integer("Y"))
             entry.connect("search-changed", self._change_search)
 
-        render_theme_buttons(layout, theme)
+        render_theme_buttons(layout, theme, self._activate_shortcut)
+
+    def _activate_shortcut(self, name):
+        """Open MATE destinations using a fixed allowlist, never theme commands."""
+        home = Path.home()
+        folders = {
+            "Home Folder": home,
+            "Documents": home / "Documents",
+            "Pictures": home / "Pictures",
+            "Music": home / "Music",
+            "Videos": home / "Videos",
+            "Computer": Path("/"),
+            "Network": "network:///",
+        }
+        if name in folders:
+            target = folders[name]
+            uri = target.as_uri() if isinstance(target, Path) else target
+            try:
+                Gio.AppInfo.launch_default_for_uri(uri, None)
+                self.close()
+            except Exception as error:
+                print(f"Tilo Menu: unable to open {name}: {error}")
+            return True
+
+        commands = {
+            "Search": ("mate-search-tool",),
+            "Show History": ("mate-search-tool",),
+            "Control Center": ("mate-control-center",),
+            "Package Manager": ("dnfdragora", "gnome-software"),
+            "Help": ("yelp",),
+            "Connect To": ("caja",),
+        }
+        for command in commands.get(name, ()):
+            executable = shutil.which(command)
+            if executable:
+                try:
+                    subprocess.Popen([executable], start_new_session=True)
+                    self.close()
+                except OSError as error:
+                    print(f"Tilo Menu: unable to start {command}: {error}")
+                return True
+        return True
 
     def _change_category(self, widget):
         self.category = widget.get_active_text() or "All Applications"
