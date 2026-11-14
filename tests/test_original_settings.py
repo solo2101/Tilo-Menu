@@ -18,6 +18,15 @@ assert [window.notebook.get_tab_label_text(window.notebook.get_nth_page(i))
     "Themes", "Preferences", "Commands", "About"
 ]
 assert window.combo_menu.get_active_text()
+# Apply changes using the original 2.9.1 SaveSettings method.
+import backend
+window.check4.set_active(True)
+window.spinbutton1.set_value(32)
+window.buttonpress(None, 'apply')
+assert backend.load_setting('TabHover') == 1
+assert backend.load_setting('IconSize') == 32
+assert backend.load_setting('Menu_Name') == window.combo_menu.get_active_text()
+print("PASS: original Settings Apply stores options through GSettings")
 while Gtk.events_pending():
     Gtk.main_iteration_do(False)
 window.window.destroy()
