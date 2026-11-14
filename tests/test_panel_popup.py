@@ -36,6 +36,19 @@ assert menu.hwg is not None, "Original Main_Menu was not attached on map"
 assert menu.hwg.window is not None
 assert applet.actions.get_action('Props').get_sensitive()
 assert applet.actions.get_action('About').get_sensitive()
+# The original MATE context-menu Preferences/About actions launch
+# the original Settings script. Verify the arguments, do not spawn it.
+from unittest.mock import patch
+with patch('TiloMenu.subprocess.Popen') as launch:
+    applet.actions.get_action('Props').activate()
+    assert launch.called
+    assert launch.call_args.args[0][1].endswith('TiloMenu-Settings.py')
+with patch('TiloMenu.subprocess.Popen') as launch:
+    applet.actions.get_action('About').activate()
+    assert launch.called
+    assert launch.call_args.args[0][-1] == '--about'
+print('PASS: original panel right-click Preferences/About actions')
+
 from types import SimpleNamespace
 # Exercise the original button_press flow, not only the popup helpers.
 menu.button_press(applet, SimpleNamespace(button=1))
