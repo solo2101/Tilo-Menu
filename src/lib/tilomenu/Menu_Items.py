@@ -21,6 +21,7 @@ import utils
 from gi.repository import GObject as gobject, GLib
 from Popup_Menu import add_menuitem, add_image_menuitem
 import gc
+from functools import cmp_to_key
 import Globals
 import MenuParser
 import IconFactory
@@ -188,7 +189,8 @@ class XDGMenu(gobject.GObject):
 
         def recentSortCriterium(self, item1, item2):
                 """Sort files"""
-                return cmp(item2.get_modified(), item1.get_modified())
+                return ((item2.get_modified() > item1.get_modified()) -
+                        (item2.get_modified() < item1.get_modified()))
 
         def onRecentChanged(self, manager):
                 """Recent files have changed"""
@@ -310,7 +312,7 @@ class XDGMenu(gobject.GObject):
                         if self.recents_changed or self.recents is None:
                                 self.recent = self.recent_manager.get_items()
                                 self.recents_changed = False    
-                                self.recent.sort(self.recentSortCriterium)
+                                self.recent.sort(key=cmp_to_key(self.recentSortCriterium))
                         x = 0
                         for item in self.recent:
                                 name = item.get_short_name()
@@ -335,7 +337,7 @@ class XDGMenu(gobject.GObject):
                         if self.recents_changed or self.recents is None:
                                 self.recent = self.recent_manager.get_items()
                                 self.recents_changed = False    
-                                self.recent.sort(self.recentSortCriterium)
+                                self.recent.sort(key=cmp_to_key(self.recentSortCriterium))
                         x = 0
                         for item in self.recent:
                                 if isgio:
