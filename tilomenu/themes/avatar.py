@@ -88,12 +88,14 @@ def portrait_pixbuf(width, height, home=None):
 
 
 def avatar_visible(theme):
-    """Check whether the original theme leaves a usable space for the face.
+    """Honor the original GnoMenu Capabilities.HasIcon setting.
 
-    Original GnoMenu paints the avatar *behind* the main theme artwork.
-    A fully opaque region masks it, while invalid/out-of-window locations
-    should never create a floating image outside the intended menu.
+    The original theme XML, not PNG alpha or an inferred avatar area,
+    determines whether a user portrait is intended. An obsolete IconSettings
+    block is not permission to draw a portrait when HasIcon is disabled.
     """
+    if theme.capabilities.attributes.get("HasIcon") != "1":
+        return False
     settings = theme.icon
     if settings is None:
         return False
@@ -101,36 +103,12 @@ def avatar_visible(theme):
     width, height = settings.integer("Width"), settings.integer("Height")
     ix, iy = settings.integer("InsetX"), settings.integer("InsetY")
     iw, ih = settings.integer("InsetWidth"), settings.integer("InsetHeight")
-    if min(width, height, iw, ih) <= 0:
-        return False
-    if (x < 0 or y < 0 or ix < 0 or iy < 0
-            or ix + iw > width or iy + ih > height
-            or x + width > theme.width or y + height > theme.height):
-        return False
-
-    # The portrait itself only appears through transparent parts of the
-    # original PNG. Do not paint on top of an opaque search/toolbar graphic.
-    try:
-        background = GdkPixbuf.Pixbuf.new_from_file(
-            str(theme.directory / theme.background)
-        )
-    except Exception:
-        return False
-    if background.get_n_channels() < 4 or not background.get_has_alpha():
-        return False
-    if x + ix + iw > background.get_width() or y + iy + ih > background.get_height():
-        return False
-    pixels = background.get_pixels()
-    stride = background.get_rowstride()
-    channels = background.get_n_channels()
-    transparent = total = 0
-    for offset_y in range(0, ih, max(1, ih // 12)):
-        for offset_x in range(0, iw, max(1, iw // 12)):
-            alpha = pixels[(y + iy + offset_y) * stride
-                           + (x + ix + offset_x) * channels + 3]
-            transparent += alpha < 220
-            total += 1
-    return transparent / max(1, total) >= 0.25
+    return (
+        min(width, height, iw, ih) > 0
+        and x >= 0 and y >= 0 and ix >= 0 and iy >= 0
+        and ix + iw <= width and iy + ih <= height
+        and x + width <= theme.width and y + height <= theme.height
+    )
 
 
 def render_user_face(layout, theme, on_open=None):

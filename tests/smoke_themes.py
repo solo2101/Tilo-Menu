@@ -92,17 +92,18 @@ def main(root):
             check_tab_contrast(theme)
             window = MenuWindow(theme)
             window.show_all()
-            # Some old IconSettings are outside the menu (Dock), or are
-            # covered by opaque artwork (Slab). They must not float over
-            # the original controls.
+            # The original XML Capabilities.HasIcon is authoritative.
+            # Opaque artwork must never hide an enabled portrait.
+            enabled = theme.capabilities.attributes.get("HasIcon") == "1"
             visible = avatar_visible(theme)
-            assert (window.avatar is not None) == visible, directory.name
-            if visible:
+            assert visible == enabled, (directory.name, "HasIcon", enabled)
+            assert (window.avatar is not None) == enabled, directory.name
+            if enabled:
                 assert window.avatar.get_tooltip_text() == "About Me"
-            if directory.name in ("Dock", "Slab"):
-                assert not visible, directory.name
-            if directory.name == "Vista":
-                assert visible, directory.name
+            if directory.name in ("Dock", "Slab", "Avio", "Short", "Lancelot"):
+                assert not enabled, directory.name
+            if directory.name in ("Vista", "XP", "iTheme", "Menu", "Kde"):
+                assert enabled, directory.name
 
             # A regression once constrained every legacy label to 1 pixel,
             # displaying only "..." despite correct original XML markup.
