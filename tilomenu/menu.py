@@ -5,6 +5,8 @@ Run: python3 -m tilomenu.menu /path/to/Menu/Vista
 """
 
 import argparse
+import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -45,6 +47,8 @@ class MenuWindow(Gtk.Window):
 
         program = theme.program_list
         self.all_apps = installed_applications()
+        self.favorites_path = Path(os.environ.get('XDG_CONFIG_HOME', str(Path.home() / '.config'))) / 'tilo-menu' / 'favorites.json'
+        self.favorites = self._load_favorites()
         self.category = "All Applications"
         self.query = ""
         category_names = sorted({
@@ -52,7 +56,7 @@ class MenuWindow(Gtk.Window):
             for category in application_categories(app)
         })
         self.category_select = Gtk.ComboBoxText()
-        for name in ["All Applications", *category_names]:
+        for name in ["All Applications", "Favorites", *category_names]:
             self.category_select.append_text(name)
         self.category_select.set_active(0)
         self.category_select.set_size_request(program.integer("Width"), 30)
@@ -130,6 +134,42 @@ class MenuWindow(Gtk.Window):
                 return True
         return True
 
+    def _load_favorites(self):
+        try:
+            data = json.loads(self.favorites_path.read_text(encoding="utf-8"))
+            return set(data) if isinstance(data, list) else set()
+        except (OSError, ValueError, TypeError):
+            return set()
+
+    def _toggle_favorite(self, _item, app):
+        app_id = app.get_id()
+        if not app_id:
+            return
+        if app_id in self.favorites:
+            self.favorites.remove(app_id)
+        else:
+            self.favorites.add(app_id)
+        try:
+            self.favorites_path.parent.mkdir(parents=True, exist_ok=True)
+            self.favorites_path.write_text(
+                json.dumps(sorted(self.favorites), indent=2) + "\n", encoding="utf-8"
+            )
+        except OSError as error:
+            print(f"Tilo Menu: unable to save favorites: {error}")
+        self._populate()
+
+    def _app_context_menu(self, widget, event, app):
+        if event.button != 3 or not app.get_id():
+            return False
+        menu = Gtk.Menu()
+        label = "Remove from Favorites" if app.get_id() in self.favorites else "Add to Favorites"
+        item = Gtk.MenuItem(label=label)
+        item.connect("activate", self._toggle_favorite, app)
+        menu.append(item)
+        menu.show_all()
+        menu.popup_at_widget(widget, 2, 3, event)
+        return True
+
     def _change_category(self, widget):
         self.category = widget.get_active_text() or "All Applications"
         self._populate()
@@ -143,7 +183,9 @@ class MenuWindow(Gtk.Window):
             self.apps.remove(child)
         for app in self.all_apps:
             name = app.get_display_name() or app.get_name()
-            if self.category != "All Applications" and self.category not in application_categories(app):
+            if self.category == "Favorites" and app.get_id() not in self.favorites:
+                continue
+            if self.category not in ("All Applications", "Favorites") and self.category not in application_categories(app):
                 continue
             if self.query and self.query not in (name + " " + (app.get_description() or "")).casefold():
                 continue
@@ -163,6 +205,7 @@ class MenuWindow(Gtk.Window):
             content.pack_start(label, True, True, 0)
             button.add(content)
             button.connect("clicked", self._launch, app)
+            button.connect("button-press-event", self._app_context_menu, app)
             self.apps.add(button)
         self.apps.show_all()
 
