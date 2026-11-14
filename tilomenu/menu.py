@@ -5,6 +5,7 @@ Run: python3 -m tilomenu.menu /path/to/Menu/Vista
 """
 
 import argparse
+import cairo
 import json
 import os
 import shutil
@@ -23,6 +24,7 @@ from .themes import load_menu_theme
 from .themes.renderer import render_theme_buttons
 from .icons import load_icon
 from .themes.app_list import ThemeAppList
+from .themes.search import ThemeSearch
 
 
 class MenuWindow(Gtk.Window):
@@ -30,30 +32,60 @@ class MenuWindow(Gtk.Window):
         super().__init__(title="Tilo Menu")
         self.theme = theme
         self.themes_dir = theme.directory.parent
-        self.set_default_size(theme.width, theme.height)
-        self.set_resizable(False)
-        self.set_decorated(False)
+        # GTK must not paint an opaque desktop-theme rectangle behind the PNG.
+        # GnoMenu art already supplies the intended window shape and alpha.
         screen = self.get_screen()
         visual = screen.get_rgba_visual()
-        if visual is not None and screen.is_composited():
+        self.composited = visual is not None and screen.is_composited()
+        if self.composited:
             self.set_visual(visual)
+        self.set_app_paintable(True)
+        self.set_decorated(False)
+        self.set_resizable(False)
         self.get_style_context().add_class("tilo-window")
+        css = Gtk.CssProvider()
+        css.load_from_data(b"""
+            window.tilo-window, window.tilo-window:backdrop {
+                background: transparent;
+                background-color: transparent;
+                background-image: none;
+                box-shadow: none;
+                border: none;
+            }
+        """)
+        self.get_style_context().add_provider(
+            css, Gtk.STYLE_PROVIDER_PRIORITY_USER + 10
+        )
+
+        self.background_pixbuf = None
+        background_file = theme.directory / theme.background
+        try:
+            self.background_pixbuf = GdkPixbuf.Pixbuf.new_from_file(str(background_file))
+        except Exception as error:
+            print(f"Tilo Menu: unable to read theme background: {error}")
+
+        self.menu_width = max(theme.width, self.background_pixbuf.get_width()
+                              if self.background_pixbuf else 0)
+        self.menu_height = max(theme.height, self.background_pixbuf.get_height()
+                               if self.background_pixbuf else 0)
+        # A few original themes use XML bounds smaller than their actual PNG
+        # (for example Dock). Do not scale the artwork or clip the search.
+        for rect in (theme.program_list, theme.search):
+            if rect.attributes.get("Widget", "").casefold() == "none":
+                continue
+            self.menu_width = max(self.menu_width, rect.integer("X") + rect.integer("Width"))
+            self.menu_height = max(self.menu_height, rect.integer("Y") + rect.integer("Height"))
+        self.set_default_size(self.menu_width, self.menu_height)
+        self.set_size_request(self.menu_width, self.menu_height)
         self.connect("destroy", Gtk.main_quit)
         self.connect("button-press-event", self._theme_context_menu)
+        self.connect("draw", self._paint_theme_background)
 
         layout = Gtk.Fixed()
+        layout.set_app_paintable(True)
+        layout.set_size_request(self.menu_width, self.menu_height)
         layout.get_style_context().add_class("tilo-layout")
         self.add(layout)
-        background = theme.directory / theme.background
-        if background.is_file():
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                str(background), theme.width, theme.height, False
-            )
-            image = Gtk.Image.new_from_pixbuf(pixbuf)
-            layout.put(image, 0, 0)
-        else:
-            layout.put(Gtk.Label(label="Missing theme background: " + theme.background), 0, 0)
-
         program = theme.program_list
         self.all_apps = installed_applications()
         self.favorites_path = Path(os.environ.get('XDG_CONFIG_HOME', str(Path.home() / '.config'))) / 'tilo-menu' / 'favorites.json'
@@ -75,15 +107,24 @@ class MenuWindow(Gtk.Window):
         self._populate()
 
         search = theme.search
-        if search.attributes.get("Widget") != "None":
-            entry = Gtk.SearchEntry()
-            entry.get_style_context().add_class("tilo-search")
-            entry.set_placeholder_text(search.attributes.get("InitialText", "Search"))
-            entry.set_size_request(search.integer("Width"), search.integer("Height"))
-            layout.put(entry, search.integer("X"), search.integer("Y"))
-            entry.connect("search-changed", self._change_search)
+        if (search.attributes.get("Widget", "").casefold() != "none"
+                and search.integer("Width") > 0 and search.integer("Height") > 0):
+            self.search_control = ThemeSearch(theme, self._change_search)
+            layout.put(self.search_control, search.integer("X"), search.integer("Y"))
 
         render_theme_buttons(layout, theme, self._activate_shortcut)
+
+    def _paint_theme_background(self, _window, cr):
+        # Clear the full RGBA surface first. set_app_paintable prevents GTK
+        # from painting its own opaque window background over these pixels.
+        cr.set_operator(cairo.OPERATOR_SOURCE)
+        cr.set_source_rgba(0, 0, 0, 0)
+        cr.paint()
+        cr.set_operator(cairo.OPERATOR_OVER)
+        if self.background_pixbuf is not None:
+            Gdk.cairo_set_source_pixbuf(cr, self.background_pixbuf, 0, 0)
+            cr.paint()
+        return False
 
     def _theme_context_menu(self, _widget, event):
         if event.button != 3 or event.window != self.get_window():
