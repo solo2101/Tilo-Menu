@@ -73,6 +73,22 @@ def main(root):
             check_tab_contrast(theme)
             window = MenuWindow(theme)
             window.show_all()
+            # A regression once constrained every legacy label to 1 pixel,
+            # displaying only "..." despite correct original XML markup.
+            canvas = window.get_child()
+            visible_labels = [
+                child for child in canvas.get_children()
+                if isinstance(child, Gtk.Label)
+            ]
+            assert len(visible_labels) >= len(theme.labels), (
+                directory.name, "missing original XML labels"
+            )
+            for label in visible_labels:
+                if len(label.get_text().strip()) >= 4:
+                    requested_width, _height = label.get_size_request()
+                    assert requested_width >= 12, (
+                        directory.name, label.get_text(), requested_width
+                    )
             if hasattr(window, "search_control"):
                 window.search_control.entry.set_text("control")
                 window.search_control.entry.set_text("")
