@@ -80,7 +80,9 @@ class TiloMenu:
         self.EBox.add(self.Image)
 
         self.applet.connect('destroy', self.cleanup)
-        self.applet.connect('change-orient', self.change_orientation)
+        # The original run-in-window sandbox uses a plain GTK widget.
+        if isinstance(self.applet, MatePanelApplet.Applet):
+            self.applet.connect('change-orient', self.change_orientation)
         self.applet.connect('size-allocate', self.size_allocate_event)
         self.applet.connect('map-event', self.map_event)
         self.EBox.add_events(
