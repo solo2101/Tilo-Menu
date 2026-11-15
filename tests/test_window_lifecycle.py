@@ -20,6 +20,9 @@ def hide():
 
 menu = Main_Menu(hide)
 assert menu.window is not None
+assert menu.window.get_style_context().has_class('tilomenu-original-window')
+if Globals.MenuHasSearch and Globals.SearchWidget.upper() == 'GTK':
+    assert menu.SearchBar.get_style_context().has_class('tilomenu-original-search')
 assert menu.PGL is not None
 assert menu.menuframe.get_size_request() == (Globals.MenuWidth, Globals.MenuHeight)
 assert menu.window.get_size_request() == (Globals.MenuWidth, Globals.MenuHeight)
