@@ -85,7 +85,7 @@ def SetDefaultSettings():
         FirstUse = True
 
 # Load settings stored in XML
-def ReloadSettings():
+def ReloadSettings(orientation_override=None):
 
         def SetDefaultSettings():
                 for x in DefaultSettings:
@@ -108,7 +108,10 @@ def ReloadSettings():
         orientation = None
         panel_size = 30
         flip = None
-        orientation = backend.load_setting("orientation")
+        # MATE reports panel orientation at runtime. Prefer the live panel
+        # direction over the old persisted GConf/GSettings orientation.
+        orientation = (orientation_override if orientation_override in ('top', 'bottom')
+                       else backend.load_setting("orientation"))
         panel_size = backend.load_setting("size")
         if orientation == 'top':
                 flip = False
