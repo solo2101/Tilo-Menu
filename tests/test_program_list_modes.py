@@ -19,7 +19,17 @@ while Gtk.events_pending():
     Gtk.main_iteration_do(False)
 assert menu.window.get_visible()
 assert menu.PGL is not None
-if mode in (0, 3):
+if mode == 3:
+    from ArchivedCairoProgramList import ArchivedCairoProgramList
+    assert isinstance(menu.PGL, ArchivedCairoProgramList)
+    assert menu.PGL.view.get_size_request() == Globals.PG_buttonframedimensions
+    assert not hasattr(menu.PGL, 'ScrollFrame'), 'Horizontal scrollbar still installed'
+    assert menu.PGL._max_offset() >= 0
+    assert menu.PGL._visible_count() > 0
+    assert menu.PGL.XDG.L_Names, 'Applications list is empty'
+    menu.PGL._scroll(None, type('Wheel', (), {'direction': 1})())
+    assert menu.PGL.offset >= 0
+if mode == 0:
     # The initial Favorites list is often empty. Applications exposes
     # the width regression because it has icons and longer names.
     menu.PGL.CallSpecialMenu(1)
@@ -36,15 +46,12 @@ if mode in (0, 3):
     scroll_allocation = menu.PGL.ScrollFrame.get_allocation()
     assert scroll_allocation.width <= theme_width + 2, (
         f'scroll overflow: actual={scroll_allocation.width} expected={theme_width}')
-    if mode == 3:
-        # Pointer leaving the original IconView must not pass an int
-        # to GTK3's unselect_path(Gtk.TreePath) API.
-        menu.PGL.index = 0
-        menu.PGL.leave(None, None)
-        import cairo
-        canvas = cairo.ImageSurface(cairo.FORMAT_ARGB32, theme_width, theme_height)
-        assert menu.PGL.draw_archived_rows(menu.PGL.tree1, cairo.Context(canvas)), (
-            'Archived Cairo list renderer was not available')
+if mode == 3:
+    import cairo
+    canvas = cairo.ImageSurface(cairo.FORMAT_ARGB32, *Globals.PG_buttonframedimensions)
+    assert menu.PGL._draw(menu.PGL.view, cairo.Context(canvas)) is False
+    menu.PGL._leave(None, None)
+    assert menu.PGL.hover == -1
 menu.hide_window()
 # Allow the process to exit without gtk_main_quit on a non-running main loop.
 print(f'PASS: original Prog_List={mode} using {type(menu.PGL).__name__}')
