@@ -536,16 +536,32 @@ class MenuLabel:
                 self.Label.set_markup(self.txt)
                 #self.Label.set_max_width_chars(int(self.w/9))
                 #self.Label.set_ellipsize(3)
-                if Globals.MenuLabelNameAlignment[i] == 0:
-                        s = 0
-                elif Globals.MenuLabelNameAlignment[i] == 1:
-                        s = int(self.Label.size_request().width /2)
-                else:
-                        s = self.Label.size_request().width
+                # Port archived renderer's Pango natural-size placement.
+                # GTK3's size_request() before parenting often reports 0/1px,
+                # making centered captions collapse or overlap adjacent art.
+                layout = self.Label.get_layout()
+                natural_width, natural_height = layout.get_pixel_size()
+                if natural_width < 2 and self.Label.get_text():
+                        natural_width = max(20, len(self.Label.get_text()) * 7)
+                natural_width = max(1, natural_width)
+                natural_height = max(1, natural_height)
+                alignment = Globals.MenuLabelNameAlignment[i]
+                s = natural_width if alignment == 2 else (
+                        natural_width // 2 if alignment == 1 else 0)
+                left = max(0, Globals.MenuLabelX[i] - s)
+                right = max(left + 1, int(Globals.MenuWidth) - 4)
+                # Restrict labels on the left to the program-list boundary.
+                if left < Globals.PG_buttonframe[0] and (
+                        Globals.PG_buttonframe[0] - left) > 30:
+                        right = min(right, Globals.PG_buttonframe[0] - 6)
+                allowed = max(1, min(natural_width, right - left))
+                if allowed < natural_width:
+                        self.Label.set_ellipsize(pango.EllipsizeMode.END)
+                self.Label.set_size_request(allowed, -1)
                 if Globals.flip == False:
-                        base.put(self.Label,Globals.MenuLabelX[i]-s,Globals.MenuLabelY[i]-self.Label.size_request().height)
+                        base.put(self.Label,left,Globals.MenuLabelY[i]-natural_height)
                 else:
-                        base.put(self.Label,Globals.MenuLabelX[i]-s,Globals.MenuLabelY[i])
+                        base.put(self.Label,left,Globals.MenuLabelY[i])
                 #gc.collect()
 
         def expose(self,widget,event,i):
