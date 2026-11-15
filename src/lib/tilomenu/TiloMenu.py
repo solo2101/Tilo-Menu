@@ -325,6 +325,8 @@ def run_in_window():
 def main():
     if len(sys.argv) == 2 and sys.argv[1] == 'run-in-window':
         return run_in_window()
+    if len(sys.argv) == 2 and sys.argv[1] == 'preferences':
+        return subprocess.call([sys.executable, str(ProgramDirectory / 'TiloMenu-Settings.py')])
     return MatePanelApplet.Applet.factory_main(
         FACTORY_IID, True, MatePanelApplet.Applet.__gtype__,
         TiloMenu_factory, None
