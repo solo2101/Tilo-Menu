@@ -25,6 +25,15 @@ index = next(i for i, item in enumerate(menu.MenuButtons)
              if isinstance(item, ButtonAdapter)
              and Globals.MenuButtonNames[i] == 'Documents')
 assert menu.MenuButtons[index].Button is not None
+# The original Main_Menu invokes Setimage/SetBackground on pointer enter/leave.
+# Confirm they now redraw the actual archived GTK3 button, not a no-op.
+images = [child for child in menu.MenuButtons[index].Button.get_child().get_children()
+          if isinstance(child, Gtk.Image)]
+foreground = next(image for image in images if image.get_pixbuf() is None)
+menu.MenuButtons[index].Setimage(Globals.MenuButtonImage[index])
+assert foreground.get_pixbuf() is not None, 'Original hover image not painted'
+menu.MenuButtons[index].SetBackground()
+assert foreground.get_pixbuf() is None, 'Normal button state not restored'
 assert Globals.MenuButtonSub[index] == 0
 with patch.object(menu.Launcher, 'Launch') as launch, \
      patch.object(menu, 'PlaySound'):
