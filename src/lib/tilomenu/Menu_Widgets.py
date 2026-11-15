@@ -1866,7 +1866,7 @@ class IconProgramList(gobject.GObject):
                         color = Gdk.RGBA()
                         if color.parse(Globals.ThemeColorHtml):
                                 provider = gtk.CssProvider()
-                                provider.load_from_data(('background-color: %s;' % Globals.ThemeColorHtml).encode('utf-8'))
+                                provider.load_from_data(('* { background-color: %s; }' % Globals.ThemeColorHtml).encode('utf-8'))
                                 self._theme_css = provider
                                 for component in (self.EBox, self.VBoxOut, self.ScrollFrame, self.tree1):
                                         component.get_style_context().add_provider(
