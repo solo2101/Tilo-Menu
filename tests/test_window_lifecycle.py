@@ -39,6 +39,18 @@ assert menu.background.get_pixbuf().get_width() == Globals.MenuWidth
 assert menu.background.get_pixbuf().get_height() == Globals.MenuHeight
 children = menu.menuframe.get_children()
 assert children[0] is menu.background, 'Theme PNG must paint under button chrome'
+if Globals.MenuHasIcon:
+    # The portrait's original backdrop must come from its XML coordinates,
+    # even when the panel asks the popup to open upward.
+    x, y = Globals.UserIconFrameOffsetX, Globals.UserIconFrameOffsetY
+    original = menu.bgpb
+    excerpt = menu.usericon.backimagearea
+    stride = original.get_rowstride()
+    channels = original.get_n_channels()
+    index = y * stride + x * channels
+    assert bytes(excerpt.get_pixels()[:channels]) == bytes(
+        original.get_pixels()[index:index + channels])
+
 
 # Flip direction chooses above/below the actual panel while preserving
 # original XML art (no upside-down labels).
