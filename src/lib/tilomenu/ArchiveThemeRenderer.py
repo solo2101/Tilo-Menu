@@ -291,13 +291,11 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None,
                     natural // 2 if alignment == 1 else 0)
         left = max(0, left)
 
-        # Preserve authored text without shrinking it unless it would spill
-        # outside the original menu or cross into the application-list area.
-        boundary = theme.width - 4
-        program_x = theme.program_list.integer("X")
-        if 0 < left < program_x and program_x - left > 30:
-            boundary = min(boundary, program_x - 6)
-        allowed = max(1, min(natural, boundary - left))
+        # GnoMenu's original MenuLabel uses the natural Pango text width.
+        # The previous GTK3 adapter clipped every left label at ProgramList X,
+        # even on XML themes where labels intentionally span both regions.
+        # Restrict only to the actual popup edge, not an invented column.
+        allowed = max(1, min(natural, theme.width - left - 4))
         if allowed < natural:
             label.set_ellipsize(Pango.EllipsizeMode.END)
         label.set_size_request(allowed, -1)
