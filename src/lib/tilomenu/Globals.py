@@ -57,6 +57,8 @@ ConfigDirectory = '%s/.%s'  % (HomeDirectory,appdirname)
 AutoStartDirectory = '%s/.config/autostart/' % HomeDirectory
 ProgramDirectory = "%s/lib/%s/" % (INSTALL_PREFIX, appdirname)
 ThemeDirectory = "%s/share/%s/Themes/" % (INSTALL_PREFIX,appdirname)
+from ThemeInstaller import theme_path
+
 GraphicsDirectory = "%s/lib/%s/graphics/"  % (INSTALL_PREFIX,appdirname)
 ########### Definitions ########################################
 ################################################################
@@ -157,9 +159,9 @@ def ReloadSettings(orientation_override=None):
         MenuActions.append('Restart')
         MenuCommands.append(Settings['Restart'])
         ThemeColor = 'white'
-        ImageDirectory = "%s/share/%s/Themes/Menu/%s/" % (INSTALL_PREFIX, appdirname, Settings['Menu_Name'])
-        IconDirectory =  "%s/share/%s/Themes/Icon/%s/" % (INSTALL_PREFIX, appdirname, Settings['Icon_Name'])
-        MenuButtonDirectory = "%s/share/%s/Themes/Button/%s/" % (INSTALL_PREFIX, appdirname, Settings['Button_Name'])
+        ImageDirectory = theme_path('Menu', Settings['Menu_Name'], ThemeDirectory)
+        IconDirectory = theme_path('Icon', Settings['Icon_Name'], ThemeDirectory)
+        MenuButtonDirectory = theme_path('Button', Settings['Button_Name'], ThemeDirectory)
         PG_iconsize = int(float(Settings['IconSize']))
         RI_numberofitems = int(float(Settings['ListSize']))
         try:
