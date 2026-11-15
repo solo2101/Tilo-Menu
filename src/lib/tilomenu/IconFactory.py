@@ -128,7 +128,7 @@ class IconFactory(gobject.GObject):
                 else:
                         return item.get_icon(Globals.PG_iconsize)
 
-        def geticonfile(self,icon):
+        def geticonfile(self,icon,fallback=None):
                 # Preserve original icon names, absolute paths and Gio icons.
                 size = Globals.PG_iconsize
                 flags = gtk.IconLookupFlags.FORCE_SIZE
@@ -166,7 +166,12 @@ class IconFactory(gobject.GObject):
                                         except Exception:
                                                 pass
 
-                for name in ('application-x-executable', 'image-missing', 'gtk-missing-image'):
+                # The original directory/icon metadata is preserved. If its
+                # icon is unavailable in a modern theme, prefer the standard
+                # category icon before the generic gear/executable placeholder.
+                for name in (fallback, 'application-x-executable', 'image-missing', 'gtk-missing-image'):
+                        if not name:
+                                continue
                         for theme in (self.gtkicontheme, _hicolor_theme()):
                                 try:
                                         return theme.load_icon(name, size, flags)
