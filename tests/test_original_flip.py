@@ -34,17 +34,17 @@ try:
         for i, button in enumerate(menu.MenuButtons):
             if button is None:
                 continue
-            x, y = menu.menuframe.get_child_position(button.Button)
+            x, y = (menu.menuframe.child_get_property(button.Button, 'x'), menu.menuframe.child_get_property(button.Button, 'y'))
             assert (x, y) == (Globals.MenuButtonX[i], Globals.MenuButtonY[i]), (
                 direction, 'button', i, x, y)
         for i, tab in enumerate(menu.MenuTabs):
             if tab is None:
                 continue
-            x, y = menu.menuframe.get_child_position(tab.Tab)
+            x, y = (menu.menuframe.child_get_property(tab.Tab, 'x'), menu.menuframe.child_get_property(tab.Tab, 'y'))
             assert (x, y) == (Globals.MenuTabX[i], Globals.MenuTabY[i]), (
                 direction, 'tab', i, x, y)
         if menu.has_search:
-            x, y = menu.menuframe.get_child_position(menu.SearchBar)
+            x, y = (menu.menuframe.child_get_property(menu.SearchBar, 'x'), menu.menuframe.child_get_property(menu.SearchBar, 'y'))
             assert (x, y) == (Globals.SearchX, Globals.SearchY), direction
         original = GdkPixbuf.Pixbuf.new_from_file(
             Globals.ImageDirectory + Globals.StartMenuTemplate)
