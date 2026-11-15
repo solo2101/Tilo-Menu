@@ -38,8 +38,10 @@ assert menu.window.get_size_request() == (Globals.MenuWidth, Globals.MenuHeight)
 assert menu.background.get_pixbuf() is not None, 'Missing background PNG'
 assert menu.background.get_pixbuf().get_width() == Globals.MenuWidth
 assert menu.background.get_pixbuf().get_height() == Globals.MenuHeight
-children = menu.menuframe.get_children()
-assert children[0] is menu.background, 'Theme PNG must paint under button chrome'
+assert menu.underlay.get_child() is menu.background, (
+    'GTK3 must draw the original background as Gtk.Overlay base child')
+assert menu.menuframe in menu.underlay.get_children(), (
+    'Archived controls must be an overlay above the PNG')
 if Globals.MenuHasIcon:
     # The portrait's original backdrop must come from its XML coordinates,
     # even when the panel asks the popup to open upward.
