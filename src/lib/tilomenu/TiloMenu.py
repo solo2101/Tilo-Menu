@@ -207,14 +207,31 @@ class TiloMenu:
         self.applet.setup_menu(self.propxml, self.verbs)
 
     def properties(self, event, data=None):
-        target = ProgramDirectory / 'TiloMenu-Settings.py'
-        if target.is_file():
-            subprocess.Popen([sys.executable, str(target)], start_new_session=True)
+        self.launch_settings([])
 
     def about_info(self, event, data=None):
+        self.launch_settings(['--about'])
+
+    def launch_settings(self, arguments):
+        # Keep the original separate settings process. The MATE panel starts
+        # the applet over D-Bus, where child stderr is otherwise invisible.
+        # Retain its output to diagnose GTK3 compatibility failures.
         target = ProgramDirectory / 'TiloMenu-Settings.py'
-        if target.is_file():
-            subprocess.Popen([sys.executable, str(target), '--about'], start_new_session=True)
+        logpath = Path.home() / '.cache' / 'tilomenu' / 'settings.log'
+        logpath.parent.mkdir(parents=True, exist_ok=True)
+        with logpath.open('a', encoding='utf-8') as output:
+            output.write('Launching original TiloMenu settings: %s\n' % target)
+            output.flush()
+            if not target.is_file():
+                output.write('ERROR: settings script not installed\n')
+                return
+            try:
+                subprocess.Popen(
+                    [sys.executable, str(target)] + arguments,
+                    stdout=output, stderr=subprocess.STDOUT,
+                    start_new_session=True)
+            except OSError as error:
+                output.write('ERROR: %s\n' % error)
 
     def edit_menus(self, event, data=None):
         # Original invokes MenuEditor configured in Globals.py.

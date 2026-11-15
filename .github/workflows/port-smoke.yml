@@ -57,6 +57,12 @@ jobs:
           XDG_MENU_PREFIX: mate-
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_original_settings.py
+      - name: Launch original settings as a separate GTK3 process
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_settings_subprocess.py
       - name: Construct original popup, then show/hide under GTK3
         env:
           GSETTINGS_BACKEND: memory
