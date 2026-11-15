@@ -29,6 +29,7 @@ import xml.dom.minidom
 import utils
 import backend
 import IconFactory
+from ThemeInstaller import installed_themes, install_archive, uninstall_user_theme, theme_path
 try:
         import tarfile as tarfile
         hastar = True
@@ -631,84 +632,37 @@ class TiloMenuSettings:
                 elif id == 'uninstall_but':
                         self.show_uninstall_dialog('Button',self.combo_button)
                 elif id == 'uninstall_sou':
-                        self.show_uninstall_dialog('Icon',self.combo_sound)
+                        self.show_uninstall_dialog('Sound',self.combo_sound)
 
 
 
 
-        def reload_themes(self,id):
-
-                if id == 'Menu':
-
-
-                        themes = os.listdir('%s/share/tilomenu/Themes/Menu/' % INSTALL_PREFIX)
-                        themes.sort(key=str.upper)
-                        x = 0
-                        self.combo_menu.get_model().clear()
-                        for folder in themes: 
-                                self.combo_menu.append_text(folder)     
-                                if folder == Globals.Settings['Menu_Name']:
-                                        self.combo_menu.set_active(x)
-                                x = x + 1
-                elif id == 'Button':
-
-                        themes = os.listdir('%s/share/tilomenu/Themes/Button/' % INSTALL_PREFIX)
-                        themes.sort(key=str.upper)
-                        x = 0
-                        self.combo_button.get_model().clear()
-                        for folder in themes: 
-                                self.combo_button.append_text(folder)
-                                if folder == Globals.Settings['Button_Name']:
-                                        self.combo_button.set_active(x)
-                                x = x + 1
-                elif id == 'Icon':
-                        themes = os.listdir('%s/share/tilomenu/Themes/Icon/' % INSTALL_PREFIX)
-                        themes.sort(key=str.upper)
-                        x = 0
-                        self.combo_icon.get_model().clear()
-                        for folder in themes: 
-                                self.combo_icon.append_text(folder)
-                                if folder == Globals.Settings['Icon_Name']:
-                                        self.combo_icon.set_active(x)
-                                x = x + 1
-
-                elif id == 'Sound':
-                        themes = os.listdir('%s/share/tilomenu/Themes/Sound/' % INSTALL_PREFIX)
-                        self.combo_sound.get_model().clear()
-                        self.combo_sound.append_text('None')
-                        self.combo_sound.set_active(0)
-                        x = 1
-                        for folder in themes: 
-                                self.combo_sound.append_text(folder)
-                                if folder == Globals.Settings['Sound_Theme']:
-                                        self.combo_sound.set_active(x)
-                                x = x + 1
-
-                        if self.combo_sound.get_active() != 0:
-                                XMLCredits = xml.dom.minidom.parse("%sSound/%s/themedata.xml" % (Globals.ThemeDirectory, Globals.Settings['Sound_Theme']))
-                                XBase = XMLCredits.childNodes[0]
-                                SBase = XBase.getElementsByTagName("ContentData")
-                
-                                Name = SBase[0].attributes["Name"].value
-                                Author = SBase[0].attributes["Author"].value
-                                Right = SBase[0].attributes["Copyright"].value
-        
-                                self.label_credits_sound = gtk.Label(label='%s by: %s %s' % (Name, Author, Right))
-        
-                        else:self.label_credits_sound = gtk.Label(label='')
-
-
-
+        def reload_themes(self, kind):
+                widgets = {
+                        'Menu': (self.combo_menu, 'Menu_Name'),
+                        'Button': (self.combo_button, 'Button_Name'),
+                        'Icon': (self.combo_icon, 'Icon_Name'),
+                        'Sound': (self.combo_sound, 'Sound_Theme'),
+                }
+                combo, key = widgets[kind]
+                choices = installed_themes(kind, Globals.ThemeDirectory)
+                if kind == 'Sound':
+                        choices.insert(0, 'None')
+                current = combo.get_active_text() or Globals.Settings[key]
+                combo.get_model().clear()
+                for name in choices:
+                        combo.append_text(name)
+                combo.set_active(choices.index(current) if current in choices else 0)
 
         def redraw_image(self,widget,id):
                 if widget.get_active_text() is None: return
                 if id == 'Menu':
                         try:
-                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("%sMenu/%s/themepreview.png" % (Globals.ThemeDirectory, widget.get_active_text()),200,230)
+                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("%sthemepreview.png" % theme_path('Menu', widget.get_active_text(), Globals.ThemeDirectory),200,230)
                                 #self.image_menu.set_
                         except:
                                 Pixbuf = GdkPixbuf.Pixbuf.new_from_file("%stheme.png" % Globals.GraphicsDirectory)
-                        XMLCredits = xml.dom.minidom.parse("%sMenu/%s/themedata.xml" % (Globals.ThemeDirectory, widget.get_active_text()))
+                        XMLCredits = xml.dom.minidom.parse("%sthemedata.xml" % theme_path('Menu', widget.get_active_text(), Globals.ThemeDirectory))
                         XBase = XMLCredits.childNodes[0]
                         SBase = XBase.getElementsByTagName("ContentData")
         
@@ -720,10 +674,10 @@ class TiloMenuSettings:
                         self.image_menu.set_size_request(200,230)
                 elif id == 'Button':
                         try:
-                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("%sButton/%s/themepreview.png" % (Globals.ThemeDirectory, widget.get_active_text()),64,64)
+                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("%sthemepreview.png" % theme_path('Button', widget.get_active_text(), Globals.ThemeDirectory),64,64)
                         except:
                                 Pixbuf = GdkPixbuf.Pixbuf.new_from_file("%stheme.png" % Globals.GraphicsDirectory)
-                        XMLCredits = xml.dom.minidom.parse("%sButton/%s/themedata.xml" % (Globals.ThemeDirectory, widget.get_active_text()))
+                        XMLCredits = xml.dom.minidom.parse("%sthemedata.xml" % theme_path('Button', widget.get_active_text(), Globals.ThemeDirectory))
                         XBase = XMLCredits.childNodes[0]
                         SBase = XBase.getElementsByTagName("ContentData")
         
@@ -735,10 +689,10 @@ class TiloMenuSettings:
                         self.image_button.set_size_request(64,64)
                 elif id == 'Icon':
                         try:
-                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("%sIcon/%s/themepreview.png" % (Globals.ThemeDirectory, widget.get_active_text()),64,64)
+                                Pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("%sthemepreview.png" % theme_path('Icon', widget.get_active_text(), Globals.ThemeDirectory),64,64)
                         except:
                                 Pixbuf = GdkPixbuf.Pixbuf.new_from_file("%stheme.png" % Globals.GraphicsDirectory)
-                        XMLCredits = xml.dom.minidom.parse("%sIcon/%s/themedata.xml" % (Globals.ThemeDirectory, widget.get_active_text()))
+                        XMLCredits = xml.dom.minidom.parse("%sthemedata.xml" % theme_path('Icon', widget.get_active_text(), Globals.ThemeDirectory))
                         XBase = XMLCredits.childNodes[0]
                         SBase = XBase.getElementsByTagName("ContentData")
         
@@ -754,7 +708,7 @@ class TiloMenuSettings:
                         if self.combo_sound.get_active_text() == 'None': 
                                 self.label_credits_sound.set_label('')
                         else:
-                                XMLCredits = xml.dom.minidom.parse("%sSound/%s/themedata.xml" % (Globals.ThemeDirectory, widget.get_active_text()))
+                                XMLCredits = xml.dom.minidom.parse("%sthemedata.xml" % theme_path('Sound', widget.get_active_text(), Globals.ThemeDirectory))
                                 XBase = XMLCredits.childNodes[0]
                                 SBase = XBase.getElementsByTagName("ContentData")
                 
@@ -771,139 +725,59 @@ class TiloMenuSettings:
                 
 
 
-        def show_uninstall_dialog (self,typ,data):
-                if utils.show_question('%s %s %s %s' % (_('Uninstall'),typ, _('theme'), data.get_active_text())) is True:
-                        install_prefix = '%s ' % Globals.Settings['AdminRun']
-                        os.system('%s%srm -rf %s%s%s/%s%s%s' % (install_prefix,chr(34), chr(39), Globals.ThemeDirectory, typ, data.get_active_text(), chr(39), chr(34)))
-                        data.remove_text(data.get_active())
-                        data.set_active(0)                      
-                
-        def show_install_dialog (self):
-                """Craete/Show the install-dialog."""
-                # create filte
+        def show_uninstall_dialog(self, kind, combo):
+                name = combo.get_active_text()
+                if not name or name == 'None':
+                        return
+                if not utils.show_question('%s %s %s %s' % (_('Uninstall'), kind, _('theme'), name)):
+                        return
+                try:
+                        uninstall_user_theme(kind, name)
+                except (OSError, ValueError) as error:
+                        utils.show_warning(str(error))
+                        return
+                self.reload_themes(kind)
+
+        def show_install_dialog(self):
                 flt = gtk.FileFilter()
-                flt.add_pattern('*.tar.bz2')
-                flt.add_pattern('*.tar.gz')
-                flt.add_pattern('*.tar')
-                # create dialog
-                dlg = gtk.FileChooserDialog(buttons=(gtk.STOCK_CANCEL, 
-                                gtk.ResponseType.CANCEL, gtk.STOCK_OPEN, gtk.ResponseType.OK))
+                for ext in ('*.tar.bz2', '*.tar.gz', '*.tgz', '*.tar', '*.tar.xz'):
+                        flt.add_pattern(ext)
+                dlg = gtk.FileChooserDialog(
+                        title=_('Install a new theme'),
+                        action=gtk.FileChooserAction.OPEN,
+                        buttons=(gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+                                 gtk.STOCK_OPEN, gtk.ResponseType.OK))
+                dlg.add_filter(flt)
                 dlg.set_current_folder(self.folder)
-                dlg.set_title(_('Install a new theme'))
-                dlg.set_filter(flt)
-                # run
-                resp            = dlg.run()
-                filename        = dlg.get_filename()
-                self.folder = dlg.get_current_folder()
+                response = dlg.run()
+                filename = dlg.get_filename()
+                self.folder = dlg.get_current_folder() or self.folder
                 dlg.destroy()
-                if resp == gtk.ResponseType.OK:
-                        # create new installer
-                        
-                        # try installing and show result dialog
-                        self.window.get_window().set_cursor(Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.WATCH))
-                        self.install (filename) 
-                        self.window.get_window().set_cursor(Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.LEFT_PTR))
-                        
+                if response == gtk.ResponseType.OK and filename:
+                        self.install(filename)
 
-        def install(self,filename):
-                if hastar:
-                        try:
-                                base = os.path.basename(filename)
-                                tar = tarfile.open(urllib.url2pathname(filename))
-                                for tarinfo in tar:
-                                        print(tarinfo.name)
-                        except:
-                                utils.show_warning('0%s' % _('Error - Theme package is corrupt!'))
-                                return  
-
-                ext = str(filename)[len(str(filename)) -3:]
-                # prepend "tar." if we have a bz2 or gz archive
-                tar_opts = 'xfz'
-                if ext == 'bz2':
-                        tar_opts = 'xfj'
-                if not os.path.isdir('/tmp/gnomenu/'):
-                        os.system('mkdir /tmp/gnomenu/')
-                tmpdir = '/tmp/gnomenu/'
-                os.system('tar %s "%s" -C %s' % (tar_opts, filename, tmpdir))
-                for d in os.listdir(tmpdir) : #for each item in folders
-        
-                        if os.path.exists(tmpdir + d) and os.path.isdir(tmpdir + d): 
-                                
-                                name = d
-
+        def install(self, filename):
                 try:
-                        XMLBase = xml.dom.minidom.parse('/tmp/gnomenu/%s/themedata.xml' % name)
-                except:
-                        utils.show_warning('1%s' % _('Error - theme not installed\nMaybe the Theme was packaged incorrectly\nTry to install the Theme manually'))
-                        os.system('rm -rf /tmp/gnomenu')
+                        kind, name = install_archive(filename)
+                except (OSError, ValueError, tarfile.TarError, KeyError) as error:
+                        utils.show_warning(_('Error installing theme: ') + str(error))
                         return
-                #XBase = XMLBase.childNodes[0]
-                try:
-                        SBase = XMLBase.getElementsByTagName("content")
-                        type = SBase[0].attributes["type"].value
-                except:
-                        
-                        utils.show_warning('2%s' % _('Error - theme not installed\nMaybe the Theme was packaged incorrectly\nTry to install the Theme manually'))
-                        os.system('rm -rf /tmp/gnomenu')
-                        return
-                
-                try:
-                        print(type)
-                except:
-                        utils.show_warning('3%s' % _('Error - theme not installed\nMaybe the Theme was packaged incorrectly\nTry to install the Theme manually'))
-                        os.system('rm -rf /tmp/gnomenu')
-                        return
-                install_dir = '%s/share/tilomenu/Themes/%s/' % (INSTALL_PREFIX, type)
-
-                if self.is_installed('%s/%s' % (type, name)):
-                        if utils.show_question(_('Theme exists. Continue?')) == False:
-                                os.system('rm -rf /tmp/gnomenu')
-                                return
-                
-                install_prefix = Globals.Settings['AdminRun'] +' '
-                os.system('%s"tar %s %s%s%s -C %s%s%s"' % (install_prefix,tar_opts, chr(39), filename, chr(39), chr(39), install_dir, chr(39)))
-                if self.is_installed('%s/%s' % (type, name)):
-                        self.reload_themes(type)
-                        utils.show_message(_('Theme installed'))
-                else:
-                        utils.show_warning('4%s' % _('Error - theme not installed\nMaybe the Theme was packaged incorrectly\nTry to install the Theme manually'))
-                if type == 'Icon':
-                        x = 0
-                        for i in Globals.MenuCairoSystemIcon:
-                                for n in IconFactory.Icontype:
-                                        if os.path.exists('/tmp/gnomenu/%s/%s.%s' % (name, i, n)):
-                                                x = 1
-                                                os.system(Globals.Settings['AdminRun'] +' ' + chr(34) + 'mv ' + "'"+ install_dir + name + '/' + i+  '.' + n + "'" + ' ' + "'" + install_dir + name + '/' + Globals.MenuCairoSystemIcon[i] +  '.' + n + "'" + chr(34))
-                        if x != 0:
-                                utils.show_message(_('This theme was created for a previous version of GnoMenu.\nThe theme was automaticly updated in order to work properly.'))
-
-                elif type == 'Menu':
-                        x = 0
-                        fh = open('/tmp/gnomenu/%s/themedata.xml' % name)
-                        fhh = fh.read()
-                        fh.close()
-                        for i in Globals.MenuCairoSystemIcon:
-                                if fhh.find(i) != -1: x = 1
-                                fhh = fhh.replace('"' + i + '.','"' + Globals.MenuCairoSystemIcon[i] + '.')
-                                for n in IconFactory.Icontype:
-                                        if os.path.exists('/tmp/gnomenu/' + name + '/' + i+  '.' + n):
-                                                os.system(Globals.Settings['AdminRun'] +' ' + chr(34) + 'mv ' + "'"+ install_dir + name + '/' + i+  '.' + n + "'" + ' ' + "'" + install_dir + name + '/' + Globals.MenuCairoSystemIcon[i] +  '.' + n + "'" + chr(34))
-                                                x = 1
-                        fi = open('/tmp/gnomenu/%s/themedata.xml' % name,'w')
-                        fi.write(fhh)
-                        fi.close()
-                        if x != 0:
-                                os.system(Globals.Settings['AdminRun'] +' ' + chr(34) + 'cp ' + "'"+ '/tmp/gnomenu/' + name + '/themedata.xml' + "'" + ' ' + "'" + install_dir + name + '/themedata.xml' + "'" + chr(34))
-                                utils.show_message(_('This theme was created for a previous version of GnoMenu.\nThe theme was automaticly updated in order to work properly.'))
-                        
-                os.system('rm -rf /tmp/gnomenu')
-        
+                self.reload_themes(kind)
+                choices = {'Menu': self.combo_menu, 'Button': self.combo_button,
+                           'Icon': self.combo_icon, 'Sound': self.combo_sound}
+                combo = choices[kind]
+                model = combo.get_model()
+                for index, row in enumerate(model):
+                        if row[0] == name:
+                                combo.set_active(index)
+                                break
+                utils.show_message(_('Theme installed'))
 
         def load_settings(self):
                 pass
         
         def is_installed (self,name):
-                return os.path.isdir(Globals.ThemeDirectory +  name)
+                return os.path.isdir(theme_path(*name.split('/', 1), Globals.ThemeDirectory))
 
 
         def SaveSettings(self):
