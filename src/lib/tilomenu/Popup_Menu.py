@@ -58,12 +58,15 @@ def add_menuitem_with_item (menu, item, callback=None, cb_data=None,*args):
         """Convenience function to add a menuitem to a menu
         and connect a callback."""
         if callback:
-                if cb_data:
-                        #item.connect("activate", callback, cb_data,*args)
-                        item.connect('button_press_event',callback, cb_data,*args)
+                # GTK3 menu items activate on mouse release, Enter, and
+                # accessibility actions. The original callbacks still take
+                # (widget, event, ...data), so preserve that signature with
+                # a None event rather than using GTK2 button_press_event.
+                if cb_data is not None:
+                        item.connect('activate', lambda widget, data=cb_data,
+                                     extras=args: callback(widget, None, data, *extras))
                 else:
-                        item.connect('button_press_event', callback)
-                        #item.connect("activate", callback)
+                        item.connect('activate', lambda widget: callback(widget, None))
         menu.append(item)
         item.show()
         return item
