@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 import gi
 gi.require_version('Gtk', '3.0')
+gi.require_version('Gdk', '3.0')
 from gi.repository import Gtk
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src/lib/tilomenu'))
 import Globals
@@ -29,6 +30,15 @@ if mode == 3:
     assert menu.PGL.XDG.L_Names, 'Applications list is empty'
     menu.PGL._scroll(None, type('Wheel', (), {'direction': 1})())
     assert menu.PGL.offset >= 0
+    from gi.repository import Gdk
+    menu.PGL._key(None, type('Key', (), {'keyval': Gdk.KEY_End})())
+    assert menu.PGL.index == len(menu.PGL.XDG.L_Names) - 1
+    menu.PGL._key(None, type('Key', (), {'keyval': Gdk.KEY_Home})())
+    assert menu.PGL.index == 0
+    menu.PGL._key(None, type('Key', (), {'keyval': Gdk.KEY_Page_Down})())
+    assert 0 <= menu.PGL.index < len(menu.PGL.XDG.L_Names)
+    assert menu.PGL._index_at(-1) is None
+    assert menu.PGL._index_at(menu.PGL.height) is None
 if mode == 0:
     # The initial Favorites list is often empty. Applications exposes
     # the width regression because it has icons and longer names.
