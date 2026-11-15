@@ -8,6 +8,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import gi
 gi.require_version('Gtk', '3.0')
+gi.require_version('Gdk', '3.0')
 from gi.repository import Gdk, Gtk
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src/lib/tilomenu'))
 import backend
