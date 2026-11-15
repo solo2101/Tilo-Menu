@@ -1,6 +1,5 @@
 # Source-first GnoMenu 2.9.1 -> TiloMenu port.
 # Original src/bin, src/lib, src/share layout is retained.
-SOURCE_ARCHIVE ?= $(HOME)/Downloads/gnomenu-2.9.1.tar.gz
 PREFIX ?= /usr
 LIBDIR = $(PREFIX)/lib/tilomenu
 DATADIR = $(PREFIX)/share/tilomenu
@@ -8,23 +7,13 @@ MENU_DIR = src/share/tilomenu/Themes
 
 .PHONY: prepare install uninstall check
 
-# Extract original graphics, themes and GPL license without editing them.
-# Ported Python modules are committed in src/lib/tilomenu, not overwritten.
+# Original themes and graphics are stored in the source tree.
+# The prepare target validates them without downloading an old archive.
 prepare:
-	@test -f "$(SOURCE_ARCHIVE)" || { echo "Missing original source: $(SOURCE_ARCHIVE)"; exit 1; }
-	@set -e; tmp=$$(mktemp -d); trap 'rm -rf "$$tmp"' EXIT; \
-	  tar -xzf "$(SOURCE_ARCHIVE)" -C "$$tmp" \
-	    gnomenu/COPYING \
-	    gnomenu/src/lib/gnomenu/graphics \
-	    gnomenu/src/share/gnomenu/Themes/Menu/Menu \
-	    gnomenu/src/share/gnomenu/Themes/Button/GnoBlue \
-	    gnomenu/src/share/gnomenu/Themes/Icon/Newstyles \
-	    gnomenu/src/share/gnomenu/Themes/Sound/Default; \
-	  mkdir -p "$(MENU_DIR)" src/lib/tilomenu/graphics; \
-	  cp -a "$$tmp/gnomenu/src/share/gnomenu/Themes/." "$(MENU_DIR)/"; \
-	  cp -a "$$tmp/gnomenu/src/lib/gnomenu/graphics/." src/lib/tilomenu/graphics/; \
-	  cp "$$tmp/gnomenu/COPYING" COPYING
-	@echo 'Extracted untouched original Menu, Button, Icon, Sound themes, graphics and GPL license.'
+	@test -f "$(MENU_DIR)/Menu/Menu/themedata.xml" || { echo "Missing bundled menu theme files."; exit 1; }
+	@test -f "$(MENU_DIR)/Button/GnoBlue/start-here.png" || { echo "Missing bundled button artwork."; exit 1; }
+	@test -f src/lib/tilomenu/graphics/logo.png || { echo "Missing bundled graphics."; exit 1; }
+	@echo 'Bundled GnoMenu assets are ready.'
 
 # Install the complete original-source module set and MATE panel metadata.
 install:
