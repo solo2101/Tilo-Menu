@@ -12,6 +12,10 @@ import xml.etree.ElementTree as ET
 from functools import lru_cache
 from pathlib import Path
 
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('GdkPixbuf', '2.0')
+gi.require_version('Pango', '1.0')
 from gi.repository import GdkPixbuf, Gtk, Pango
 from ArchiveThemeIcons import load_named_icon
 from ArchiveThemeContrast import legible_markup
@@ -137,17 +141,21 @@ def _event_box(child, width, height, name, callback):
 
 def render_theme_buttons(layout: Gtk.Fixed, theme, on_activate=None) -> None:
     """Draw original normal and hover button frames at their XML coordinates."""
+    widgets = []
     for element in theme.buttons:
         attrs = element.attributes
         hover = _pixbuf(theme.directory, attrs.get("Image", ""))
         back = _pixbuf(theme.directory, attrs.get("ImageBack", ""))
         if hover is None and back is None:
+            widgets.append(None)
             continue
         reference = hover or back
         width, height = reference.get_width(), reference.get_height()
         container = Gtk.Fixed()
         container.set_app_paintable(True)
         container.set_size_request(width, height)
+        from ArchivedThemeChrome import transparent_chrome
+        transparent_chrome(container)
         if back is not None:
             container.put(Gtk.Image.new_from_pixbuf(back), 0, 0)
         foreground = Gtk.Image()
@@ -159,6 +167,12 @@ def render_theme_buttons(layout: Gtk.Fixed, theme, on_activate=None) -> None:
         icon_size = int(attrs.get("ButtonIconSize", "0") or "0")
         default_icon = _icon(theme.directory, default_icon_name, icon_size)
         selected_icon = _icon(theme.directory, attrs.get("ButtonIconSel", ""), icon_size)
+        # The original XML 'Icon' is the action icon, while ButtonIcon
+        # is an optional overlay. Keep both exactly as the original menu did.
+        action_name = attrs.get("Icon", "")
+        action_pix = _icon(theme.directory, action_name, 24)
+        if action_pix is not None:
+            container.put(Gtk.Image.new_from_pixbuf(action_pix), 6, max(0, (height - action_pix.get_height()) // 2))
         icon = Gtk.Image()
         if default_icon is not None:
             icon.set_from_pixbuf(default_icon)
@@ -169,13 +183,18 @@ def render_theme_buttons(layout: Gtk.Fixed, theme, on_activate=None) -> None:
                 int(attrs.get("ButtonIconY", "0")),
             )
         x, y = element.integer("ButtonX"), element.integer("ButtonY")
+        # If XML gives a standalone action icon, reserve its width so the
+        # original label never paints through the icon.
+        text_offset = max(30, int(attrs.get("TextX", "0"))) if action_pix is not None else None
         label = _markup(
             container, attrs, width, theme=theme, x=x, y=y,
             overlay=attrs.get("ImageBack", ""),
             fallback=attrs.get("Name", "") if attrs.get("Markup") else "",
+            text_x=text_offset,
         )
         name = attrs.get("Name", "")
         eventbox = _event_box(container, width, height, name, on_activate)
+        widgets.append(eventbox)
         if name != ":SEPARATOR:":
             def change_state(hovered, foreground=foreground, icon=icon,
                              picture=hover, default=default_icon,
@@ -204,6 +223,7 @@ def render_theme_buttons(layout: Gtk.Fixed, theme, on_activate=None) -> None:
                 lambda _widget, _event, state=change_state: state(False) or False,
             )
         layout.put(eventbox, element.integer("ButtonX"), element.integer("ButtonY"))
+    return widgets
 
 
 def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None,
@@ -289,6 +309,7 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None,
         layout.put(label, left, y)
 
     tabs = {}
+    tab_boxes = []
     tab_names = [e.attributes.get("Name", "") for e in theme.tabs]
     active = "Applications" if "Applications" in tab_names else (
         tab_names[0] if tab_names else ""
@@ -299,10 +320,13 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None,
         selected = _pixbuf(theme.directory, attrs.get("ImageSel", ""))
         reference = selected or normal
         if reference is None:
+            tab_boxes.append(None)
             continue
         width, height = reference.get_width(), reference.get_height()
         container = Gtk.Fixed()
         container.set_size_request(width, height)
+        from ArchivedThemeChrome import transparent_chrome
+        transparent_chrome(container)
         picture = Gtk.Image()
         container.put(picture, 0, 0)
         icon_size = int(attrs.get("TabIconSize", "0") or "0")
@@ -345,6 +369,7 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None,
         tabs[name] = set_selected
         set_selected(name == active)
         box = _event_box(container, width, height, name, on_tab)
+        tab_boxes.append(box)
         # Hover is only for switching tab pages, never for launching Places,
         # Recent or system actions when the pointer merely passes over them.
         if tab_hover and on_tab is not None and name in ('Favorites', 'Applications'):
@@ -353,4 +378,4 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None,
                 lambda _widget, _event, action=name: bool(on_tab(action))
             )
         layout.put(box, element.integer("TabX"), element.integer("TabY"))
-    return tabs
+    return tabs, tab_boxes
