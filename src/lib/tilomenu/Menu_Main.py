@@ -327,24 +327,20 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                         self.LastUserPicName = ""
                 
                 
-                #Menu Buttons
-                self.MenuButtons = []
-                for i in range(0,Globals.MenuButtonCount):
-                        if Globals.MenuButtonNames[i] == ":SEPARATOR:":
-                                self.MenuButtons.append(Separator(i,self.menuframe))
-                        else:
-                                self.MenuButtons.append(MenuButton(i,self.menuframe,self.bgpb))
-                                
-                                self.MenuButtons[i].Button.connect("enter-notify-event", self.Button_enter,i)
-                                self.MenuButtons[i].Button.connect("leave-notify-event", self.Button_leave,i)
-                                self.MenuButtons[i].Button.connect("button-release-event", self.Button_click,i)
-
-                #Menu Labels
+                # Archived rendering engine draws original XML buttons,
+                # labels, images and tabs, preserving their authored geometry.
+                # Its widget adapters forward events to our existing commands.
+                from ArchiveThemeBridge import render_original_chrome
+                self.MenuButtons, self.MenuTabs = render_original_chrome(self)
                 self.MenuLabels = []
-                for i in range(0,Globals.MenuLabelCount):
-                        self.MenuLabels.append(MenuLabel(i,self.menuframe))
+                self.MenuImages = []
+                for i, button in enumerate(self.MenuButtons):
+                        if button is None or Globals.MenuButtonNames[i] == ":SEPARATOR:":
+                                continue
+                        button.Button.connect("enter-notify-event", self.Button_enter, i)
+                        button.Button.connect("leave-notify-event", self.Button_leave, i)
+                        button.Button.connect("button-release-event", self.Button_click, i)
 
-                        
                 # Configure the Program List
                 if Globals.Settings['Prog_List'] == 0:
                         self.PGL = TreeProgramList()
@@ -407,26 +403,21 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                         except:print('wait')
                         self.prevsearchitem = ""
 
-                #Tab Buttons
-                self.MenuTabs = []
-                for i in range(0,Globals.MenuTabCount):
-                        self.MenuTabs.append(MenuTab(i,self.menuframe,self.bgpb))
+                # Tab selection and navigation remain in the original menu.
+                for i, tab in enumerate(self.MenuTabs):
+                        if tab is None:
+                                continue
                         if Globals.Settings['TabHover']:
-                                self.MenuTabs[i].Tab.connect("enter-notify-event", self.Tab_hover,i)
+                                tab.Tab.connect("enter-notify-event", self.Tab_hover, i)
                         else:
-                                self.MenuTabs[i].Tab.connect("enter-notify-event", self.Tab_enter,i)
-                                self.MenuTabs[i].Tab.connect("leave-notify-event", self.Tab_leave,i)
-                                self.MenuTabs[i].Tab.connect("button-release-event", self.Tab_click,i)
-
+                                tab.Tab.connect("enter-notify-event", self.Tab_enter, i)
+                                tab.Tab.connect("leave-notify-event", self.Tab_leave, i)
+                                tab.Tab.connect("button-release-event", self.Tab_click, i)
                         if i == 0:
                                 self.PGL.CallSpecialMenu(Globals.MenuTabCommands[i])
-                                self.MenuTabs[i].SetSelectedTab(True)
+                                tab.SetSelectedTab(True)
                         else:
-                                self.MenuTabs[i].SetSelectedTab(False)
-                #Standalone images
-                self.MenuImages = []
-                for i in range(0,Globals.MenuImageCount):
-                        self.MenuImages.append(MenuImage(i,self.menuframe,self.bgpb))
+                                tab.SetSelectedTab(False)
 
                 if has_gst:
                         self.StartEngine()
