@@ -600,6 +600,10 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                 self.timeout_button = GLib.timeout_add(300,self.button_has_leave,widget,event,i)
         
         def Button_click(self,widget,event,i):
+                # A right or middle click must not launch a theme command.
+                # The original keyboard callers pass event=None.
+                if event is not None and getattr(event, 'button', 1) != 1:
+                        return False
                 # Launch standard menu command
                 if Globals.MenuButtonSub[i] == 0:
                         self.Launcher.Launch(Globals.MenuButtonCommands[i])
@@ -664,6 +668,8 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                         self.callback = GLib.timeout_add(3000,self.timeout_callback)
 
         def Tab_click(self,widget,event,i):
+                if event is not None and getattr(event, 'button', 1) != 1:
+                        return False
                 for ii in range(0,Globals.MenuTabCount):
                         if i != ii:
                                 self.MenuTabs[ii].SetSelectedTab(False)
