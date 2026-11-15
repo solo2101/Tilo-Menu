@@ -226,7 +226,7 @@ class TiloMenu:
         if self.hwg is None:
             self.hwg = Main_Menu(self.HideMenu)
             self.hwg.connect('state-changed', self.button_changed)
-        self.hwg.Adjust_Window_Dimensions(self.x, self.y)
+        self.hwg.Adjust_Window_Dimensions(self.x, self.y, self.size)
         Globals.SavedOriginState = self.x, self.y
         return False
 
@@ -246,7 +246,7 @@ class TiloMenu:
     def update_panel_position(self):
         # Preserve original panel-to-popup repositioning on resize/move.
         if self.x != self.oldx and self.hwg is not None:
-            self.hwg.Adjust_Window_Dimensions(self.x, self.y)
+            self.hwg.Adjust_Window_Dimensions(self.x, self.y, self.size)
             Globals.SavedOriginState = self.x, self.y
             self.oldx = self.x
 
@@ -254,7 +254,7 @@ class TiloMenu:
         if event.button == 1:
             if self.hwg is None:
                 self.map_event(widget, event)
-            self.hwg.Adjust_Window_Dimensions(self.x, self.y)
+            self.hwg.Adjust_Window_Dimensions(self.x, self.y, self.size)
             if self.Button_state == 2:
                 self.HideMenu()
                 self.Button_state = 1
@@ -350,7 +350,7 @@ class TiloMenu:
             if window is not None:
                 origin = window.get_origin()[-2:]
                 if origin != getattr(Globals, 'SavedOriginState', None):
-                    self.hwg.Adjust_Window_Dimensions(*origin)
+                    self.hwg.Adjust_Window_Dimensions(*origin, self.size)
                     Globals.SavedOriginState = origin
             self.hwg.show_window()
 
