@@ -115,28 +115,33 @@ class IconFactory(gobject.GObject):
                         return item.get_icon(Globals.PG_iconsize)
 
         def geticonfile(self,icon):
-                        if self.gtkicontheme.has_icon(icon):
-                                pix = self.gtkicontheme.load_icon(icon,Globals.PG_iconsize,gtk.IconLookupFlags.FORCE_SIZE)
-                                return pix
-                        # lockup icon in xdg icon theme
-                        else:
-                                for dir_ in bd.xdg_data_dirs:
-                                        for subdir in ('pixmaps', 'icons'):
-                                                path = os.path.join(dir_, subdir, icon)
-                                                if os.path.isfile(path):
-                                                        pix = GdkPixbuf.Pixbuf.new_from_file_at_size(path,Globals.PG_iconsize,Globals.PG_iconsize)
-                                                        return pix
-                        if os.path.isfile(icon):
-                                pix = GdkPixbuf.Pixbuf.new_from_file_at_size(icon, Globals.PG_iconsize, Globals.PG_iconsize)
-                                return pix
-                        # GTK3 themes no longer guarantee the GTK2 stock icon name.
-                        # Retain the original bundled brokenlink.png as fallback.
-                        for name in ('image-missing', 'gtk-missing-image'):
-                                if self.gtkicontheme.has_icon(name):
-                                        return self.gtkicontheme.load_icon(
-                                                name, Globals.PG_iconsize,
-                                                gtk.IconLookupFlags.FORCE_SIZE)
-                        return GdkPixbuf.Pixbuf.new_from_file_at_size(
-                                Globals.BrokenImage, Globals.PG_iconsize, Globals.PG_iconsize)
-
-
+                # Gtk.IconTheme.has_icon() can report stale, missing files.
+                # Keep the original lookup order while falling back safely.
+                size = Globals.PG_iconsize
+                flags = gtk.IconLookupFlags.FORCE_SIZE
+                if icon and self.gtkicontheme.has_icon(icon):
+                        try:
+                                return self.gtkicontheme.load_icon(icon, size, flags)
+                        except (Exception) as error:
+                                print('Unable to load themed icon %s: %s' % (icon, error))
+                for dir_ in bd.xdg_data_dirs:
+                        for subdir in ('pixmaps', 'icons'):
+                                path = os.path.join(dir_, subdir, icon or '')
+                                if os.path.isfile(path):
+                                        try:
+                                                return GdkPixbuf.Pixbuf.new_from_file_at_size(path, size, size)
+                                        except Exception:
+                                                pass
+                if icon and os.path.isfile(icon):
+                        try:
+                                return GdkPixbuf.Pixbuf.new_from_file_at_size(icon, size, size)
+                        except Exception:
+                                pass
+                for name in ('image-missing', 'gtk-missing-image'):
+                        if self.gtkicontheme.has_icon(name):
+                                try:
+                                        return self.gtkicontheme.load_icon(name, size, flags)
+                                except Exception:
+                                        pass
+                return GdkPixbuf.Pixbuf.new_from_file_at_size(
+                        Globals.BrokenImage, size, size)
