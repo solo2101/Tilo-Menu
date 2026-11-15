@@ -175,6 +175,7 @@ class MenuImage:
         def __init__(self,i,base,backimage):
                 self.backimagearea = None
                 self.Frame = gtk.Fixed()
+                transparent_chrome(self.Frame)
                 if not self.Frame.is_composited():
          
                         self.supports_alpha = False
@@ -197,9 +198,11 @@ class MenuImage:
                                 self.backimagearea = self.backimagearea.flip(Globals.flip)
                         else:
                                 self.backimagearea = backimage.new_subpixbuf(Globals.MenuImageX[i],Globals.MenuImageY[i] ,self.w,self.h)
-                self.Pic.composite(self.backimagearea, 0, 0, self.w, self.h, 0, 0, 1, 1, GdkPixbuf.InterpType.BILINEAR, 255)
-                # Set the background which is always present
-                self.Image.set_from_pixbuf(self.backimagearea)
+                # The original image is an overlay. GTK3's alpha-composited
+                # menu window already draws the base PNG. Compositing the
+                # overlay into a copied background reverses source/destination
+                # and causes translucent blocks around the artwork.
+                self.Image.set_from_pixbuf(self.Pic)
                 self.Image.set_size_request(self.w,self.h)
                 self.Frame.set_size_request(self.w,self.h)
                 self.Frame.put(self.Image,0,0)
