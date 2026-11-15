@@ -84,6 +84,7 @@ class Main_Menu(gobject.GObject):
                 self.window.set_keep_above(0) #Make this always above other windows
                 self.window.stick() #Make this appear on all desktops
                 self.window.set_default_size(Globals.MenuWidth,Globals.MenuHeight)
+                self.window.set_size_request(Globals.MenuWidth,Globals.MenuHeight)
                 self.window.set_events(Gdk.EventMask.ALL_EVENTS_MASK)
                 try:    # Workaround for Ubuntu Natty
                         self.window.set_property('has-resize-grip', False)
@@ -238,6 +239,7 @@ class Main_Menu(gobject.GObject):
 #=================================================================
         def expose (self, widget, cr):
                 self.ctx = cr
+                self.ctx.save()
                 # set a clip region for the expose event
                 if self.supports_alpha == False:
                         self.ctx.set_source_rgb(1, 1, 1)
@@ -247,8 +249,12 @@ class Main_Menu(gobject.GObject):
                 self.ctx.paint()
                 if Globals.Settings['GtkColors'] == 1:
                         cairo_drawing.draw_image_gtk(self.ctx,0,0,Globals.ImageDirectory + Globals.StartMenuTemplate,self.w,self.h,Globals.GtkColorCode,self.colorpb)
-                else:   
-                        cairo_drawing.draw_image(self.ctx,0,0,Globals.ImageDirectory + Globals.StartMenuTemplate)
+                else:
+                        # Reuse the theme image already loaded by shape().
+                        Gdk.cairo_set_source_pixbuf(self.ctx, self.bgpb, 0, 0)
+                        self.ctx.set_operator(cairo.OPERATOR_OVER)
+                        self.ctx.paint()
+                self.ctx.restore()
 
 
 
@@ -297,6 +303,9 @@ class Main_Menu(gobject.GObject):
 
         def setup(self):
                 self.menuframe = gtk.Fixed()
+                # GTK3 Fixed has no intrinsic size. Keep the original PNG
+                # geometry as the allocation for theme-positioned widgets.
+                self.menuframe.set_size_request(Globals.MenuWidth, Globals.MenuHeight)
                 self.window.add (self.menuframe)
                 self.background =  gtk.Image()
                 self.menuframe.put(self.background,0,0)
