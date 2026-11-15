@@ -46,6 +46,16 @@ with patch.object(menu.Launcher, 'Launch') as launch, \
     menu.MenuButtons[index].Button.emit('button-release-event', event)
     launch.assert_called_once_with(Globals.MenuButtonCommands[index])
 
+# Right and middle mouse releases must not launch applications or system
+# commands accidentally. Keyboard callers without an event still work.
+with patch.object(menu.Launcher, 'Launch') as launch, \
+     patch.object(menu, 'PlaySound'):
+    for mouse_button in (2, 3):
+        event = Gdk.Event.new(Gdk.EventType.BUTTON_RELEASE)
+        event.button = mouse_button
+        menu.MenuButtons[index].Button.emit('button-release-event', event)
+    launch.assert_not_called()
+
 # The default theme has tabs; keep its original page/navigation indexes.
 backend.save_setting('Menu_Name', 'Menu')
 Globals.ReloadSettings()
@@ -55,4 +65,10 @@ assert all(isinstance(tab, TabAdapter) for tab in menu2.MenuTabs if tab is not N
 if menu2.MenuTabs:
     menu2.MenuTabs[0].SetSelectedTab(True)
     assert menu2.MenuTabs[0].GetSelectedTab()
+    with patch.object(menu2.PGL, 'CallSpecialMenu') as navigate, \
+         patch.object(menu2, 'PlaySound'):
+        event = Gdk.Event.new(Gdk.EventType.BUTTON_RELEASE)
+        event.button = 3
+        menu2.MenuTabs[0].Tab.emit('button-release-event', event)
+        navigate.assert_not_called()
 print('PASS: archived chrome forwards original menu commands and tab state')
