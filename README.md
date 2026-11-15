@@ -10,7 +10,7 @@ The ported Python 3 syntax is committed directly, instead of introducing a new m
 
 The original 2.9.1 modules are now tracked under `src/lib/tilomenu`.
 Python 2 syntax conversion is complete across the selected core modules.
-The original popup, application list and settings window now construct and open under GTK3 in automated Xvfb tests. MATE panel integration still needs testing on a real desktop.
+The original popup, application list and settings window now construct and open under GTK3 in automated Xvfb tests. Fedora MATE testing confirms the Settings window opens and theme selection reloads the menu. Popup rendering still needs work.
 
 Implemented compatibility steps:
 - `TiloMenu.py`: original MATE panel button, popup show/hide, state signal and settings command.
@@ -19,7 +19,7 @@ Implemented compatibility steps:
 - `Launcher.py`, `IconFactory.py`, `utils.py`: Python3/GTK3 imports and compatibility substitutions.
 - `Menu_Main.py`, `Menu_Widgets.py`, `Menu_Items.py`, `Globals.py`, `TiloMenu-Settings.py`, `Popup_Menu.py`, `cairo_drawing.py`: original source with Python 3/GTK3 compatibility fixes. Original Xvfb startup, show/hide and settings window checks are enforced in GitHub Actions. More legacy widget paths remain to port.
 
-Original artwork and XML remain completely unchanged. `make prepare` extracts only the four original default theme sets (Menu, Button, Icon, Sound), graphics and GPL license from `~/Downloads/gnomenu-2.9.1.tar.gz`; it does not download KDE, XFCE, AWN or other desktop integrations.
+Original artwork and XML remain completely unchanged. `make prepare` extracts the four original default theme sets (Menu, Button, Icon, Sound), graphics and GPL license from `~/Downloads/gnomenu-2.9.1.tar.gz`. `make install` also installs additional menu themes from `data/themes/Menu` if present. Those additional themes are currently local-only and are not yet tracked in GitHub. A fresh clone installs only the original default themes unless the additional theme files are supplied.
 
 ## Developer preparation
 
@@ -76,16 +76,15 @@ The original Settings notebook also launches directly:
 
 ```bash
 clear
-/usr/bin/python3 /usr/lib/tilomenu/TiloMenu-Settings.py
+tilomenu preferences
 ```
 
 For the native applet, right-click the existing MATE panel and select
 **Add to Panel**, then search for **TiloMenu**. Add it and test left-click
 (open/close) and right-click **Preferences**.
 
-The installed command is `tilomenu`. The previous prototype was
-`~/.local/bin/tilo-menu`, a different command, and is not changed by this
-installation.
+The installed command is `tilomenu`. The archived prototype used
+`~/.local/bin/tilo-menu`, a different command. The current installer does not modify that older path.
 
 To remove the new system-wide port without touching your archived prototype:
 
