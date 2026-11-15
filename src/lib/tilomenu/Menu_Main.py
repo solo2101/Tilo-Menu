@@ -251,11 +251,12 @@ class Main_Menu(gobject.GObject):
         def shape(self):
                 #Standard shape setup of window
                 print('shaping window')
-                w,h = self.window.get_size()
-                if w==0: w = 100
-                if h==0: h = 100
-                self.w = w
-                self.h = h
+                # GTK3 can report a 1x1 unrealized window here. Use the
+                # original theme dimensions rather than an early allocation.
+                w, h = int(Globals.MenuWidth), int(Globals.MenuHeight)
+                self.w = max(1, w)
+                self.h = max(1, h)
+                w, h = self.w, self.h
                 self.pixmap = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
                 ctx = cairo.Context(self.pixmap)
                 self.bgpb = GdkPixbuf.Pixbuf.new_from_file(Globals.ImageDirectory + Globals.StartMenuTemplate)
@@ -295,11 +296,9 @@ class Main_Menu(gobject.GObject):
                 self.window.add (self.menuframe)
                 self.background =  gtk.Image()
                 self.menuframe.put(self.background,0,0)
-                w,h = self.window.get_size()
-                if w==0: w = 100
-                if h==0: h = 100
-                self.w = w
-                self.h = h
+                # Child widgets and background share the configured theme size.
+                self.w = max(1, int(Globals.MenuWidth))
+                self.h = max(1, int(Globals.MenuHeight))
                 self.shape()
                 self.window.set_opacity(0.99)
                 if Globals.MenuHasIcon==1:
@@ -559,7 +558,8 @@ class Main_Menu(gobject.GObject):
                 self.MenuButtons[i].SetBackground()
                 if Globals.MenuButtonIcon[i]:
                         self.MenuButtons[i].SetIcon(Globals.ImageDirectory + Globals.MenuButtonIcon[i])
-                GLib.source_remove(self.timeout_button)
+                if getattr(self, 'timeout_button', None):
+                        GLib.source_remove(self.timeout_button)
                 self.timeout_button = GLib.timeout_add(300,self.button_has_leave,widget,event,i)
         
         def Button_click(self,widget,event,i):
