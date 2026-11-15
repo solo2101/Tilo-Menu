@@ -316,7 +316,8 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                 # always paints its main child (the PNG) before its controls.
                 self.underlay = gtk.Overlay()
                 self.window.add(self.underlay)
-                self.background = gtk.Image()
+                from ArchiveThemeBackground import ArchiveThemeBackground
+                self.background = ArchiveThemeBackground()
                 self.underlay.add(self.background)
                 self.menuframe = gtk.Fixed()
                 from ArchivedThemeChrome import transparent_chrome
