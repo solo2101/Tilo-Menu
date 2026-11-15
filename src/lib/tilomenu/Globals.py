@@ -609,8 +609,19 @@ MenuCairoSystemIcon = {'m_webbookmarks':'applications-internet','m_recentapps':'
 UserImageFrame = ImageDirectory+"user-image-frame.png"
 DefaultUserImage = IconDirectory+"gtk-missing-image.png"
 UserImage = HomeDirectory + "/.face"
-if os.path.isfile(UserImage) == 0 or os.path.exists(UserImage) == 0:
-    UserImage=DefaultUserImage
+if not os.path.isfile(UserImage):
+    # Adapt the archived GTK3 avatar fallback to the original ImageFrame
+    # API. Keep ~/.face and original frame animation as the first choice.
+    UserImage = DefaultUserImage
+    for candidate in ("avatar-default", "user-identity", "stock_person"):
+        try:
+            info = GtkIconTheme.lookup_icon(
+                    candidate, 64, gtk.IconLookupFlags.FORCE_SIZE)
+            if info and info.get_filename() and os.path.isfile(info.get_filename()):
+                UserImage = info.get_filename()
+                break
+        except (ValueError, TypeError, AttributeError):
+            continue
 
 #Application logo
 Applogo = GraphicsDirectory +"logo.svg"
