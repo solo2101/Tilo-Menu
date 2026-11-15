@@ -120,14 +120,16 @@ class MenuButton:
 
         def expose (self, widget, event):
                 self.ctx = event
-                # set a clip region for the expose event
-                if self.supports_alpha == False:
-                        self.ctx.set_source_rgb(1, 1, 1)
-                else:
-                        self.ctx.set_source_rgba(1, 1, 1,0)
-                self.ctx.set_operator (cairo.OPERATOR_SOURCE)
+                # Paint the original PNG pixels behind this tab rather than
+                # filling white when GTK3 reports no compositor at realize.
+                self.ctx.save()
+                self.ctx.rectangle(0, 0, self.w, self.h)
+                self.ctx.clip()
+                self.ctx.set_operator(cairo.OPERATOR_SOURCE)
+                Gdk.cairo_set_source_pixbuf(self.ctx, self.backimagearea, 0, 0)
                 self.ctx.paint()
-                cairo_drawing.draw_pixbuf(self.ctx,self.backimagearea)
+                self.ctx.restore()
+                return False
 
 
           
@@ -221,7 +223,24 @@ class MenuTab:
                 self.i = i
                 self.backimagearea = None
                 self.Tab = gtk.EventBox()
+                self.Tab.set_visible_window(False)
                 self.Frame = gtk.Fixed()
+                # Gtk3 otherwise paints each EventBox/Fixed with the desktop
+                # theme, obscuring the GnoMenu background PNG and tab art.
+                self.Tab.get_style_context().add_class('tilomenu-tab')
+                self.Frame.get_style_context().add_class('tilomenu-tab-frame')
+                self._tab_css = gtk.CssProvider()
+                self._tab_css.load_from_data(b"""
+                    eventbox.tilomenu-tab, fixed.tilomenu-tab-frame {
+                        background-color: transparent;
+                        background-image: none;
+                        border: none;
+                        box-shadow: none;
+                    }
+                """)
+                for component in (self.Tab, self.Frame):
+                        component.get_style_context().add_provider(
+                                self._tab_css, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
                 if not self.Tab.is_composited():
          
                         self.supports_alpha = False
