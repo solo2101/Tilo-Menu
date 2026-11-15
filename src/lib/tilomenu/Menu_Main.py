@@ -97,7 +97,10 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                 self.colorpb = None
                 self.setup()
                 self.window.get_screen().connect("composited-changed", self.composite_changed)
-                self.window.connect("draw", self.expose)
+                # GTK3 draws the original PNG through self.background, the
+                # first Gtk.Fixed child. The GTK2 window-level expose handler
+                # ran after child painting and covered the restored artwork.
+                # Keep expose() for legacy callers but do not connect it.
                 # Panel-hosted popup destruction must never quit the MATE
                 # applet's GTK main loop. The standalone test host already
                 # exits its own main loop on window destruction.
