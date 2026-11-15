@@ -7,6 +7,8 @@ from functools import lru_cache
 from pathlib import Path
 import re
 
+import gi
+gi.require_version('GdkPixbuf', '2.0')
 from gi.repository import GdkPixbuf
 
 
