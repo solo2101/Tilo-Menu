@@ -3,7 +3,8 @@ from pathlib import Path
 import sys
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+gi.require_version('GdkPixbuf', '2.0')
+from gi.repository import Gtk, GdkPixbuf
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src/lib/tilomenu'))
 from ArchiveThemeParser import load_menu_theme
 from ArchiveThemeRenderer import render_theme_buttons, render_theme_details
@@ -15,6 +16,16 @@ for folder in sorted(themes.iterdir()):
     if not (folder / 'themedata.xml').is_file():
         continue
     theme = load_menu_theme(folder)
+    if folder.name in ('Gray', 'iTheme', 'XP'):
+        original = GdkPixbuf.Pixbuf.new_from_file(str(folder / theme.background))
+        color_samples = []
+        for fraction_x, fraction_y in ((0.55, 0.4), (0.85, 0.4), (0.85, 0.7)):
+            x = min(original.get_width()-1, int(original.get_width()*fraction_x))
+            y = min(original.get_height()-1, int(original.get_height()*fraction_y))
+            n = original.get_n_channels()
+            offset = y * original.get_rowstride() + x * n
+            color_samples.append(tuple(original.get_pixels()[offset:offset+n]))
+        print('ORIGINAL THEME ARTWORK', folder.name, color_samples, flush=True)
     frame = Gtk.Fixed()
     frame.set_size_request(theme.width, theme.height)
     buttons = render_theme_buttons(frame, theme)
