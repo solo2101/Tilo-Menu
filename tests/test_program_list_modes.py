@@ -25,6 +25,9 @@ if mode in (0, 3):
     theme_width, theme_height = Globals.PG_buttonframedimensions
     assert scroll_width == theme_width
     assert 0 < scroll_height <= theme_height
+    viewport = menu.PGL.EBox.get_allocation()
+    assert viewport.width <= theme_width + 2, (
+        f'list overflow: actual={viewport.width} expected={theme_width}')
 menu.hide_window()
 # Allow the process to exit without gtk_main_quit on a non-running main loop.
 print(f'PASS: original Prog_List={mode} using {type(menu.PGL).__name__}')
