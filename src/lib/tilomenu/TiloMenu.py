@@ -127,12 +127,11 @@ class TiloMenu:
         self._settings_refresh_id = GLib.timeout_add(
             200, self._refresh_applied_settings)
 
-    @staticmethod
-    def _current_menu_signature():
-        # These original settings change menu geometry, artwork or renderer.
+    def _current_menu_signature(self):
+        # Orientation changes the original theme geometry and artwork too.
         keys = ('Menu_Name', 'Icon_Name', 'Prog_List', 'IconSize',
                 'GtkColors', 'System_Icons', 'TabHover')
-        return tuple(backend.load_setting(key) for key in keys)
+        return tuple(backend.load_setting(key) for key in keys) + (self.orientation,)
 
     def _refresh_applied_settings(self):
         self._settings_refresh_id = None
@@ -154,7 +153,7 @@ class TiloMenu:
             return False
         try:
             xml.dom.minidom.parse(str(theme_file))
-            Globals.ReloadSettings()
+            Globals.ReloadSettings(orientation_override=self.orientation)
             replacement = Main_Menu(self.HideMenu)
             replacement.connect('state-changed', self.button_changed)
         except Exception as error:
@@ -212,12 +211,17 @@ class TiloMenu:
             return 30
 
     def change_orientation(self, *args):
+        old_orientation = self.orientation
         try:
             orient = self.applet.get_orient()
+            # MatePanelApplet DOWN=1, meaning the panel is at the top.
             self.orientation = 'top' if int(orient) == 1 else 'bottom'
         except (AttributeError, TypeError, ValueError):
             self.orientation = 'bottom'
-        Globals.flip = False if self.orientation == 'top' else None
+        if old_orientation != self.orientation:
+            Globals.ReloadSettings(orientation_override=self.orientation)
+            if self.hwg is not None:
+                self._refresh_menu_theme()
         return True
 
     def map_event(self, widget, event):
