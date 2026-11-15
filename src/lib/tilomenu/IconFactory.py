@@ -12,6 +12,10 @@
 # Icon factory
 # Part of the GnoMenu
 
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('Gdk', '3.0')
+gi.require_version('GdkPixbuf', '2.0')
 from gi.repository import Gtk as gtk, GObject as gobject, Gio as gio, GdkPixbuf
 import os
 import xml.dom.minidom
