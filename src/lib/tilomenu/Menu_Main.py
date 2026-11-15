@@ -98,7 +98,9 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                 self.setup()
                 self.window.get_screen().connect("composited-changed", self.composite_changed)
                 self.window.connect("draw", self.expose)
-                self.window.connect("destroy", gtk.main_quit)   #Fixme?
+                # Panel-hosted popup destruction must never quit the MATE
+                # applet's GTK main loop. The standalone test host already
+                # exits its own main loop on window destruction.
                 self.window.connect("focus-out-event", self.lose_focus)
                 self.window.connect("key-press-event", self.key_down)
                 self.gtk_screen = self.window.get_screen()
