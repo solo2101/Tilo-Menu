@@ -43,14 +43,24 @@ def _(s):
         return gettext.gettext(s)
 
 def GetSystemIcon(icon):
-        for n in Icontype:
-                icon = str(icon).replace('.' + n,'')
-        ico = Globals.GtkIconTheme.lookup_icon(icon,48,gtk.IconLookupFlags.FORCE_SVG)
-        if ico:
-                ico = ico.get_filename()
-        else:
-                ico = None
-        return ico
+        # GTK theme indexes can contain missing files. Return a verified path,
+        # falling back to the stock hicolor icon theme.
+        name = os.path.splitext(os.path.basename(str(icon)))[0]
+        for theme in (gtk.IconTheme.get_default(), _hicolor_theme()):
+                try:
+                        info = theme.lookup_icon(name, 48, gtk.IconLookupFlags.FORCE_SIZE)
+                        path = info.get_filename() if info else None
+                        if path and os.path.isfile(path):
+                                return path
+                except (Exception):
+                        pass
+        return None
+
+
+def _hicolor_theme():
+        theme = gtk.IconTheme.new()
+        theme.set_custom_theme('hicolor')
+        return theme
 
 class IconFactory(gobject.GObject):
         __gsignals__ = {"icons-changed" : (gobject.SignalFlags.RUN_LAST, None, ()),
@@ -78,14 +88,18 @@ class IconFactory(gobject.GObject):
                 self.gtkicontheme = gtk.IconTheme.get_default()
 
         def getgicon(self,gico):
-                """Returns gio icon"""
-                try:
+                """Return the original Gio icon name or file path.
+
+                Do not discard names merely because a custom icon theme has
+                a missing/stale lookup entry. geticonfile handles fallback.
+                """
+                if isinstance(gico, gio.FileIcon):
+                        return gico.get_file().get_path()
+                if isinstance(gico, gio.ThemedIcon):
                         names = gico.get_names()
-                        for x in range(0,len(names)):
-                                if self.gtkicontheme.has_icon(names[x]):
-                                        return names[x]
-                except:pass
-                return 'gtk-execute'
+                        if names:
+                                return names[0]
+                return 'application-x-executable'
 
         def getthumb(self,item):
                 path = urllib.url2pathname(item.get_uri().replace('file://',''))
@@ -115,32 +129,47 @@ class IconFactory(gobject.GObject):
                         return item.get_icon(Globals.PG_iconsize)
 
         def geticonfile(self,icon):
-                # Gtk.IconTheme.has_icon() can report stale, missing files.
-                # Keep the original lookup order while falling back safely.
+                # Preserve original icon names, absolute paths and Gio icons.
                 size = Globals.PG_iconsize
                 flags = gtk.IconLookupFlags.FORCE_SIZE
-                if icon and self.gtkicontheme.has_icon(icon):
-                        try:
-                                return self.gtkicontheme.load_icon(icon, size, flags)
-                        except (Exception) as error:
-                                print('Unable to load themed icon %s: %s' % (icon, error))
-                for dir_ in bd.xdg_data_dirs:
-                        for subdir in ('pixmaps', 'icons'):
-                                path = os.path.join(dir_, subdir, icon or '')
-                                if os.path.isfile(path):
-                                        try:
-                                                return GdkPixbuf.Pixbuf.new_from_file_at_size(path, size, size)
-                                        except Exception:
-                                                pass
-                if icon and os.path.isfile(icon):
+                if isinstance(icon, gio.Icon):
+                        icon = self.getgicon(icon)
+                icon = str(icon) if icon else ''
+
+                if os.path.isfile(icon):
                         try:
                                 return GdkPixbuf.Pixbuf.new_from_file_at_size(icon, size, size)
                         except Exception:
                                 pass
-                for name in ('image-missing', 'gtk-missing-image'):
-                        if self.gtkicontheme.has_icon(name):
+
+                names = [icon]
+                if icon.endswith(('.png', '.svg', '.xpm')):
+                        names.append(os.path.splitext(icon)[0])
+                # An icon theme may reference a removed SVG even when
+                # has_icon() returns True. Try the standard fallback theme.
+                for name in names:
+                        if not name:
+                                continue
+                        for theme in (self.gtkicontheme, _hicolor_theme()):
                                 try:
-                                        return self.gtkicontheme.load_icon(name, size, flags)
+                                        return theme.load_icon(name, size, flags)
+                                except Exception:
+                                        pass
+
+                for dir_ in bd.xdg_data_dirs:
+                        for subdir in ('pixmaps', 'icons'):
+                                path = os.path.join(dir_, subdir, icon)
+                                if os.path.isfile(path):
+                                        try:
+                                                return GdkPixbuf.Pixbuf.new_from_file_at_size(
+                                                        path, size, size)
+                                        except Exception:
+                                                pass
+
+                for name in ('application-x-executable', 'image-missing', 'gtk-missing-image'):
+                        for theme in (self.gtkicontheme, _hicolor_theme()):
+                                try:
+                                        return theme.load_icon(name, size, flags)
                                 except Exception:
                                         pass
                 return GdkPixbuf.Pixbuf.new_from_file_at_size(
