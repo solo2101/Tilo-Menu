@@ -46,7 +46,10 @@ def start_button_top_images(theme_name=None):
     panel's allocation. Otherwise GTK clips the upper part of the icon.
     """
     directory = ThemeDirectory / 'Button' / (theme_name or 'GnoBlue')
-    document = xml.dom.minidom.parse(str(directory / 'themedata.xml'))
+    xml_path = directory / 'themedata.xml'
+    if not xml_path.is_file():
+        return None
+    document = xml.dom.minidom.parse(str(xml_path))
     theme = document.getElementsByTagName('theme')[0]
     if theme.getAttribute('Top') != '1':
         return None
