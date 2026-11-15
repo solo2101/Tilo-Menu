@@ -38,4 +38,16 @@ for item in menu.MenuButtons:
         assert not item.Button.get_visible_window()
         assert item.Button.get_style_context().has_class('tilomenu-original-chrome')
 assert menu.window.get_opacity() == 1.0
-print('PASS: original PNG chrome, Cairo alpha and archive-style label contrast')
+# The screenshot uses a light, graphic-heavy theme. Check its authored
+# widget geometry as well as the default dark Menu theme.
+import backend
+backend.save_setting('Menu_Name', 'Vista')
+Globals.ReloadSettings()
+vista = Main_Menu(lambda: None)
+assert vista.MenuButtons
+assert vista.MenuTabs or vista.MenuLabels
+assert vista.menuframe.get_size_request() == (
+    Globals.MenuWidth, Globals.MenuHeight)
+assert all(button.Button.get_style_context().has_class('tilomenu-original-chrome')
+           for button in vista.MenuButtons if hasattr(button, 'Button'))
+print('PASS: default and Vista theme rendering geometry under GTK3')
