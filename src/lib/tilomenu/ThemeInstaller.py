@@ -42,7 +42,7 @@ def installed_themes(kind, system_root):
 
 def _metadata(path):
     root = ET.parse(path).getroot()
-    content = root.find(".//content")
+    content = root if root.tag == "content" else root.find(".//content")
     kind = content.get("type") if content is not None else None
     if kind not in KINDS:
         raise ValueError("Theme metadata has no recognized content type")
