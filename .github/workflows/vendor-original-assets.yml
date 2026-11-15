@@ -1,0 +1,43 @@
+name: Vendor original GnoMenu 2.9.1 assets
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/vendor-original-assets.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  vendor-assets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download the original 2.9.1 release and preserve its paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$(mktemp)"
+          workdir="$(mktemp -d)"
+          trap 'rm -f "$archive"; rm -rf "$workdir"' EXIT
+          curl --fail --location --retry 3 \
+            'https://launchpad.net/gnomenu/trunk/2.9.1/+download/gnomenu-2.9.1.tar.gz' \
+            --output "$archive"
+          tar -xzf "$archive" -C "$workdir"
+          test -f "$workdir/gnomenu/src/share/gnomenu/Themes/Menu/Menu/themedata.xml"
+          test -f "$workdir/gnomenu/src/lib/gnomenu/graphics/logo.png"
+          mkdir -p src/share/tilomenu/Themes src/lib/tilomenu/graphics
+          cp -a "$workdir/gnomenu/src/share/gnomenu/Themes/." src/share/tilomenu/Themes/
+          cp -a "$workdir/gnomenu/src/lib/gnomenu/graphics/." src/lib/tilomenu/graphics/
+          cp "$workdir/gnomenu/COPYING" COPYING
+          git add COPYING src/share/tilomenu/Themes src/lib/tilomenu/graphics
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Bundle unchanged original GnoMenu 2.9.1 themes and graphics'
+            git push origin HEAD:main
+          fi
