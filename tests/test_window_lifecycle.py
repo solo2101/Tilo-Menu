@@ -89,10 +89,16 @@ probe = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8,
                              Globals.MenuWidth, Globals.MenuHeight)
 probe.fill(0xff00ffff)
 menu.background.set_from_pixbuf(probe)
+menu.background.queue_draw()
 menu.window.queue_draw()
+# Xvfb does not necessarily dispatch the next frame from a busy event loop.
+# Process GDK updates synchronously before capturing pixel colors.
+menu.window.get_window().process_updates(True)
 for _ in range(5):
     while Gtk.events_pending():
         Gtk.main_iteration_do(False)
+menu.window.get_window().process_updates(True)
+assert menu.background.draw_calls >= 2, 'Pixel probe captured an old GTK3 frame'
 print('BACKDROP DEBUG', {
     'mapped': menu.background.get_mapped(),
     'visible': menu.background.get_visible(),
