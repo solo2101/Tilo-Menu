@@ -687,7 +687,8 @@ class XDGMenu(gobject.GObject):
                 if '%s::%s::%s::%s' % (name, execs, ico, typ) not in favlist:
                         favlist.append('%s::%s::%s::%s' % (name, execs, ico, typ))
                         backend.save_setting("favorites",favlist)
-                        del self.menucache["<Favorites>"]
+                        self.menucache.pop("<Favorites>", None)
+                        self.emit('changed')
                         self.notifier.notify('%s %s' % (name, _('added to favorites list')),Globals.name,Globals.Applogo,5000)
                 
         def removefav(self,widget,event,name, execs,ico,typ):
@@ -697,7 +698,7 @@ class XDGMenu(gobject.GObject):
                 if '%s::%s::%s::%s' % (name, execs, ico, typ) in favlist:
                         favlist.remove('%s::%s::%s::%s' % (name, execs, ico, typ))
                         backend.save_setting("favorites",favlist)
-                        del self.menucache["<Favorites>"]
+                        self.menucache.pop("<Favorites>", None)
                         self.emit('changed')
                         self.notifier.notify('%s %s' % (name, _('removed from favorites list')),Globals.name,Globals.Applogo,5000)
 
