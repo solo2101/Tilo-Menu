@@ -19,7 +19,7 @@ Implemented compatibility steps:
 - `Launcher.py`, `IconFactory.py`, `utils.py`: Python3/GTK3 imports and compatibility substitutions.
 - `Menu_Main.py`, `Menu_Widgets.py`, `Menu_Items.py`, `Globals.py`, `TiloMenu-Settings.py`, `Popup_Menu.py`, `cairo_drawing.py`: original source with Python 3/GTK3 compatibility fixes. Original Xvfb startup, show/hide and settings window checks are enforced in GitHub Actions. More legacy widget paths remain to port.
 
-Original artwork and XML remain completely unchanged. `make prepare` extracts the four original default theme sets (Menu, Button, Icon, Sound), graphics and GPL license from `~/Downloads/gnomenu-2.9.1.tar.gz`. `make install` also installs additional menu themes from `data/themes/Menu` if present. Those additional themes are currently local-only and are not yet tracked in GitHub. A fresh clone installs only the original default themes unless the additional theme files are supplied.
+Original GnoMenu 2.9.1 themes, graphics and GPL license are bundled in the repository in their retained source paths. These assets were copied unchanged from the original release. `make prepare` validates them, with no separate tarball or old installation required.
 
 ## Developer preparation
 
@@ -40,8 +40,8 @@ The previous working GTK3 revival is archived at
 
 This is the **original-source port**, not the earlier archived GTK3 recreation.
 The source tree still uses `src/bin`, `src/lib/tilomenu`, and
-`src/share/tilomenu`. The four original theme directories and XML artwork
-are copied byte-for-byte from the GnoMenu 2.9.1 archive during `make prepare`.
+`src/share/tilomenu`. The original theme directories and XML artwork are already included in GitHub.
+`make prepare` verifies their presence.
 
 First, ensure the Fedora dependencies are available:
 
