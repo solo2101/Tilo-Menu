@@ -515,8 +515,9 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
         def key_down (self,widget,event):
                 # Focus mapping and key press management
                 # (this is not the only key event routine set for the menu, also check the PGMenu routines)
-                key = event.hardware_keycode
-                if key == 9:    #Escape Key, hides window
+                key = getattr(event, 'hardware_keycode', 0)
+                keyval = getattr(event, 'keyval', 0)
+                if key == 9 or keyval == Gdk.KEY_Escape:    # Escape hides menu
                         self.hide_method()
                 elif key == 98 or key == 104 or key == 102 or key == 100 or key == 36 or key == 116 or key ==111 or key == 113 or key == 114 or key == 23:
                         # Menu naviagation keys give focus to program list
@@ -527,7 +528,8 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                                                 self.hide_method()
                                         self.PGL.BanFocusSteal = False
                                         self.PGL.SetInputFocus()
-                        if key == 23 :
+                        if key == 23 or keyval == Gdk.KEY_Tab:
+                                c = 0
                                 for i in range(0,Globals.MenuTabCount):
                                         if self.MenuTabs[i].GetSelectedTab():
                                                 c = i+1
@@ -558,11 +560,23 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
 
                                 self.PlaySound(2)
 
-                else:   #Any other key passes through to search bar
-                        if self.has_search:
-                                if self.SearchBar.is_focus() == False:
-                                        self.SearchBar.grab_focus()
-                                self.SearchBarActivate()
+                else:   # Printable keys typed while the popup has focus
+                        # must reach Search, including the very first key.
+                        if self.has_search and not self.SearchBar.is_focus():
+                                self.SearchBar.grab_focus()
+                                state = getattr(event, 'state', 0)
+                                modifiers = (Gdk.ModifierType.CONTROL_MASK |
+                                             Gdk.ModifierType.MOD1_MASK |
+                                             Gdk.ModifierType.SUPER_MASK)
+                                if not (state & modifiers) and keyval:
+                                        codepoint = Gdk.keyval_to_unicode(keyval)
+                                        if codepoint and chr(codepoint).isprintable():
+                                                entry = self.SearchBar.entry
+                                                position = entry.get_position()
+                                                entry.insert_text(chr(codepoint), position)
+                                                entry.set_position(position + 1)
+                        # The Search widget's changed signal schedules
+                        # the existing debounced XDG search callback.
 
 #=================================================================
 #Menu Buttons
