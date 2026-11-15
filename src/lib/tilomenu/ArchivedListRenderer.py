@@ -33,8 +33,12 @@ def draw_list(view, cr, model, background='#ffffff'):
     cr.save()
     cr.rectangle(0, 0, width, height)
     cr.clip()
-    cr.set_source_rgba(color.red, color.green, color.blue, color.alpha)
+    # The original program-list area is an opaque color even when the
+    # surrounding PNG uses transparency. Clear GTK's previous draw pass.
+    cr.set_operator(cairo.OPERATOR_SOURCE)
+    cr.set_source_rgb(color.red, color.green, color.blue)
     cr.paint()
+    cr.set_operator(cairo.OPERATOR_OVER)
     ink_light = (0.2126 * color.red + 0.7152 * color.green + 0.0722 * color.blue) < 0.55
     cr.set_source_rgb(*(0.97, 0.97, 0.97) if ink_light else (0.09, 0.09, 0.09))
     for index, row in enumerate(model):
