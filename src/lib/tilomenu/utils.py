@@ -40,7 +40,7 @@ def show_message (message, title='TiloMenu'):
 def show_warning (message, title='TiloMenu'):
 
         md = gtk.MessageDialog(None, message_type=gtk.MessageType.WARNING, 
-                        buttons=gtk.BUTTONS_OK)
+                        buttons=gtk.ButtonsType.OK)
         md.set_title(title)
         print(message)
         md.set_markup(str(message))

@@ -194,7 +194,7 @@ def imageitem_from_name (filename, label, icon_size=32):
                         if pb.get_width() > icon_size :
                                 pb2 = pb.scale_simple(
                                         icon_size, icon_size, 
-                                        gtk.gdk.INTERP_HYPER)
+                                        GdkPixbuf.InterpType.HYPER)
                                 image.set_from_pixbuf(pb2)
                         else:
                                 image.set_from_pixbuf(pb)
@@ -332,9 +332,9 @@ class ImageMenuItem(gtk.ImageMenuItem):
                 """stock: a stock image or 'none'.
                 label: text to set as the label or None."""
                 # call the superclass
-                super(ImageMenuItem, self).__init__(stock)
-                self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-                self.connect("expose_event", self.expose)
+                super(ImageMenuItem, self).__init__(label=label if label is not None else stock)
+                self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
+                self.connect("draw", self.expose)
 
 
                 
@@ -343,10 +343,15 @@ class ImageMenuItem(gtk.ImageMenuItem):
                 if Globals.Settings['GtkColors'] == 0:
                         theme_color = Globals.ThemeColorCode
                         color = Globals.NegativeThemeColorCode
-                        self.label.modify_fg(gtk.STATE_NORMAL, color)
-                        self.label.modify_base(gtk.STATE_NORMAL, color)
-                        self.label.modify_text(gtk.STATE_NORMAL, color)
+                        self.label.modify_fg(gtk.StateType.NORMAL, color)
+                        self.label.modify_base(gtk.StateType.NORMAL, color)
+                        self.label.modify_text(gtk.StateType.NORMAL, color)
                 self.image = self.get_image()
+                if self.image is None:
+                        # GTK2 constructed stock menu images automatically.
+                        # GTK3 requires an image widget to be assigned.
+                        self.image = gtk.Image.new_from_stock(stock, gtk.IconSize.MENU)
+                        self.set_image(self.image)
                 
                 # set the label to custom text
                 if label is not None:
@@ -358,7 +363,7 @@ class ImageMenuItem(gtk.ImageMenuItem):
         def expose(self,widget, event):
                 if not self.once:
                         if Globals.Settings['GtkColors'] == 0:
-                                self.get_parent().modify_bg(gtk.STATE_NORMAL, Globals.ThemeColorCode)
+                                self.get_parent().modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
                         self.once = True
         
         def set_image_from_file (self, filename):
@@ -371,7 +376,7 @@ class ImageMenuItem(gtk.ImageMenuItem):
                 
         def set_image_from_stock(self, name):
                 """Set the image from a stock image."""
-                self.image.set_from_stock(name, gtk.ICON_SIZE_MENU)
+                self.image.set_from_stock(name, gtk.IconSize.MENU)
                 
         def set_label(self, text):
                 """Set the label's text."""
