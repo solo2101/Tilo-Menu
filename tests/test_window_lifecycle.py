@@ -21,7 +21,7 @@ def hide():
 menu = Main_Menu(hide)
 assert menu.window is not None
 assert menu.window.get_style_context().has_class('tilomenu-original-window')
-if Globals.MenuHasSearch:
+if menu.has_search:
     from ArchiveThemeSearch import ThemeSearch
     assert isinstance(menu.SearchBar, ThemeSearch)
     assert menu.SearchBar.entry.get_style_context().has_class('tilo-search-input')
