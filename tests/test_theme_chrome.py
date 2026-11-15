@@ -49,4 +49,14 @@ assert vista.menuframe.get_size_request() == (
     Globals.MenuWidth, Globals.MenuHeight)
 assert all(button.Button.get_style_context().has_class('tilomenu-original-chrome')
            for button in vista.MenuButtons if hasattr(button, 'Button'))
+# Exercise real hover/resting PNG transitions with the original
+# Vista XML markup and actual bundled artwork.
+from Menu_Widgets import MenuButton
+hover = next(button for button in vista.MenuButtons
+             if isinstance(button, MenuButton))
+assert hover.Label.get_text()
+hover.Setimage(Globals.ImageDirectory + Globals.MenuButtonImage[hover.i])
+assert hover.Label.get_text()
+hover.SetBackground()
+assert hover.Label.get_text()
 print('PASS: default and Vista theme rendering geometry under GTK3')
