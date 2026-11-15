@@ -24,6 +24,9 @@ assert menu.window.get_style_context().has_class('tilomenu-original-window')
 if Globals.MenuHasSearch and Globals.SearchWidget.upper() == 'GTK':
     assert menu.SearchBar.get_style_context().has_class('tilomenu-original-search')
 assert menu.PGL is not None
+assert menu.MenuTabs, 'Original theme tab widgets were not constructed'
+assert all(not tab.Tab.get_visible_window() for tab in menu.MenuTabs), (
+    'GTK3 EventBox must not paint opaque rectangles over original tab art')
 assert menu.menuframe.get_size_request() == (Globals.MenuWidth, Globals.MenuHeight)
 assert menu.window.get_size_request() == (Globals.MenuWidth, Globals.MenuHeight)
 menu.show_window()
