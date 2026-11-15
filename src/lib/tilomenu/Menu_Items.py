@@ -185,7 +185,25 @@ class XDGMenu(gobject.GObject):
                 """adds item to menu"""
                 if icons is None: icons = gtk.STOCK_MISSING_IMAGE
                 self.L_Names.append(names)
-                self.L_Icons.append(self.IconFactory.geticonfile(icons))
+                # Keep original XDG icon metadata. Modern GTK3 themes often
+                # omit older directory glyphs, so try a category-specific
+                # standard icon before the generic executable placeholder.
+                category_fallback = None
+                if types == 0:
+                        category_fallback = {
+                                'accessories': 'applications-accessories',
+                                'development': 'applications-development',
+                                'graphics': 'applications-graphics',
+                                'internet': 'applications-internet',
+                                'multimedia': 'applications-multimedia',
+                                'office': 'applications-office',
+                                'science': 'applications-science',
+                                'system': 'applications-system',
+                                'settings': 'preferences-system',
+                                'education': 'applications-education',
+                                'games': 'applications-games',
+                        }.get(str(names).strip().casefold(), 'folder')
+                self.L_Icons.append(self.IconFactory.geticonfile(icons,category_fallback))
                 self.L_Icons_menu.append(icons)
                 self.L_Types.append(types)
                 self.L_Paths.append(paths)
