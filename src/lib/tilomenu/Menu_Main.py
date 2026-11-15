@@ -424,8 +424,29 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                 self.callback = GLib.timeout_add(500,self.timeout_callback)
 
 
-        def Adjust_Window_Dimensions(self, win_x, win_y):
-                self.window.move(win_x, win_y)
+        def Adjust_Window_Dimensions(self, win_x, win_y, panel_size=30):
+                # Place the same original XML menu above a bottom panel or
+                # below a top panel. Never mirror the PNG, icons or labels.
+                # MATE panel orientation is handled by the window placement.
+                screen = self.window.get_screen()
+                monitor = screen.get_monitor_at_point(int(win_x), int(win_y))
+                bounds = screen.get_monitor_geometry(monitor)
+                width, height = int(Globals.MenuWidth), int(Globals.MenuHeight)
+                size = max(1, int(panel_size))
+                direction = os.environ.get('TILOMENU_MENU_DIRECTION', 'auto').lower()
+                below = int(win_y) + size
+                above = int(win_y) - height
+                available_below = bounds.y + bounds.height - below
+                available_above = int(win_y) - bounds.y
+                if direction == 'up':
+                        y = above
+                elif direction == 'down':
+                        y = below
+                else:
+                        y = below if available_below >= height or available_below >= available_above else above
+                x = max(bounds.x, min(int(win_x), bounds.x + bounds.width - width))
+                y = max(bounds.y, min(y, bounds.y + bounds.height - height))
+                self.window.move(x, y)
 
 
         def composite_changed(self,widget):
