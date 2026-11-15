@@ -96,8 +96,8 @@ for _ in range(5):
 print('BACKDROP DEBUG', {
     'mapped': menu.background.get_mapped(),
     'visible': menu.background.get_visible(),
-    'allocation': tuple(menu.background.get_allocation()),
-    'overlay_allocation': tuple(menu.underlay.get_allocation()),
+    'allocation': str(menu.background.get_allocation()),
+    'overlay_allocation': str(menu.underlay.get_allocation()),
     'pixbuf_size': (menu.background.get_pixbuf().get_width(),
                     menu.background.get_pixbuf().get_height()),
     'parent': type(menu.background.get_parent()).__name__,
