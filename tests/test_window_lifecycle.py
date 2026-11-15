@@ -21,8 +21,10 @@ def hide():
 menu = Main_Menu(hide)
 assert menu.window is not None
 assert menu.window.get_style_context().has_class('tilomenu-original-window')
-if Globals.MenuHasSearch and Globals.SearchWidget.upper() == 'GTK':
-    assert menu.SearchBar.get_style_context().has_class('tilomenu-original-search')
+if Globals.MenuHasSearch:
+    from ArchiveThemeSearch import ThemeSearch
+    assert isinstance(menu.SearchBar, ThemeSearch)
+    assert menu.SearchBar.entry.get_style_context().has_class('tilo-search-input')
 assert menu.PGL is not None
 assert menu.MenuTabs, 'Original theme tab widgets were not constructed'
 assert all(not tab.Tab.get_visible_window() for tab in menu.MenuTabs), (
