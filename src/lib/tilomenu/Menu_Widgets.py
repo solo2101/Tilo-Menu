@@ -26,6 +26,7 @@ import os
 import subprocess as commands
 import Globals
 import IconFactory
+from ArchivedThemeChrome import transparent_chrome, legible_markup
 from ArchivedListRenderer import draw_list as draw_archived_list
 import cairo_drawing
 #import gc
@@ -53,7 +54,9 @@ class MenuButton:
                 self.i = i
                 self.backimagearea = None
                 self.Button = gtk.EventBox()
+                self.Button.set_visible_window(False)
                 self.Frame = gtk.Fixed()
+                transparent_chrome(self.Button, self.Frame)
                 if not self.Button.is_composited():
          
                         self.supports_alpha = False
@@ -82,7 +85,8 @@ class MenuButton:
                 else:
                         self.BackgroundImage.set_from_pixbuf(None)
                 self.Image.set_size_request(self.w,self.h)
-                self.Frame.set_size_request(self.w,self.h)              
+                self.Frame.set_size_request(self.w,self.h)
+                self.Button.set_size_request(self.w,self.h)              
                 self.SetBackground()
 
                 self.Frame.put(self.BackgroundImage,0,0)
@@ -95,6 +99,10 @@ class MenuButton:
                         self.txt = self.txt.replace(Globals.MenuButtonNames[i],_(Globals.MenuButtonNames[i]))
 
                 except:pass
+                self.txt = legible_markup(self.txt, backimage,
+                        Globals.MenuButtonX[i] + Globals.MenuButtonNameOffsetX[i],
+                        Globals.MenuButtonY[i] + Globals.MenuButtonNameOffsetY[i],
+                        self.w - Globals.MenuButtonNameOffsetX[i])
                 self.Label.set_markup(self.txt)
                 if Globals.MenuButtonNameAlignment[i] == 0:
                         self.Label.set_alignment(0, 0)
@@ -102,7 +110,7 @@ class MenuButton:
                         self.Label.set_alignment(0.5, 0)
                 else:
                         self.Label.set_alignment(1, 0)
-                self.Label.set_size_request(int(self.w-Globals.MenuButtonNameOffsetX[i]*2)-2,-1)
+                self.Label.set_size_request(max(1, int(self.w-Globals.MenuButtonNameOffsetX[i]*2)-2),-1)
                 self.Label.set_ellipsize(pango.EllipsizeMode.END)
                 self.Frame.put(self.Label,Globals.MenuButtonNameOffsetX[i],Globals.MenuButtonNameOffsetY[i])
                 if self.Label.get_text() == '' or Globals.Settings['Show_Tips']:
@@ -120,7 +128,7 @@ class MenuButton:
 
         def expose (self, widget, event):
                 self.ctx = event
-                # Paint the original PNG pixels behind this tab rather than
+                # Paint original theme pixels behind this button rather than
                 # filling white when GTK3 reports no compositor at realize.
                 self.ctx.save()
                 self.ctx.rectangle(0, 0, self.w, self.h)
@@ -225,6 +233,7 @@ class MenuTab:
                 self.Tab = gtk.EventBox()
                 self.Tab.set_visible_window(False)
                 self.Frame = gtk.Fixed()
+                transparent_chrome(self.Tab, self.Frame)
                 # Gtk3 otherwise paints each EventBox/Fixed with the desktop
                 # theme, obscuring the GnoMenu background PNG and tab art.
                 self.Tab.get_style_context().add_class('tilomenu-tab')
@@ -274,6 +283,7 @@ class MenuTab:
                 # Set the background which is always present
                 self.Image.set_size_request(self.w,self.h)
                 self.Frame.set_size_request(self.w,self.h)
+                self.Tab.set_size_request(self.w,self.h)
                 self.SetBackground()
                 self.Frame.put(self.Image,0,0)
                 if Globals.MenuTabIcon[i]:
@@ -300,7 +310,7 @@ class MenuTab:
                         self.Label.set_alignment(0.5, 0)
                 else:
                         self.Label.set_alignment(1, 0)
-                self.Label.set_size_request(int(self.w-Globals.MenuTabNameOffsetX[i]*2)-2,-1)
+                self.Label.set_size_request(max(1, int(self.w-Globals.MenuTabNameOffsetX[i]*2)-2),-1)
                 self.Label.set_ellipsize(pango.EllipsizeMode.END)
                 self.Frame.put(self.Label,Globals.MenuTabNameOffsetX[i],Globals.MenuTabNameOffsetY[i])
                 base.put(self.Tab,Globals.MenuTabX[i],Globals.MenuTabY[i])
