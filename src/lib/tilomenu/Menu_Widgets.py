@@ -1413,7 +1413,7 @@ class TreeProgramList(gobject.GObject):
                 #self.ScrollFrame.connect_after("map-event", self.map_event)
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])        
                 # GTK3 should not expand the original menu to the natural
-                # width of its icon-view contents.
+                # width of its tree-view contents.
                 self.ScrollFrame.set_propagate_natural_width(False)
                 self.ScrollFrame.set_propagate_natural_height(False)
                 self.EBox.set_size_request(*Globals.PG_buttonframedimensions)
@@ -1866,6 +1866,11 @@ class IconProgramList(gobject.GObject):
 
                 
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])        
+                # Avoid GTK3 icon-view natural size stretching the original viewport.
+                self.ScrollFrame.set_propagate_natural_width(False)
+                self.ScrollFrame.set_propagate_natural_height(False)
+                self.EBox.set_size_request(*Globals.PG_buttonframedimensions)
+                self.VBoxOut.set_size_request(*Globals.PG_buttonframedimensions)
                 self.ScrollFrame.set_shadow_type(gtk.ShadowType.NONE)
                 self.ScrollFrame.set_policy(gtk.PolicyType.NEVER,gtk.PolicyType.AUTOMATIC)
                 self.VBoxOut.pack_start(self.ScrollFrame, True,True, 0)
