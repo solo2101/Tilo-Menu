@@ -278,7 +278,13 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                 w, h = self.w, self.h
                 self.pixmap = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
                 ctx = cairo.Context(self.pixmap)
-                self.bgpb = GdkPixbuf.Pixbuf.new_from_file(Globals.ImageDirectory + Globals.StartMenuTemplate)
+                self.bgpb = GdkPixbuf.Pixbuf.new_from_file(
+                        Globals.ImageDirectory + Globals.StartMenuTemplate)
+                # Original GnoMenu top-panel mode vertically flips the menu
+                # background, while its widget coordinates move separately.
+                # False means vertical in GdkPixbuf.flip(horizontal).
+                if Globals.orientation == 'top':
+                        self.bgpb = self.bgpb.flip(False)
                 if Globals.Settings['GtkColors'] == 1 and Globals.Has_Numpy:
                         if not self.colorpb:
                                 bgcolor = Globals.GtkColorCode
