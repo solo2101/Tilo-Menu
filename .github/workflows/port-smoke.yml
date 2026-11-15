@@ -127,6 +127,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_button_top_artwork.py
 
+      - name: Verify original XP All Applications button without dismissing popup
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_xp_all_applications.py
+
       - name: Exercise every theme button and tab command safely
         env:
           GSETTINGS_BACKEND: memory
