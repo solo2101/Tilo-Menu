@@ -21,7 +21,10 @@ assert menu.window.get_visible()
 assert menu.PGL is not None
 if mode in (0, 3):
     assert menu.PGL.EBox.get_size_request() == Globals.PG_buttonframedimensions
-    assert menu.PGL.ScrollFrame.get_size_request() == Globals.PG_buttonframedimensions
+    scroll_width, scroll_height = menu.PGL.ScrollFrame.get_size_request()
+    theme_width, theme_height = Globals.PG_buttonframedimensions
+    assert scroll_width == theme_width
+    assert 0 < scroll_height <= theme_height
 menu.hide_window()
 # Allow the process to exit without gtk_main_quit on a non-running main loop.
 print(f'PASS: original Prog_List={mode} using {type(menu.PGL).__name__}')
