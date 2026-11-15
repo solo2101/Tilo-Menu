@@ -1886,7 +1886,11 @@ class IconProgramList(gobject.GObject):
                 self.EBox.set_size_request(*Globals.PG_buttonframedimensions)
                 self.VBoxOut.set_size_request(*Globals.PG_buttonframedimensions)
                 self.ScrollFrame.set_shadow_type(gtk.ShadowType.NONE)
-                self.ScrollFrame.set_policy(gtk.PolicyType.NEVER,gtk.PolicyType.AUTOMATIC)
+                # GTK3's NEVER horizontal policy propagates the IconView's
+                # full natural width into Gtk.Fixed, expanding past the theme.
+                # AUTOMATIC allows the scrolled window to remain at the theme
+                # width while clipping oversized list contents.
+                self.ScrollFrame.set_policy(gtk.PolicyType.AUTOMATIC,gtk.PolicyType.AUTOMATIC)
                 self.VBoxOut.pack_start(self.ScrollFrame, True,True, 0)
                 self.VBoxOut.set_border_width(0)
                 self.ScrollFrame.add(self.tree1)
