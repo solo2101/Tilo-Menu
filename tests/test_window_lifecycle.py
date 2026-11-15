@@ -66,6 +66,11 @@ with patch.object(menu.window, 'move') as moved, \
     with patch.dict('os.environ', {'TILOMENU_MENU_DIRECTION': 'up'}):
         menu.Adjust_Window_Dimensions(16, 890, 30)
         assert moved.call_args.args == (16, 890 - Globals.MenuHeight)
+    with patch.dict('os.environ', {'TILOMENU_MENU_DIRECTION': 'auto'}):
+        menu.Adjust_Window_Dimensions(16, 0, 30)
+        assert moved.call_args.args == (16, 30)
+        menu.Adjust_Window_Dimensions(16, 890, 30)
+        assert moved.call_args.args == (16, 890 - Globals.MenuHeight)
 
 menu.show_window()
 while Gtk.events_pending():
