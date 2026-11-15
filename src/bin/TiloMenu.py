@@ -8,9 +8,10 @@ from pathlib import Path
 
 # Limit BLAS worker creation before Globals imports NumPy. On smaller
 # Fedora VMs, excessive worker threads prevent Glycin from spawning.
-# Keep any explicit environment settings supplied by the user.
+# Override system-wide BLAS defaults; opt out with TILOMENU_BLAS_THREADS.
+blas_threads = os.environ.get('TILOMENU_BLAS_THREADS', '1')
 for variable in ('OPENBLAS_NUM_THREADS', 'OMP_NUM_THREADS', 'MKL_NUM_THREADS'):
-    os.environ.setdefault(variable, '1')
+    os.environ[variable] = blas_threads
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'lib' / 'tilomenu'))
 from TiloMenu import main
