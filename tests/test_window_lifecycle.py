@@ -99,18 +99,6 @@ for _ in range(5):
         Gtk.main_iteration_do(False)
 menu.window.get_window().process_updates(True)
 assert menu.background.draw_calls >= 2, 'Pixel probe captured an old GTK3 frame'
-print('BACKDROP DEBUG', {
-    'mapped': menu.background.get_mapped(),
-    'visible': menu.background.get_visible(),
-    'allocation': str(menu.background.get_allocation()),
-    'overlay_allocation': str(menu.underlay.get_allocation()),
-    'draw_calls': menu.background.draw_calls,
-    'allocation_coordinates': (menu.background.get_allocation().x, menu.background.get_allocation().y, menu.background.get_allocation().width, menu.background.get_allocation().height),
-    'overlay_coordinates': (menu.underlay.get_allocation().x, menu.underlay.get_allocation().y, menu.underlay.get_allocation().width, menu.underlay.get_allocation().height),
-    'pixbuf_size': (menu.background.get_pixbuf().get_width(),
-                    menu.background.get_pixbuf().get_height()),
-    'parent': type(menu.background.get_parent()).__name__,
-}, flush=True)
 screenshot = Gdk.pixbuf_get_from_window(
     menu.window.get_window(), Globals.MenuWidth - 8,
     Globals.MenuHeight // 2, 1, 1)
