@@ -63,6 +63,7 @@ def oriented_theme(theme):
 
     return replace(
         theme,
+        flipped=True,
         buttons=changed(theme.buttons, 'ButtonY', Globals.MenuButtonY),
         tabs=changed(theme.tabs, 'TabY', Globals.MenuTabY),
         labels=changed(theme.labels, 'LabelY', Globals.MenuLabelY),
