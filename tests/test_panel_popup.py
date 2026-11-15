@@ -93,5 +93,23 @@ assert not menu.hwg.window.get_visible(), "Original second left-click did not cl
 assert menu.Button_state == 1
 menu.HideMenu()
 assert menu.Button_state == 0
+
+# The original Preferences process writes Menu_Name to GSettings. Applying a
+# different menu theme must rebuild the popup without destroying this applet.
+old_popup = menu.hwg
+original_load = __import__('backend').load_setting
+target = 'Vista' if Globals.Settings['Menu_Name'] != 'Vista' else 'Menu'
+def changed_setting(key):
+    if key == 'Menu_Name':
+        return target
+    return original_load(key)
+
+with patch('TiloMenu.backend.load_setting', side_effect=changed_setting):
+    assert menu._refresh_menu_theme() is False
+assert menu.hwg is not old_popup, 'Applying a new theme kept the old popup'
+assert menu.hwg.window is not None
+assert menu._menu_signature[0] == target
+assert menu.applet.get_parent() is host
+print('PASS: original menu theme rebuild preserves the MATE panel applet')
 host.destroy()
 print('PASS: original panel button opens/closes original Main_Menu and exposes Settings')
