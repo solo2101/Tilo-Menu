@@ -30,6 +30,7 @@ import utils
 import Launcher
 import subprocess as commands
 import IconFactory
+from RenderingMixins import ThemeWindowRenderingMixin
 
 try:
         has_gst = True
@@ -61,7 +62,7 @@ except:pass
 
 import time
 
-class Main_Menu(gobject.GObject):
+class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
         __gsignals__ = {
         'state-changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,gobject.TYPE_INT)),
         }
@@ -76,6 +77,7 @@ class Main_Menu(gobject.GObject):
                 os.chdir(Globals.HomeDirectory)
                 self.window = gtk.Window(gtk.WindowType.TOPLEVEL)
                 self.window.set_title('TiloMenu')
+                self.configure_theme_window(self.window)
                 self.window.set_focus_on_map(1)
                 self.window.set_app_paintable(1)
                 self.window.set_skip_taskbar_hint(1)
@@ -250,10 +252,8 @@ class Main_Menu(gobject.GObject):
                 if Globals.Settings['GtkColors'] == 1:
                         cairo_drawing.draw_image_gtk(self.ctx,0,0,Globals.ImageDirectory + Globals.StartMenuTemplate,self.w,self.h,Globals.GtkColorCode,self.colorpb)
                 else:
-                        # Reuse the theme image already loaded by shape().
-                        Gdk.cairo_set_source_pixbuf(self.ctx, self.bgpb, 0, 0)
-                        self.ctx.set_operator(cairo.OPERATOR_OVER)
-                        self.ctx.paint()
+                        # Archived GTK3 renderer's alpha-aware paint path.
+                        self.draw_original_theme(self.ctx, self.bgpb)
                 self.ctx.restore()
 
 
