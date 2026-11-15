@@ -35,6 +35,7 @@ install:
 	install -m755 src/bin/TiloMenu.py "$(PREFIX)/bin/tilomenu"
 	cp -a src/lib/tilomenu/graphics "$(LIBDIR)/"
 	cp -a "$(MENU_DIR)/." "$(DATADIR)/Themes/"
+	@if test -d data/themes/Menu; then cp -a data/themes/Menu/. "$(DATADIR)/Themes/Menu/"; fi
 	install -Dm644 src/lib/mate-panel/applets/org.mate.panel.TiloMenu.mate-panel-applet "$(PREFIX)/share/mate-panel/applets/org.mate.panel.TiloMenu.mate-panel-applet"
 	install -Dm644 src/share/dbus-1/services/org.mate.panel.applet.TiloMenuFactory.service "$(PREFIX)/share/dbus-1/services/org.mate.panel.applet.TiloMenuFactory.service"
 	install -Dm644 src/share/glib-2.0/schemas/org.tilomenu.gschema.xml "$(PREFIX)/share/glib-2.0/schemas/org.tilomenu.gschema.xml"
