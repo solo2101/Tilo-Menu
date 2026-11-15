@@ -71,6 +71,7 @@ class TiloMenu:
         self.size = self.get_panel_size()
         self.StartButton = Globals.StartButton
         self._button_theme = str(Globals.Settings['Button_Name'])
+        self._menu_signature = self._current_menu_signature()
         self._settings_refresh_id = None
         self._settings_signal_id = None
         # GSettings writes are emitted by the separate Preferences process.
@@ -124,7 +125,55 @@ class TiloMenu:
         if self._settings_refresh_id is not None:
             GLib.source_remove(self._settings_refresh_id)
         self._settings_refresh_id = GLib.timeout_add(
-            200, self._refresh_button_theme)
+            200, self._refresh_applied_settings)
+
+    @staticmethod
+    def _current_menu_signature():
+        # These original settings change menu geometry, artwork or renderer.
+        keys = ('Menu_Name', 'Icon_Name', 'Prog_List', 'IconSize',
+                'GtkColors', 'System_Icons', 'TabHover')
+        return tuple(backend.load_setting(key) for key in keys)
+
+    def _refresh_applied_settings(self):
+        self._settings_refresh_id = None
+        self._refresh_button_theme()
+        self._refresh_menu_theme()
+        return False
+
+    def _refresh_menu_theme(self):
+        signature = self._current_menu_signature()
+        if signature == self._menu_signature:
+            return False
+
+        # Preflight the selected original menu XML before replacing the
+        # functioning popup. Never kill or restart the MATE panel.
+        selected = signature[0] or 'Menu'
+        theme_file = ThemeDirectory / 'Menu' / selected / 'themedata.xml'
+        if not theme_file.is_file():
+            print('TiloMenu menu theme not applied: missing', theme_file)
+            return False
+        try:
+            xml.dom.minidom.parse(str(theme_file))
+            Globals.ReloadSettings()
+            replacement = Main_Menu(self.HideMenu)
+            replacement.connect('state-changed', self.button_changed)
+        except Exception as error:
+            print('TiloMenu menu theme refresh failed:', error)
+            return False
+
+        previous = self.hwg
+        self.hwg = replacement
+        self._menu_signature = signature
+        if previous is not None:
+            previous.window.hide()
+            try:
+                previous.PGL.destroy()
+            except (AttributeError, RuntimeError):
+                pass
+            previous.window.destroy()
+        # A fresh popup stays hidden until its panel button is clicked.
+        # Preferences keeps keyboard focus and the panel button stays alive.
+        return False
 
     def _refresh_button_theme(self):
         self._settings_refresh_id = None
@@ -295,6 +344,7 @@ class TiloMenu:
         # Also support the original XML settings fallback when GSettings
         # change notifications are unavailable.
         self._refresh_button_theme()
+        self._refresh_menu_theme()
         if self.hwg:
             window = self.applet.get_window()
             if window is not None:
