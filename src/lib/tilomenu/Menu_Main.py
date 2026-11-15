@@ -311,17 +311,21 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
 
 
         def setup(self):
+                # Use the archived engine's explicit backdrop layer rather
+                # than relying on Gtk.Fixed sibling drawing order. Gtk.Overlay
+                # always paints its main child (the PNG) before its controls.
+                self.underlay = gtk.Overlay()
+                self.window.add(self.underlay)
+                self.background = gtk.Image()
+                self.underlay.add(self.background)
                 self.menuframe = gtk.Fixed()
-                # Original XML chrome must float over the PNG without GTK3
-                # theme backgrounds on the root fixed-position layout.
                 from ArchivedThemeChrome import transparent_chrome
                 transparent_chrome(self.menuframe)
-                # GTK3 Fixed has no intrinsic size. Keep the original PNG
-                # geometry as the allocation for theme-positioned widgets.
-                self.menuframe.set_size_request(Globals.MenuWidth, Globals.MenuHeight)
-                self.window.add (self.menuframe)
-                self.background =  gtk.Image()
-                self.menuframe.put(self.background,0,0)
+                self.menuframe.set_size_request(
+                        Globals.MenuWidth, Globals.MenuHeight)
+                self.menuframe.set_halign(gtk.Align.FILL)
+                self.menuframe.set_valign(gtk.Align.FILL)
+                self.underlay.add_overlay(self.menuframe)
                 # Child widgets and background share the configured theme size.
                 self.w = max(1, int(Globals.MenuWidth))
                 self.h = max(1, int(Globals.MenuHeight))
