@@ -673,9 +673,12 @@ class ImageFrame:
                 self.Pic = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, self.w,self.h)
                 self.Pic.fill(0x00000000)
                 bg = self.Pic.copy()
-                for i in range(0,len(self.iconopacity)):
-                        if self.icons[i] != None and self.iconopacity[i] > 0:
-                                if i ==1:
+                # Compose the inset face first, then the decorative frame.
+                # The original KDE frame has transparent center and opaque
+                # borders. Painting the face after the frame covers its edge.
+                for i in (1, 2, 3, 0):
+                        if self.icons[i] is not None and self.iconopacity[i] > 0:
+                                if i == 1:
                                         self.icons[i].composite(self.Pic, self.ix, self.iy, self.icons[i].get_width(), self.icons[i].get_height(), self.ix, self.iy, 1, 1, GdkPixbuf.InterpType.BILINEAR, int(self.iconopacity[i]* 255))
                                 else:
                                         self.icons[i].composite(self.Pic, 0, 0, self.icons[i].get_width(), self.icons[i].get_height(), 0, 0, 1, 1, GdkPixbuf.InterpType.BILINEAR, int(self.iconopacity[i]* 255))
