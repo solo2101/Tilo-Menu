@@ -169,12 +169,9 @@ def render_theme_buttons(layout: Gtk.Fixed, theme, on_activate=None) -> None:
         icon_size = int(attrs.get("ButtonIconSize", "0") or "0")
         default_icon = _icon(theme.directory, default_icon_name, icon_size)
         selected_icon = _icon(theme.directory, attrs.get("ButtonIconSel", ""), icon_size)
-        # The original XML 'Icon' is the action icon, while ButtonIcon
-        # is an optional overlay. Keep both exactly as the original menu did.
-        action_name = attrs.get("Icon", "")
-        action_pix = _icon(theme.directory, action_name, 24)
-        if action_pix is not None:
-            container.put(Gtk.Image.new_from_pixbuf(action_pix), 6, max(0, (height - action_pix.get_height()) // 2))
+        # GnoMenu's original Menu_Widgets.MenuButton only paints ButtonIcon
+        # and ButtonIconSel. The XML Icon field selects a user-picture image
+        # via Main_Menu.UpdateUserImage on hover; it is NEVER drawn here.
         icon = Gtk.Image()
         if default_icon is not None:
             icon.set_from_pixbuf(default_icon)
@@ -185,14 +182,11 @@ def render_theme_buttons(layout: Gtk.Fixed, theme, on_activate=None) -> None:
                 int(attrs.get("ButtonIconY", "0")),
             )
         x, y = element.integer("ButtonX"), element.integer("ButtonY")
-        # If XML gives a standalone action icon, reserve its width so the
-        # original label never paints through the icon.
-        text_offset = max(30, int(attrs.get("TextX", "0"))) if action_pix is not None else None
+        # Follow the original XML TextX, TextY and TextAlignment verbatim.
         label = _markup(
             container, attrs, width, theme=theme, x=x, y=y,
             overlay=attrs.get("ImageBack", ""),
             fallback=attrs.get("Name", "") if attrs.get("Markup") else "",
-            text_x=text_offset,
         )
         name = attrs.get("Name", "")
         eventbox = _event_box(container, width, height, name, on_activate)
