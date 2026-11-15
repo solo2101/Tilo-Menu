@@ -1889,7 +1889,10 @@ class IconProgramList(gobject.GObject):
                 self.tree1.set_text_column(1)
                 self.tree1.set_pixbuf_column(0)
                 
-                self.tree1.set_size_request(Globals.PG_buttonframedimensions[0], -1)
+                # Let the ScrolledWindow allocate the original theme width.
+                # Requesting a minimum width on the inner IconView allows GTK3
+                # to expand the Gtk.Fixed child beyond the menu background.
+                self.tree1.set_size_request(-1, -1)
 
                 
                 self.tree1.set_item_orientation(gtk.Orientation.HORIZONTAL)
@@ -1902,7 +1905,9 @@ class IconProgramList(gobject.GObject):
                 self.tree1.set_item_width(max(1, Globals.PG_buttonframedimensions[0] - Globals.PG_iconsize - 12))
                 cell = self.tree1.get_cells()[0]
                 cell.set_property('ellipsize', pango.EllipsizeMode.END)
-                cell.set_fixed_size(-1,Globals.PG_iconsize)#+((Globals.PG_iconsize *8)/28))
+                # Bound the original text renderer so long application names
+                # ellipsize rather than increase Gtk.IconView's minimum width.
+                cell.set_fixed_size(max(1, Globals.PG_buttonframedimensions[0] - Globals.PG_iconsize - 36), Globals.PG_iconsize)
                 cell.set_property('ypad', (Globals.PG_iconsize *8)//28)
                 #self.tree1.get_cells()[0].set_property('yalign', 0.1)
                 try:
