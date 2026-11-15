@@ -18,15 +18,21 @@ class ButtonAdapter:
         self.Button = widget
 
     def Setimage(self, filename):
-        # Archived renderer handles its own hover artwork.
-        pass
+        # Original Main_Menu.Button_enter uses Setimage on pointer hover.
+        # The GTK3 renderer already loaded the exact XML hover pixbuf.
+        update = getattr(self.Button, '_tilomenu_change_state', None)
+        if update is not None:
+            update(True)
 
     def SetBackground(self):
-        pass
+        update = getattr(self.Button, '_tilomenu_change_state', None)
+        if update is not None:
+            update(False)
 
     def SetIcon(self, filename):
-        # Archived renderer handles normal and selected overlay icons.
-        pass
+        # The GTK3 painter switches ButtonIcon/ButtonIconSel along with
+        # Setimage/SetBackground, preserving the original state change.
+        return None
 
 
 class TabAdapter:
