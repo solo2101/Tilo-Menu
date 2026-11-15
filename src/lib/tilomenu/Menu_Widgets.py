@@ -99,6 +99,7 @@ class MenuButton:
                         self.txt = self.txt.replace(Globals.MenuButtonNames[i],_(Globals.MenuButtonNames[i]))
 
                 except:pass
+                self._original_markup = self.txt
                 self.txt = legible_markup(self.txt, backimage,
                         Globals.MenuButtonX[i] + Globals.MenuButtonNameOffsetX[i],
                         Globals.MenuButtonY[i] + Globals.MenuButtonNameOffsetY[i],
@@ -163,12 +164,27 @@ class MenuButton:
                                 
 
         def Setimage(self,imagefile):
-                # The image is background when it's not displaying the overlay
+                # The image is the hover artwork from the original theme.
                 self.Pic = GdkPixbuf.Pixbuf.new_from_file(imagefile)
                 self.Image.set_from_pixbuf(self.Pic)
+                if hasattr(self, 'Label'):
+                        self.Label.set_markup(legible_markup(
+                                self._original_markup, self.Pic,
+                                Globals.MenuButtonNameOffsetX[self.i],
+                                Globals.MenuButtonNameOffsetY[self.i],
+                                self.w - Globals.MenuButtonNameOffsetX[self.i]))
 
         def SetBackground(self):
                 self.Image.set_from_pixbuf(None)
+                if hasattr(self, 'Label'):
+                        resting = (self.BackgroundImage.get_pixbuf()
+                                   if self.BackgroundImage.get_pixbuf() is not None
+                                   else self.backimagearea)
+                        self.Label.set_markup(legible_markup(
+                                self._original_markup, resting,
+                                Globals.MenuButtonNameOffsetX[self.i],
+                                Globals.MenuButtonNameOffsetY[self.i],
+                                self.w - Globals.MenuButtonNameOffsetX[self.i]))
 
 
 class MenuImage:
