@@ -364,10 +364,15 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
 
                 
                 self.PGL.ProgramListPopulate(self.menuframe, self.hide_method)
+                self.has_search = bool(
+                        Globals.MenuHasSearch
+                        and str(Globals.SearchWidget).casefold() != 'none'
+                        and int(Globals.SearchW) > 0
+                        and int(Globals.SearchH) > 0)
                 # Archived GTK3 search renderer respects the XML PNG,
                 # custom GTK/Cairo fields, and text insets. The current XDG
                 # search commands and debounce remain untouched.
-                if Globals.MenuHasSearch:
+                if self.has_search:
                         from ArchiveThemeParser import load_menu_theme
                         from ArchiveThemeSearch import ThemeSearch
                         self.prevsearchitem = ""
@@ -457,7 +462,7 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                 self.window.hide()
                 if Globals.MenuTabCount == 0:
                         self.PGL.Restart()
-                if Globals.MenuHasSearch:
+                if self.has_search:
                         if self.searchitem != '':
                                 self.SearchBar.set_text('')
                                 self.PGL.Restart('previous')
@@ -471,7 +476,7 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                         self.hide_method()
                 elif key == 98 or key == 104 or key == 102 or key == 100 or key == 36 or key == 116 or key ==111 or key == 113 or key == 114 or key == 23:
                         # Menu naviagation keys give focus to program list
-                        if Globals.MenuHasSearch:
+                        if self.has_search:
                                 if self.SearchBar.is_focus() is True:
                                         if key==36 and self.PGL.XDG.searchresults!=0: # Enter on searchbar launches first item in search list
                                                 self.PGL.CallSpecialMenu(6)
@@ -510,7 +515,7 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                                 self.PlaySound(2)
 
                 else:   #Any other key passes through to search bar
-                        if Globals.MenuHasSearch:
+                        if self.has_search:
                                 if self.SearchBar.is_focus() == False:
                                         self.SearchBar.grab_focus()
                                 self.SearchBarActivate()
