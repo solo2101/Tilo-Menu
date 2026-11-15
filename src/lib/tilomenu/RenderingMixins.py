@@ -36,6 +36,33 @@ class ThemeWindowRenderingMixin:
             provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self._original_window_css = provider
 
+    def style_original_search(self, entry):
+        # GTK3 focus borders and opaque entry backgrounds obscure the original
+        # PNG search frame. Reuse the archived renderer's frameless GTK3 style.
+        if not isinstance(entry, Gtk.Entry):
+            return
+        entry.set_has_frame(False)
+        entry.get_style_context().add_class('tilomenu-original-search')
+        provider = Gtk.CssProvider()
+        provider.load_from_data(b"""
+            entry.tilomenu-original-search,
+            entry.tilomenu-original-search:focus {
+                background-color: transparent;
+                background-image: none;
+                box-shadow: none;
+                border: 0;
+                border-radius: 0;
+                outline: none;
+                padding: 0;
+                margin: 0;
+                min-width: 0;
+                min-height: 0;
+            }
+        """)
+        entry.get_style_context().add_provider(
+            provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self._original_search_css = provider
+
     def draw_original_theme(self, cr, background):
         # The original background pixbuf is already loaded by shape().
         # Paint only the window's allocation and keep its alpha channel.
