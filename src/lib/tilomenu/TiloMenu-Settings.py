@@ -80,6 +80,8 @@ class TiloMenuSettings:
                 self.add_commands_tab()
                 # TAB4
                 self.add_about_tab()
+                if '--about' in sys.argv[1:]:
+                        self.notebook.set_current_page(3)
                 self.hbox1 = gtk.HBox()
                 self.vbox.pack_end(self.hbox1, False, False, 0)
                 self.button1 = gtk.Button(label=_('Ok'))
