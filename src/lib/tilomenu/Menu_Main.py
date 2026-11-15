@@ -388,6 +388,8 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
 
 
                         try:
+                                if Globals.SearchWidget.upper() == "GTK":
+                                        self.style_original_search(self.SearchBar)
                                 self.SearchBar.set_size_request(Globals.SearchW, Globals.SearchH)
                                 self.menuframe.put(self.SearchBar, Globals.SearchX, Globals.SearchY)
                                 #self.SearchBar.connect("activate",self.SearchBarActivate)
