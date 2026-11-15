@@ -26,5 +26,23 @@ event = SimpleNamespace(
 model.ButtonClick(index, event)
 assert isinstance(model.m, Gtk.Menu)
 assert len(model.m.get_children()) > 1, 'Original context menu did not populate'
+# The old GTK2 "button_press_event" wiring ignored keyboard activation.
+# Exercise a real GTK3 menu item's activate signal and ensure it persists.
+items = [item for item in model.m.get_children()
+         if isinstance(item, Gtk.MenuItem) and item.get_label() == 'Remove from Favorites']
+assert len(items) == 1, 'Remove from Favorites action missing'
+items[0].activate()
+assert 'Test Program' not in backend.load_setting('favorites')[0:1]
+# Repeated changes must not raise KeyError from a missing menu-cache entry.
+model.addfav(None, None, 'Test Program', '/usr/bin/true',
+             'application-x-executable', 1)
+model.addfav(None, None, 'Another Program', '/usr/bin/false',
+             'application-x-executable', 1)
+model.removefav(None, None, 'Another Program', '/usr/bin/false',
+                'application-x-executable', 1)
+model.removefav(None, None, 'Test Program', '/usr/bin/true',
+                'application-x-executable', 1)
+assert not any('Test Program::' in item for item in backend.load_setting('favorites'))
+
 print('PASS: original right-click application context menu built under GTK3')
 model.m.destroy()
