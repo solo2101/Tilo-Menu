@@ -50,6 +50,12 @@ jobs:
           XDG_MENU_PREFIX: mate-
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_gui_import.py
+      - name: Test Gio application icons and fallback theme
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_icon_factory.py
       - name: Construct original 959-line settings window under GTK3
         env:
           GSETTINGS_BACKEND: memory
