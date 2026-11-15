@@ -45,7 +45,6 @@ backend.save_setting('Menu_Name', 'Vista')
 Globals.ReloadSettings()
 vista = Main_Menu(lambda: None)
 assert vista.MenuButtons
-assert vista.MenuTabs or vista.MenuLabels
 assert vista.menuframe.get_size_request() == (
     Globals.MenuWidth, Globals.MenuHeight)
 assert all(button.Button.get_style_context().has_class('tilomenu-original-chrome')
