@@ -132,13 +132,24 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                         self.bind_with_keybinder()
 
         def special_command(self,event):
-                if not self.GnomeMenu:
-                        import Gnome_Me
-                        self.GnomeMenu = Gnome_Me.GnomeMenu()
-                        self.GnomeMenu.connect_after('unmap',self.GnomeMenu_unmap)
-                self.leave_focus = False
-                self.GnomeMenu.showmenu()
-                self.callback = GLib.timeout_add(1500,self.timeout_callback)
+                # The original :ALLAPPS: handler opened Gnome_Me, which is
+                # not part of the GTK3 port. Use the existing XDG program
+                # list instead of importing that missing GNOME 2 module.
+                xdg = self.PGL.XDG
+                if xdg.menuparser.CacheApplications is None:
+                        xdg.menuparser.ParseMenus()
+                # XP and SilverXP intentionally start with Favorites. The
+                # original Restart('all') redirects back to Favorites in
+                # those themes; temporarily bypass that redirect only for
+                # this explicit All Applications action.
+                favs, recent = Globals.OnlyShowFavs, Globals.OnlyShowRecentApps
+                try:
+                        Globals.OnlyShowFavs = 0
+                        Globals.OnlyShowRecentApps = 0
+                        self.PGL.CallSpecialMenu(1)
+                finally:
+                        Globals.OnlyShowFavs = favs
+                        Globals.OnlyShowRecentApps = recent
 
         def GnomeMenu_unmap(self,event):
                 if not self.window.is_active():
@@ -625,7 +636,9 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                         self.PGL.CallSpecialMenu(int(Globals.MenuButtonCommands[i]))
         
                 # Close menu if specified by theme
-                if Globals.MenuButtonClose[i] == 1 and self.leave_focus is True:
+                if (Globals.MenuButtonClose[i] == 1
+                        and Globals.MenuButtonCommands[i] != ':ALLAPPS:'
+                        and self.leave_focus is True):
                         self.hide_method()
                 #self.PGL.Restart()
                 if self.leave_focus == False:
