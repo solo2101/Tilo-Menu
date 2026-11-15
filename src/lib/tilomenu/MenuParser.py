@@ -86,7 +86,12 @@ class MenuParser(gobject.GObject):
                                         # Some distros rename applications.menu without setting XDG_MENU_PREFIX.
                                         self.CacheApplications = xdg.Menu.parse("gnome-applications.menu")
                                 except:
-                                        print('unable to parse the menu')
+                                        try:
+                                                # Fedora MATE uses mate-applications.menu even
+                                                # if XDG_MENU_PREFIX was not propagated.
+                                                self.CacheApplications = xdg.Menu.parse("mate-applications.menu")
+                                        except:
+                                                print('unable to parse the menu')
         
         
                         try:

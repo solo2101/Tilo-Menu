@@ -89,7 +89,6 @@ jobs:
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_special_menus.py
 
       - name: Construct original program context menu under GTK3
-        continue-on-error: true
         env:
           GSETTINGS_BACKEND: memory
           XDG_MENU_PREFIX: mate-
