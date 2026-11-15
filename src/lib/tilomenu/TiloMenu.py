@@ -136,8 +136,8 @@ class TiloMenu:
             # Verify all states first; leave the working button unchanged
             # when a selected theme is incomplete.
             for image in images:
-                GdkPixbuf.Pixbuf.get_file_info(image) or (_ for _ in ()).throw(
-                    OSError('Invalid button image: ' + image))
+                if not GdkPixbuf.Pixbuf.get_file_info(image):
+                    raise OSError('Invalid button image: ' + image)
         except (OSError, ValueError, IndexError, KeyError) as error:
             print('TiloMenu button theme not applied:', error)
             return False
