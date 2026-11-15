@@ -26,6 +26,7 @@ import os
 import subprocess as commands
 import Globals
 import IconFactory
+from ArchivedListRenderer import draw_list as draw_archived_list
 import cairo_drawing
 #import gc
 #import time
@@ -1948,6 +1949,9 @@ class IconProgramList(gobject.GObject):
                 self.tree1.connect("button-press-event", self.drag_begin)
                 self.tree1.connect("button-release-event", self.treeclick)
                 self.tree1.set_model(self.model)
+                # Archived Cairo/Pango renderer replaces GTK's row pixels,
+                # while original Gtk.IconView retains clicks and navigation.
+                self.tree1.connect('draw', self.draw_archived_rows)
                 #if Globals.Settings['GtkColors'] == 0:
                         
                         #self.tree1.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
@@ -1956,6 +1960,9 @@ class IconProgramList(gobject.GObject):
                 self.ScrollFrame.get_vscrollbar().connect_after("map-event", self.map_event,'map')
                 self.ScrollFrame.get_vscrollbar().connect_after("unmap-event", self.map_event,'unmap')
                 #gc.collect()
+
+        def draw_archived_rows(self, widget, cr):
+                return draw_archived_list(widget, cr, self.model, Globals.ThemeColorHtml)
 
         def leave(self, widget, event):
                 # GTK3 IconView.unselect_path requires a Gtk.TreePath, while
