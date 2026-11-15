@@ -1412,6 +1412,12 @@ class TreeProgramList(gobject.GObject):
 
                 #self.ScrollFrame.connect_after("map-event", self.map_event)
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])        
+                # GTK3 should not expand the original menu to the natural
+                # width of its icon-view contents.
+                self.ScrollFrame.set_propagate_natural_width(False)
+                self.ScrollFrame.set_propagate_natural_height(False)
+                self.EBox.set_size_request(*Globals.PG_buttonframedimensions)
+                self.VBoxOut.set_size_request(*Globals.PG_buttonframedimensions)
                 self.ScrollFrame.set_shadow_type(gtk.ShadowType.NONE)
                 self.ScrollFrame.set_policy(gtk.PolicyType.NEVER,gtk.PolicyType.AUTOMATIC)
 
@@ -1874,12 +1880,13 @@ class IconProgramList(gobject.GObject):
 
                 
                 self.tree1.set_item_orientation(gtk.Orientation.HORIZONTAL)
+                self.tree1.set_columns(1)
                 if Globals.Settings['Show_Tips']:
                         self.tree1.set_tooltip_column (1)
                 #Globals.PG_buttonframedimensions[0],self.ScrollFrame.get_size_request()[1]
 
                 self.tree1.set_selection_mode(gtk.SelectionMode.SINGLE)
-                self.tree1.set_item_width(Globals.PG_buttonframedimensions[0]-2)
+                self.tree1.set_item_width(max(1, Globals.PG_buttonframedimensions[0] - Globals.PG_iconsize - 12))
                 cell = self.tree1.get_cells()[0]
                 cell.set_property('ellipsize', pango.EllipsizeMode.END)
                 cell.set_fixed_size(-1,Globals.PG_iconsize)#+((Globals.PG_iconsize *8)/28))
@@ -1928,9 +1935,9 @@ class IconProgramList(gobject.GObject):
 
         def map_event(self,widget,event,a):
                 if a == 'map':
-                        self.tree1.set_item_width(Globals.PG_buttonframedimensions[0]-self.ScrollFrame.get_vscrollbar().size_request().width-4)
+                        self.tree1.set_item_width(max(1, Globals.PG_buttonframedimensions[0] - Globals.PG_iconsize - self.ScrollFrame.get_vscrollbar().get_preferred_width()[0] - 12))
                 else:
-                        self.tree1.set_item_width(Globals.PG_buttonframedimensions[0]-2)
+                        self.tree1.set_item_width(max(1, Globals.PG_buttonframedimensions[0] - Globals.PG_iconsize - 12))
 
         def move(self, widget, event):
                 mouse = widget.get_pointer()
