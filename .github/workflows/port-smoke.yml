@@ -99,6 +99,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_special_menus.py
 
+      - name: Verify archived chrome and original theme transparency
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_theme_chrome.py
+
       - name: Construct original program context menu under GTK3
         env:
           GSETTINGS_BACKEND: memory
