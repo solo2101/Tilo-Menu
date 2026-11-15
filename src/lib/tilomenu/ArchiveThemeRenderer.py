@@ -126,6 +126,8 @@ def _markup(container, attrs, width, *, theme, x=0, y=0, fallback="",
 def _event_box(child, width, height, name, callback):
     eventbox = Gtk.EventBox()
     eventbox.set_visible_window(False)
+    from ArchivedThemeChrome import transparent_chrome
+    transparent_chrome(eventbox)
     eventbox.set_above_child(True)
     eventbox.set_size_request(width, height)
     eventbox.add(child)
