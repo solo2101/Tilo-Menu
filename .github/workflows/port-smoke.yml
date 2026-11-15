@@ -99,6 +99,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_special_menus.py
 
+      - name: Verify Gray theme opaque screen rendering
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_gray_background_pixels.py
+
       - name: Verify original top and bottom panel flipping
         env:
           GSETTINGS_BACKEND: memory
