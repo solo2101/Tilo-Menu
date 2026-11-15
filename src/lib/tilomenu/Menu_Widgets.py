@@ -592,12 +592,14 @@ class ImageFrame:
                 self.intrans = False 
                 self.Pic = None
                 self.frame_window = gtk.EventBox()
+                self.frame_window.set_visible_window(False)
                 if not self.frame_window.is_composited():
          
                         self.supports_alpha = False
                 else:
                         self.supports_alpha = True
                 self.Frame = gtk.Fixed()
+                transparent_chrome(self.frame_window, self.Frame)
                 self.Image = gtk.Image()
                 self.frame_window.set_tooltip_text(_('About Me'))
                 self.frame_window.connect("button-press-event", self.but_click)
@@ -629,15 +631,17 @@ class ImageFrame:
 
 
         def expose (self, widget, event):
-                self.ctx = event
-                # set a clip region for the expose event
-                if self.supports_alpha == False:
-                        self.ctx.set_source_rgb(1, 1, 1)
-                else:
-                        self.ctx.set_source_rgba(1, 1, 1,0)
-                self.ctx.set_operator (cairo.OPERATOR_SOURCE)
-                self.ctx.paint()
-                cairo_drawing.draw_pixbuf(self.ctx,self.backimagearea)
+                # Original user-photo frame inherits its exact backdrop
+                # pixels, not a GTK2 non-composited white fallback.
+                cr = event
+                cr.save()
+                cr.rectangle(0, 0, self.w, self.h)
+                cr.clip()
+                cr.set_operator(cairo.OPERATOR_SOURCE)
+                Gdk.cairo_set_source_pixbuf(cr, self.backimagearea, 0, 0)
+                cr.paint()
+                cr.restore()
+                return False
 
         def composite_changed(self,widget):
                 print(self.frame_window.is_composited())
