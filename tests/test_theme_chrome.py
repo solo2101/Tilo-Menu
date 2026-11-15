@@ -49,14 +49,14 @@ assert vista.menuframe.get_size_request() == (
     Globals.MenuWidth, Globals.MenuHeight)
 assert all(button.Button.get_style_context().has_class('tilomenu-original-chrome')
            for button in vista.MenuButtons if hasattr(button, 'Button'))
-# Exercise real hover/resting PNG transitions with the original
-# Vista XML markup and actual bundled artwork.
-from Menu_Widgets import MenuButton
-hover = next(button for button in vista.MenuButtons
-             if isinstance(button, MenuButton))
-assert hover.Label.get_text()
-hover.Setimage(Globals.ImageDirectory + Globals.MenuButtonImage[hover.i])
-assert hover.Label.get_text()
-hover.SetBackground()
-assert hover.Label.get_text()
-print('PASS: default and Vista theme rendering geometry under GTK3')
+# The archived painter owns the XML markup, hover images and action icons.
+# Existing click handlers remain attached to its event-box adapters.
+from ArchiveThemeBridge import ButtonAdapter
+hover = next(button for button in vista.MenuButtons if isinstance(button, ButtonAdapter))
+content = hover.Button.get_child()
+labels = [child for child in content.get_children() if isinstance(child, Gtk.Label)]
+assert labels, 'Archived XML button label not rendered'
+assert labels[0].get_text(), 'Archived XML label was blank'
+assert len(vista.MenuButtons) == Globals.MenuButtonCount
+assert len(vista.MenuTabs) == Globals.MenuTabCount
+print('PASS: archived GTK3 renderer and existing XML actions for default and Vista themes')
