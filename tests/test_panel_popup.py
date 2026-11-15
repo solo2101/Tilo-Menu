@@ -12,6 +12,7 @@ from gi.repository import Gtk, MatePanelApplet
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src/lib/tilomenu'))
 from TiloMenu import TiloMenu
+import Globals
 
 # Production panel activation must use the same BLAS-limited entry point as
 # the working standalone launcher, not import TiloMenu.py directly.
@@ -57,6 +58,25 @@ with patch('TiloMenu.subprocess.Popen') as launch:
     applet.actions.get_action('About').activate()
     assert launch.called
     assert launch.call_args.args[0][-1] == '--about'
+# Simulate a new Button theme saved by the separate Preferences process.
+# The MATE panel must update its own image without recreating the applet.
+from unittest.mock import patch as mock_patch
+with mock_patch('TiloMenu.backend.load_setting', return_value='TestButton'), \
+     mock_patch('TiloMenu.start_button_images',
+                return_value=('first.png', 'hover.png', 'pressed.png')), \
+     mock_patch('TiloMenu.GdkPixbuf.Pixbuf.get_file_info',
+                return_value=('png', 16, 16)), \
+     mock_patch.object(menu, 'Redraw_graphics') as redraw:
+    assert menu._refresh_button_theme() is False
+    assert menu._button_theme == 'TestButton'
+    assert menu.StartButton == ('first.png', 'hover.png', 'pressed.png')
+    redraw.assert_called_once()
+    # Repeated GSettings writes should not need another redraw.
+    assert menu._refresh_button_theme() is False
+    redraw.assert_called_once()
+# Restore original button assets for popup tests below.
+menu.StartButton = Globals.StartButton
+menu._button_theme = str(Globals.Settings['Button_Name'])
 print('PASS: original panel right-click Preferences/About actions')
 
 from types import SimpleNamespace
