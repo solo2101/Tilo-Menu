@@ -15,6 +15,7 @@ class ArchiveThemeBackground(Gtk.DrawingArea):
     def __init__(self):
         super().__init__()
         self._pixbuf = None
+        self.draw_calls = 0
         self.set_app_paintable(True)
         self.connect("draw", self._draw_background)
 
@@ -30,6 +31,7 @@ class ArchiveThemeBackground(Gtk.DrawingArea):
     def _draw_background(self, widget, cr):
         if self._pixbuf is None:
             return False
+        self.draw_calls += 1
         cr.save()
         cr.set_operator(cairo.OPERATOR_SOURCE)
         Gdk.cairo_set_source_pixbuf(cr, self._pixbuf, 0, 0)
