@@ -788,12 +788,16 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                         self.PGL.BanFocusSteal = True
                         self.prevsearchitem = self.searchitem
                         if self.callback_search:
+                                if GLib.MainContext.default().find_source_by_id(
+                                        self.callback_search):
                                         GLib.source_remove(self.callback_search)
-                        self.callback_search = GLib.timeout_add(500,self.timeout_callback_search)
+                                self.callback_search = None
+                        self.callback_search = GLib.timeout_add(
+                                350, self.timeout_callback_search)
 
         def timeout_callback_search(self):
+                self.callback_search = None
                 self.PGL.CallSpecialMenu(5,self.searchitem)
-                print('search')
                 return False
 
 # Code to launch menu standalone of base classes
