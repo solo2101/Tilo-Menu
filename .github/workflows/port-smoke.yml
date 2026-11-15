@@ -113,6 +113,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_original_flip.py
 
+      - name: Verify original search typing and debounce
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_search_functionality.py
+
       - name: Verify quoted application and URI launching
         env:
           GSETTINGS_BACKEND: memory
