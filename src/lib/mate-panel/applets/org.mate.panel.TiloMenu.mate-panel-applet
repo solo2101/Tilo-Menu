@@ -1,7 +1,7 @@
 [Applet Factory]
 Id=TiloMenuFactory
 InProcess=false
-Location=/usr/lib/tilomenu/TiloMenu.py
+Location=/usr/bin/tilomenu
 Name=TiloMenu Factory
 Description=Original GnoMenu port for MATE
 
