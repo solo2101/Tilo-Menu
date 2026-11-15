@@ -629,7 +629,7 @@ class XDGMenu(gobject.GObject):
                                 else:
                                         self.menuitem = add_image_menuitem(self.m, gtk.STOCK_ADD, _("Add to System Startup"), self.create_autostarter,name, self.L_Execs[index], self.L_Icons_menu[index], self.L_Types[index])
                         self.m.show_all()
-                        self.m.popup(None, None, None, event.button, event.time)
+                        self.m.popup(None, None, None, None, event.button, event.time)
                         self.submenu = None
                         self.menuitem = None
                         gc.collect()
