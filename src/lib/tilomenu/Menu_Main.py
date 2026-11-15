@@ -31,6 +31,7 @@ import Launcher
 import subprocess as commands
 import IconFactory
 from RenderingMixins import ThemeWindowRenderingMixin
+from ArchivedCairoProgramList import ArchivedCairoProgramList
 
 try:
         has_gst = True
@@ -350,7 +351,9 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                         self.PGL.connect ('clicked', self.menu_clicked)
                         self.PGL.connect ('right-clicked', self.menu_right_clicked)
                 elif Globals.Settings['Prog_List'] == 3:
-                        self.PGL = IconProgramList()
+                        # Archived GTK3 Cairo renderer: fixed-width, vertical
+                        # scrolling only, original XDG menu commands.
+                        self.PGL = ArchivedCairoProgramList()
                         self.PGL.connect ('menu', self.menu_callback)
                         self.PGL.connect ('clicked', self.menu_clicked)
                         self.PGL.connect ('right-clicked', self.menu_right_clicked)
