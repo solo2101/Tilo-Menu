@@ -36,6 +36,11 @@ if mode in (0, 3):
     scroll_allocation = menu.PGL.ScrollFrame.get_allocation()
     assert scroll_allocation.width <= theme_width + 2, (
         f'scroll overflow: actual={scroll_allocation.width} expected={theme_width}')
+    if mode == 3:
+        # Pointer leaving the original IconView must not pass an int
+        # to GTK3's unselect_path(Gtk.TreePath) API.
+        menu.PGL.index = 0
+        menu.PGL.leave(None, None)
 menu.hide_window()
 # Allow the process to exit without gtk_main_quit on a non-running main loop.
 print(f'PASS: original Prog_List={mode} using {type(menu.PGL).__name__}')
