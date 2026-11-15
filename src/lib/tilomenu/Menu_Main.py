@@ -364,44 +364,18 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
 
                 
                 self.PGL.ProgramListPopulate(self.menuframe, self.hide_method)
-                # Pass widget focus to the text entry box
+                # Archived GTK3 search renderer respects the XML PNG,
+                # custom GTK/Cairo fields, and text insets. The current XDG
+                # search commands and debounce remain untouched.
                 if Globals.MenuHasSearch:
-
-                        if Globals.SearchWidget.upper() == "CUSTOM":
-                                if Globals.SearchBackground:
-                                        from Menu_Widgets import  CustomSearchBar
-                                        gobject.type_register(CustomSearchBar)
-                                        self.SearchBar =  CustomSearchBar(Globals.ImageDirectory + Globals.SearchBackground,Globals.SearchInitialText,Globals.SearchTextColor,Globals.SearchX,Globals.SearchY,Globals.SearchW,Globals.SearchH,Globals.SearchIX,Globals.SearchIY,self.bgpb)
-                                else:
-                                        self.SearchBar =  CustomSearchBar(None,Globals.SearchInitialText,Globals.SearchTextColor,Globals.SearchX,Globals.SearchY,Globals.SearchW,Globals.SearchH,Globals.SearchIX,Globals.SearchIY,self.bgpb)
-
-                        elif Globals.SearchWidget.upper() == "GTK":
-                                from Menu_Widgets import  GtkSearchBar
-                                gobject.type_register(GtkSearchBar)
-                                self.SearchBar = GtkSearchBar()
-                                self.SearchBar.set_text('')
-                                self.SearchBar.set_inner_border(None)
-                                
-
-                        elif Globals.SearchWidget.upper() == "CAIRO":
-                                from Menu_Widgets import  CairoSearchBar
-                                gobject.type_register(CairoSearchBar)
-                                self.SearchBar =  CairoSearchBar(Globals.CairoSearchBackColor,Globals.CairoSearchBorderColor,Globals.CairoSearchTextColor)
-                                self.SearchBar.set_text('')
-                                self.SearchBar.set_inner_border(None)
-                                
-
-
-                        try:
-                                if Globals.SearchWidget.upper() == "GTK":
-                                        self.style_original_search(self.SearchBar)
-                                self.SearchBar.set_size_request(Globals.SearchW, Globals.SearchH)
-                                self.menuframe.put(self.SearchBar, Globals.SearchX, Globals.SearchY)
-                                #self.SearchBar.connect("activate",self.SearchBarActivate)
-        
-                                self.SearchBar.connect_after("key-release-event",self.SearchBarActivate)
-                        except:print('wait')
+                        from ArchiveThemeParser import load_menu_theme
+                        from ArchiveThemeSearch import ThemeSearch
                         self.prevsearchitem = ""
+                        theme = load_menu_theme(Globals.ImageDirectory)
+                        self.SearchBar = ThemeSearch(
+                                theme, lambda entry: self.SearchBarActivate(entry))
+                        self.menuframe.put(
+                                self.SearchBar, Globals.SearchX, Globals.SearchY)
 
                 # Tab selection and navigation remain in the original menu.
                 for i, tab in enumerate(self.MenuTabs):
