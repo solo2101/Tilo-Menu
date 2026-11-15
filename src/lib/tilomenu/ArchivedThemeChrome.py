@@ -33,7 +33,7 @@ def transparent_chrome(*widgets):
     widgets[0]._tilomenu_chrome_css = css
 
 
-_COLOR = re.compile(r'(foreground\\s*=\\s*[\\\'\\"])(#[0-9a-fA-F]{6})([\\\'\\"])')
+_COLOR = re.compile(r"""(foreground\s*=\s*['"])(#[0-9a-fA-F]{6})(['"])""")
 
 
 def legible_markup(markup, background, x, y, width):
