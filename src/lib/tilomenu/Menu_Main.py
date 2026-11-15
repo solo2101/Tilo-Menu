@@ -306,6 +306,10 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
 
         def setup(self):
                 self.menuframe = gtk.Fixed()
+                # Original XML chrome must float over the PNG without GTK3
+                # theme backgrounds on the root fixed-position layout.
+                from ArchivedThemeChrome import transparent_chrome
+                transparent_chrome(self.menuframe)
                 # GTK3 Fixed has no intrinsic size. Keep the original PNG
                 # geometry as the allocation for theme-positioned widgets.
                 self.menuframe.set_size_request(Globals.MenuWidth, Globals.MenuHeight)
@@ -316,7 +320,7 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                 self.w = max(1, int(Globals.MenuWidth))
                 self.h = max(1, int(Globals.MenuHeight))
                 self.shape()
-                self.window.set_opacity(0.99)
+                self.window.set_opacity(1.0)
                 if Globals.MenuHasIcon==1:
                         self.usericon = ImageFrame(Globals.IconW,Globals.IconH,Globals.IconInX,Globals.IconInY,Globals.IconInW,Globals.IconInH,self.menuframe,self.bgpb)
                         self.usericonstate = 0
