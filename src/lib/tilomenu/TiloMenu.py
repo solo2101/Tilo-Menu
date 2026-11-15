@@ -39,6 +39,25 @@ ThemeDirectory = INSTALL_PREFIX / 'share' / 'tilomenu' / 'Themes'
 ProgramDirectory = Path(__file__).resolve().parent
 
 
+def start_button_top_images(theme_name=None):
+    """Original GnoMenu Button/Top assets are independent of Background.
+
+    When Top=1 the protruding artwork must be drawn outside the MATE
+    panel's allocation. Otherwise GTK clips the upper part of the icon.
+    """
+    directory = ThemeDirectory / 'Button' / (theme_name or 'GnoBlue')
+    document = xml.dom.minidom.parse(str(directory / 'themedata.xml'))
+    theme = document.getElementsByTagName('theme')[0]
+    if theme.getAttribute('Top') != '1':
+        return None
+    top = document.getElementsByTagName('Top')
+    if not top:
+        return None
+    paths = tuple(str(directory / top[0].getAttribute(attribute))
+                  for attribute in ('Image', 'ImageHover', 'ImagePressed'))
+    return paths if all(Path(path).is_file() for path in paths) else None
+
+
 def start_button_images(theme_name=None):
     """Port of Globals.ReloadSettings() Button Background XML loading.
 
@@ -71,6 +90,8 @@ class TiloMenu:
         self.size = self.get_panel_size()
         self.StartButton = Globals.StartButton
         self._button_theme = str(Globals.Settings['Button_Name'])
+        self._top_images = start_button_top_images(self._button_theme)
+        self._top_window = None
         self._menu_signature = self._current_menu_signature()
         self._settings_refresh_id = None
         self._settings_signal_id = None
@@ -191,6 +212,7 @@ class TiloMenu:
             return False
         self.StartButton = images
         self._button_theme = selected
+        self._top_images = start_button_top_images(selected)
         self.Redraw_graphics()
         return False
 
@@ -231,6 +253,7 @@ class TiloMenu:
             self.hwg = Main_Menu(self.HideMenu)
             self.hwg.connect('state-changed', self.button_changed)
         self.hwg.Adjust_Window_Dimensions(self.x, self.y, self.size)
+        self._redraw_button_top()
         Globals.SavedOriginState = self.x, self.y
         return False
 
@@ -243,6 +266,7 @@ class TiloMenu:
         if window is not None:
             self.x, self.y = window.get_origin()[-2:]
             self.update_panel_position()
+            self._position_button_top()
         else:
             self.x, self.y = 0, 0
         return False
@@ -369,6 +393,62 @@ class TiloMenu:
         self.Button_state = button
         self.Redraw_graphics()
 
+    def _destroy_button_top(self):
+        if self._top_window is not None:
+            self._top_window.destroy()
+            self._top_window = None
+
+    def _position_button_top(self):
+        if self._top_window is None or self._top_images is None:
+            return
+        pix = self._top_pixbuf
+        panel_width = self.Image.get_pixbuf().get_width() if self.Image.get_pixbuf() else pix.get_width()
+        # The original GnoMenu renders the extra Top PNG beyond the panel.
+        # Align it with the middle of the main button in either orientation.
+        x = int(self.x + (panel_width - pix.get_width()) / 2)
+        if self.orientation == 'top':
+            y = int(self.y + self.size)
+        else:
+            y = int(self.y - pix.get_height())
+        self._top_window.move(x, y)
+
+    def _redraw_button_top(self):
+        if self._top_images is None or not isinstance(self.applet, MatePanelApplet.Applet):
+            self._destroy_button_top()
+            return
+        pix = GdkPixbuf.Pixbuf.new_from_file(self._top_images[self.Button_state])
+        self._top_pixbuf = pix
+        if self._top_window is None:
+            top = Gtk.Window(type=Gtk.WindowType.POPUP)
+            top.set_decorated(False)
+            top.set_accept_focus(False)
+            top.set_focus_on_map(False)
+            top.set_skip_taskbar_hint(True)
+            top.set_skip_pager_hint(True)
+            top.set_app_paintable(True)
+            screen = top.get_screen()
+            visual = screen.get_rgba_visual()
+            if visual is not None:
+                top.set_visual(visual)
+            top.connect('draw', self._draw_button_top)
+            self._top_window = top
+        self._top_window.set_size_request(pix.get_width(), pix.get_height())
+        self._top_window.resize(pix.get_width(), pix.get_height())
+        self._position_button_top()
+        self._top_window.show_all()
+        surface = self._top_window.get_window()
+        if surface is not None:
+            # The main panel button remains the only clickable surface.
+            surface.set_pass_through(True)
+        self._top_window.queue_draw()
+
+    def _draw_button_top(self, widget, cr):
+        import cairo
+        cr.set_operator(cairo.OPERATOR_SOURCE)
+        Gdk.cairo_set_source_pixbuf(cr, self._top_pixbuf, 0, 0)
+        cr.paint()
+        return True
+
     def Redraw_graphics(self):
         self.Fixed.set_size_request(-1, self.size)
         self.EBox.set_size_request(-1, self.size)
@@ -382,8 +462,10 @@ class TiloMenu:
             GdkPixbuf.InterpType.HYPER
         )
         self.Image.set_from_pixbuf(pixmap)
+        self._redraw_button_top()
 
     def cleanup(self, event):
+        self._destroy_button_top()
         if self._settings_refresh_id is not None:
             GLib.source_remove(self._settings_refresh_id)
             self._settings_refresh_id = None
