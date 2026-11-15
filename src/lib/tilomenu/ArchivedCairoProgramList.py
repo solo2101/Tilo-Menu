@@ -99,6 +99,8 @@ class ArchivedCairoProgramList(GObject.GObject):
         return max(0, len(self.XDG.L_Names) - self._visible_count())
 
     def _index_at(self, y):
+        if y < 0 or y >= self.height:
+            return None
         index = self.offset + int(y // self.row_height)
         return index if 0 <= index < len(self.XDG.L_Names) else None
 
@@ -215,11 +217,21 @@ class ArchivedCairoProgramList(GObject.GObject):
         return True
 
     def _key(self, widget, event):
-        if event.keyval in (Gdk.KEY_Up, Gdk.KEY_Down):
-            step = -1 if event.keyval == Gdk.KEY_Up else 1
+        key = event.keyval
+        moves = {
+            Gdk.KEY_Up: -1, Gdk.KEY_Down: 1,
+            Gdk.KEY_Page_Up: -self._visible_count(),
+            Gdk.KEY_Page_Down: self._visible_count(),
+        }
+        if key in moves or key in (Gdk.KEY_Home, Gdk.KEY_End):
             count = len(self.XDG.L_Names)
             if count:
-                self.index = max(0, min(count - 1, self.index + step))
+                if key == Gdk.KEY_Home:
+                    self.index = 0
+                elif key == Gdk.KEY_End:
+                    self.index = count - 1
+                else:
+                    self.index = max(0, min(count - 1, self.index + moves[key]))
                 self.hover = self.index
                 if self.index < self.offset:
                     self.offset = self.index
@@ -227,14 +239,14 @@ class ArchivedCairoProgramList(GObject.GObject):
                     self.offset = self.index - self._visible_count() + 1
                 self.view.queue_draw()
             return True
-        if event.keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space):
+        if key in (Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space, Gdk.KEY_Right):
             if self.index >= 0:
                 class Click:
                     button = 1
                     type = Gdk.EventType.KEY_PRESS
                 self._activate(self.index, Click())
             return True
-        if event.keyval == Gdk.KEY_Left:
+        if key == Gdk.KEY_Left:
             self.Restart('previous')
             return True
         return False
