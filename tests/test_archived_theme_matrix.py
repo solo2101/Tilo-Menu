@@ -25,7 +25,11 @@ for folder in sorted(themes.iterdir()):
             n = original.get_n_channels()
             offset = y * original.get_rowstride() + x * n
             color_samples.append(tuple(original.get_pixels()[offset:offset+n]))
-        print('ORIGINAL THEME ARTWORK', folder.name, color_samples, flush=True)
+        # These themes have an opaque interior in their original PNG.
+        # If the desktop is visible through these pixels, GTK3 painting
+        # is at fault, not an intentionally transparent theme asset.
+        assert all(len(rgba) == 4 and rgba[3] == 255
+                   for rgba in color_samples), (folder.name, color_samples)
     frame = Gtk.Fixed()
     frame.set_size_request(theme.width, theme.height)
     buttons = render_theme_buttons(frame, theme)
