@@ -255,8 +255,11 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                 if Globals.Settings['GtkColors'] == 1:
                         cairo_drawing.draw_image_gtk(self.ctx,0,0,Globals.ImageDirectory + Globals.StartMenuTemplate,self.w,self.h,Globals.GtkColorCode,self.colorpb)
                 else:
-                        # Archived GTK3 renderer's alpha-aware paint path.
-                        self.draw_original_theme(self.ctx, self.bgpb)
+                        # GTK3 draws the original PNG in the first Gtk.Fixed
+                        # child. Do not paint the same semi-transparent pixels
+                        # a second time into this window or their alpha stacks.
+                        if self.background.get_pixbuf() is None:
+                                self.draw_original_theme(self.ctx, self.bgpb)
                 self.ctx.restore()
 
 
