@@ -16,6 +16,8 @@
 import utils
 import Globals
 import os
+import shlex
+import subprocess
 import urllib.parse as urllib
 from gi.repository import GObject as gobject
 
@@ -36,26 +38,39 @@ class Launcher(gobject.GObject):
                         if c != '':
                                 os.system(c)
                 elif tag == 1:
-                        print("launching Application")
-                        self.expl = command.split()
-                        #if last item in list begins with the character "%" then remove it and add it after the ' mark
-                        self.outcommand = ""
-                        if "%" in self.expl[len(self.expl)-1]:
-                                self.outcommand = " %s" %  self.expl.pop()
-                        self.expls = ' '.join(self.expl) 
-                        os.system('%s &' % self.expls)
+                        # Original .desktop Exec syntax includes quoted
+                        # arguments and placeholders such as %f, %u and %F.
+                        # Splitting on spaces breaks both. Preserve shell
+                        # quoting, and drop placeholders without a file/URL.
+                        try:
+                                args = shlex.split(command)
+                                args = [value.replace('%%', '%') for value in args
+                                        if value not in ('%f', '%F', '%u', '%U',
+                                                         '%i', '%c', '%k')]
+                                if args:
+                                        subprocess.Popen(args, start_new_session=True)
+                        except (OSError, ValueError) as error:
+                                print('TiloMenu application launch failed:', error)
 
                 elif tag == 3 or tag == 4:
-                        os.system("xdg-open '%s' &" % command)
+                        try:
+                                subprocess.Popen(['xdg-open', command],
+                                                 start_new_session=True)
+                        except OSError as error:
+                                print('TiloMenu open failed:', error)
                 elif tag == 5 or tag == 6 or tag == 7:
-                        os.system("/bin/sh -c '%s' &" % command)
+                        try:
+                                subprocess.Popen(['/bin/sh', '-c', command],
+                                                 start_new_session=True)
+                        except OSError as error:
+                                print('TiloMenu command failed:', error)
 
 
         def LookUpCommand(self,command):
                 print(command)
                 if command.lower() == 'home':
                         command= os.path.expanduser("~")
-                        return 'xdg-open %s &' % command
+                        return 'xdg-open %s &' % shlex.quote(command)
                 if command.lower() == 'network':
                         command = "network:///"
                         return 'xdg-open %s &' % command
