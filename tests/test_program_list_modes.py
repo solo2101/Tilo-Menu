@@ -20,6 +20,11 @@ while Gtk.events_pending():
 assert menu.window.get_visible()
 assert menu.PGL is not None
 if mode in (0, 3):
+    # The initial Favorites list is often empty. Applications exposes
+    # the width regression because it has icons and longer names.
+    menu.PGL.CallSpecialMenu(1)
+    while Gtk.events_pending():
+        Gtk.main_iteration_do(False)
     assert menu.PGL.EBox.get_size_request() == Globals.PG_buttonframedimensions
     scroll_width, scroll_height = menu.PGL.ScrollFrame.get_size_request()
     theme_width, theme_height = Globals.PG_buttonframedimensions
