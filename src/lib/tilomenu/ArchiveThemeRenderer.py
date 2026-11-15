@@ -210,14 +210,22 @@ def render_theme_buttons(layout: Gtk.Fixed, theme, on_activate=None) -> None:
                         overlay_x=bx, overlay_y=by,
                     )
 
-            eventbox.connect(
-                "enter-notify-event",
-                lambda _widget, _event, state=change_state: state(True) or False,
-            )
-            eventbox.connect(
-                "leave-notify-event",
-                lambda _widget, _event, state=change_state: state(False) or False,
-            )
+            # Expose the original Setimage/SetBackground behavior through
+            # the GTK3 painter. Main_Menu.Button_enter/leave owns the timing
+            # and hover callbacks, as in the original GnoMenu source.
+            eventbox._tilomenu_change_state = change_state
+            if on_activate is not None:
+                # Standalone archive consumers still own their hover events.
+                eventbox.connect(
+                    "enter-notify-event",
+                    lambda _widget, _event, state=change_state:
+                        state(True) or False,
+                )
+                eventbox.connect(
+                    "leave-notify-event",
+                    lambda _widget, _event, state=change_state:
+                        state(False) or False,
+                )
         layout.put(eventbox, element.integer("ButtonX"), element.integer("ButtonY"))
     return widgets
 
