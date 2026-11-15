@@ -30,6 +30,12 @@ with patch.object(menu.Launcher, 'Launch') as launch, \
      patch.object(menu, 'PlaySound'):
     menu.Button_click(None, None, index)
     launch.assert_called_once_with(Globals.MenuButtonCommands[index])
+with patch.object(menu.Launcher, 'Launch') as launch, \
+     patch.object(menu, 'PlaySound'):
+    event = Gdk.Event.new(Gdk.EventType.BUTTON_RELEASE)
+    event.button = 1
+    menu.MenuButtons[index].Button.emit('button-release-event', event)
+    launch.assert_called_once_with(Globals.MenuButtonCommands[index])
 
 # The default theme has tabs; keep its original page/navigation indexes.
 backend.save_setting('Menu_Name', 'Menu')
