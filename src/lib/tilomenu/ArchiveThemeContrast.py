@@ -85,7 +85,11 @@ def _image(theme, filename):
 
 def sample_background(theme, x, y, overlay="", overlay_x=0, overlay_y=0):
     """Return RGBA-composited artwork color or None if mostly transparent."""
-    base = _pixel(_image(theme, theme.background), x, y)
+    # Original GnoMenu flips the background PNG for top-panel menus while
+    # keeping text and icon assets upright at recalculated XML coordinates.
+    # Sample the actual background pixel behind the label.
+    base_y = theme.height - 1 - int(y) if theme.flipped else y
+    base = _pixel(_image(theme, theme.background), x, base_y)
     if base is None:
         rgb, alpha = (127, 127, 127), 0.0
     else:
