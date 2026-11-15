@@ -408,15 +408,17 @@ class MenuTab:
                         self.supports_alpha = True
 
         def expose (self, widget, event):
+                # The archived GTK3 renderer paints the original PNG rather
+                # than GTK2's opaque white fallback. Clip to this tab's bounds.
                 self.ctx = event
-                # set a clip region for the expose event
-                if self.supports_alpha == False:
-                        self.ctx.set_source_rgb(1, 1, 1)
-                else:
-                        self.ctx.set_source_rgba(1, 1, 1,0)
-                self.ctx.set_operator (cairo.OPERATOR_SOURCE)
+                self.ctx.save()
+                self.ctx.rectangle(0, 0, self.w, self.h)
+                self.ctx.clip()
+                self.ctx.set_operator(cairo.OPERATOR_SOURCE)
+                Gdk.cairo_set_source_pixbuf(self.ctx, self.backimagearea, 0, 0)
                 self.ctx.paint()
-                cairo_drawing.draw_pixbuf(self.ctx,self.backimagearea)
+                self.ctx.restore()
+                return False
 
 
           
@@ -1970,7 +1972,9 @@ class IconProgramList(gobject.GObject):
                 self.tree1.set_model(self.model)
                 # Archived Cairo/Pango renderer replaces GTK's row pixels,
                 # while original Gtk.IconView retains clicks and navigation.
-                self.tree1.connect('draw', self.draw_archived_rows)
+                # GTK's IconView draws its own rows during the default handler.
+                # Cairo must paint afterwards to replace those pixels.
+                self.tree1.connect_after('draw', self.draw_archived_rows)
                 #if Globals.Settings['GtkColors'] == 0:
                         
                         #self.tree1.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
