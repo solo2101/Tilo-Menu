@@ -21,6 +21,20 @@ for folder in sorted(themes.iterdir()):
     tabs, boxes = render_theme_details(frame, theme)
     assert len(buttons) == len(theme.buttons), folder
     assert len(boxes) == len(theme.tabs), folder
+    # Follow GnoMenu's original MenuButton: its ButtonIcon is painted,
+    # while XML Icon is reserved for the user-picture hover action.
+    for element, widget in zip(theme.buttons, buttons):
+        if widget is None:
+            continue
+        children = widget.get_child().get_children()
+        icons = [child for child in children if isinstance(child, Gtk.Image)]
+        expected = 1  # foreground hover image (may be empty)
+        if element.attributes.get('ImageBack'):
+            expected += 1
+        if element.attributes.get('ButtonIcon') or element.attributes.get('ButtonIconSel'):
+            expected += 1
+        assert len(icons) == expected, (folder.name, element.attributes.get('Name'),
+                                        len(icons), expected)
     if theme.capabilities.attributes.get('HasSearch') == '1':
         changed = []
         search = ThemeSearch(theme, lambda entry: changed.append(entry.get_text()))
