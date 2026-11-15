@@ -113,6 +113,20 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_original_flip.py
 
+      - name: Verify original separator drawing and activation
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_separator_rendering.py
+
+      - name: Verify protruding panel button Top artwork
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_button_top_artwork.py
+
       - name: Exercise every theme button and tab command safely
         env:
           GSETTINGS_BACKEND: memory
