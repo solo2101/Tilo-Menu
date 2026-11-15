@@ -41,6 +41,10 @@ if mode in (0, 3):
         # to GTK3's unselect_path(Gtk.TreePath) API.
         menu.PGL.index = 0
         menu.PGL.leave(None, None)
+        import cairo
+        canvas = cairo.ImageSurface(cairo.FORMAT_ARGB32, theme_width, theme_height)
+        assert menu.PGL.draw_archived_rows(menu.PGL.tree1, cairo.Context(canvas)), (
+            'Archived Cairo list renderer was not available')
 menu.hide_window()
 # Allow the process to exit without gtk_main_quit on a non-running main loop.
 print(f'PASS: original Prog_List={mode} using {type(menu.PGL).__name__}')
