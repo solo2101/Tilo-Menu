@@ -102,7 +102,8 @@ class ArchivedCairoProgramList(GObject.GObject):
         if y < 0 or y >= self.height:
             return None
         index = self.offset + int(y // self.row_height)
-        return index if 0 <= index < len(self.XDG.L_Names) else None
+        return (index if 0 <= index < len(self.XDG.L_Names)
+                and self.XDG.L_Types[index] not in (8, 9) else None)
 
     def _label(self, cr, value, x, y, width, bright):
         layout = PangoCairo.create_layout(cr)
@@ -136,6 +137,17 @@ class ArchivedCairoProgramList(GObject.GObject):
         names = self.XDG.L_Names
         for index in range(self.offset, min(len(names), self.offset + count + 1)):
             y = (index - self.offset) * self.row_height
+            if self.XDG.L_Types[index] == 8:
+                # Original XDGMenu renders type 8 as a visual separator.
+                # The XML sentinel <separator> is never ordinary row text.
+                cr.set_source_rgba(0.45 if bright else 0.22,
+                                   0.45 if bright else 0.22,
+                                   0.45 if bright else 0.22, 0.7)
+                cr.set_line_width(1)
+                cr.move_to(8, y + self.row_height / 2 + 0.5)
+                cr.line_to(width - 10, y + self.row_height / 2 + 0.5)
+                cr.stroke()
+                continue
             if index == self.hover:
                 cr.set_source_rgba(0.25, 0.47, 0.72, 0.24)
                 cr.rectangle(0, y, width - 7, self.row_height)
@@ -197,6 +209,8 @@ class ArchivedCairoProgramList(GObject.GObject):
         return False
 
     def _activate(self, index, event):
+        if self.XDG.L_Types[index] in (8, 9):
+            return
         self.index = index
         action = self.XDG.ButtonClick(index, event)
         if event.button == 1:
