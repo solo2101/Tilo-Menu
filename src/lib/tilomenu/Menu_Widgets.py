@@ -1958,7 +1958,10 @@ class IconProgramList(gobject.GObject):
                 #gc.collect()
 
         def leave(self, widget, event):
-                self.tree1.unselect_path(self.index)
+                # GTK3 IconView.unselect_path requires a Gtk.TreePath, while
+                # self.index is the integer used by the original click logic.
+                # Clearing selection is equivalent to the original hover reset.
+                self.tree1.unselect_all()
 
 
         def map_event(self,widget,event,a):
