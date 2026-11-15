@@ -627,14 +627,13 @@ class ImageFrame:
 
                 #self.backimagearea = self.backimagearea.add_alpha(True, chr(0xff), chr(0xff), chr(0xff))
                 if self.backimagearea is None:
-        
-                        if Globals.flip == False:
-
-                                self.backimagearea = backimage.new_subpixbuf(Globals.UserIconFrameOffsetX,Globals.MenuHeight - Globals.UserIconFrameOffsetY - self.h,self.w,self.h)
-                                self.backimagearea = self.backimagearea.flip(Globals.flip)
-        
-                        else:
-                                self.backimagearea = backimage.new_subpixbuf(Globals.UserIconFrameOffsetX,Globals.UserIconFrameOffsetY,self.w,self.h)
+                        # Archived renderer leaves the XML PNG upright and
+                        # flips only the popup placement. Sampling a mirrored
+                        # crop here produces a mismatched portrait backdrop.
+                        self.backimagearea = backimage.new_subpixbuf(
+                                Globals.UserIconFrameOffsetX,
+                                Globals.UserIconFrameOffsetY,
+                                self.w, self.h)
                 # Set the background which is always present
                 self.Image.set_size_request(self.w,self.h)
                 self.Frame.set_size_request(self.w,self.h)              
