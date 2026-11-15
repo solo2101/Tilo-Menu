@@ -547,12 +547,11 @@ class Main_Menu(gobject.GObject):
                 self.MenuButtons[i].Setimage(Globals.ImageDirectory + Globals.MenuButtonImage[i])
                 if Globals.MenuButtonIconSel[i]:
                         self.MenuButtons[i].SetIcon(Globals.ImageDirectory + Globals.MenuButtonIconSel[i])
-                try:
-                        GLib.source_remove(self.timeout_button)
-                except:pass
+                self.cancel_hover_timeout('timeout_button')
                 self.timeout_button = GLib.timeout_add(300,self.button_has_entered,widget,event,i)
 
         def button_has_entered(self,widget,event,i):
+                self.timeout_button = None
                 # User Icon Code 
                 # fixme: no support for non fade icons
 
@@ -562,6 +561,7 @@ class Main_Menu(gobject.GObject):
                 self.UpdateUserImage(i,Globals.MenuCairoIconButton[i])
 
         def button_has_leave(self,widget,event,i):
+                self.timeout_button = None
                 # User Icon code
                 if Globals.MenuHasFade == 1:
                         self.LeaveCustomState()
@@ -571,8 +571,7 @@ class Main_Menu(gobject.GObject):
                 self.MenuButtons[i].SetBackground()
                 if Globals.MenuButtonIcon[i]:
                         self.MenuButtons[i].SetIcon(Globals.ImageDirectory + Globals.MenuButtonIcon[i])
-                if getattr(self, 'timeout_button', None):
-                        GLib.source_remove(self.timeout_button)
+                self.cancel_hover_timeout('timeout_button')
                 self.timeout_button = GLib.timeout_add(300,self.button_has_leave,widget,event,i)
         
         def Button_click(self,widget,event,i):
@@ -594,19 +593,29 @@ class Main_Menu(gobject.GObject):
 #=================================================================
 #Menu Tabs
 #=================================================================
+        def cancel_hover_timeout(self, attr):
+                source_id = getattr(self, attr, None)
+                if source_id:
+                        # Finished GLib callbacks are no longer registered.
+                        # Avoid "Source ID was not found" warnings.
+                        if GLib.MainContext.default().find_source_by_id(source_id):
+                                GLib.source_remove(source_id)
+                        setattr(self, attr, None)
+
         def Tab_enter(self,widget,event,i):
-                try:
-                        GLib.source_remove(self.timeout_tab)
-                except:pass
+                self.cancel_hover_timeout('timeout_tab')
                 self.timeout_tab = GLib.timeout_add(300,self.tab_has_entered,widget,event,i)
 
         def tab_has_entered(self,widget,event,i):
+                self.timeout_tab = None
                 self.UpdateUserImage(i,Globals.MenuCairoIconTab[i])
 
         def Tab_leave(self,widget,event,i):
+                self.cancel_hover_timeout('timeout_tab')
                 self.timeout_tab = GLib.timeout_add(300,self.tab_has_leave,widget,event,i)
 
         def tab_has_leave(self,widget,event,i):
+                self.timeout_tab = None
                 # User Icon code
                 if Globals.MenuHasFade == 1:
                         self.LeaveCustomState()
