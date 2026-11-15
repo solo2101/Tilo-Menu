@@ -43,7 +43,7 @@ with TemporaryDirectory() as tmp:
         encoding="utf-8")
     for src, dst in zip(existing, ("normal.png", "hover.png", "pressed.png")):
         (custom / dst).symlink_to(Path(src))
-    with patch.object(TiloMenu, "ThemeDirectory", root):
+    with patch.object(TiloMenu, "ThemeDirectory", Path(tmp)):
         assert all(Path(p).is_file() for p in
                    TiloMenu.start_button_images("FutureCustomTheme"))
         assert TiloMenu.start_button_top_images("FutureCustomTheme") is None
