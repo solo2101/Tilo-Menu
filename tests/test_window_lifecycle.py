@@ -8,6 +8,7 @@ import gi
 
 gi.require_version("Gtk", "3.0")
 gi.require_version("Gdk", "3.0")
+gi.require_version("GdkPixbuf", "2.0")
 from gi.repository import Gtk
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src/lib/tilomenu"))
@@ -79,6 +80,26 @@ assert menu.window.get_visible()
 allocation = menu.menuframe.get_allocation()
 assert allocation.width >= Globals.MenuWidth, (allocation.width, Globals.MenuWidth)
 assert allocation.height >= Globals.MenuHeight, (allocation.height, Globals.MenuHeight)
+# Verify composited painting, not merely that a Gtk.Image holds a pixbuf.
+# A magenta debug backdrop must show through at the empty right margin.
+from gi.repository import GdkPixbuf
+probe = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8,
+                             Globals.MenuWidth, Globals.MenuHeight)
+probe.fill(0xff00ffff)
+menu.background.set_from_pixbuf(probe)
+menu.window.queue_draw()
+for _ in range(5):
+    while Gtk.events_pending():
+        Gtk.main_iteration_do(False)
+screenshot = Gdk.pixbuf_get_from_window(
+    menu.window.get_window(), Globals.MenuWidth - 8,
+    Globals.MenuHeight // 2, 1, 1)
+assert screenshot is not None, 'Unable to inspect GTK3 theme window pixels'
+pixel = screenshot.get_pixels()
+assert pixel[0] > 200 and pixel[1] < 85 and pixel[2] > 200, (
+    'Original PNG backdrop is hidden behind an opaque GTK widget', tuple(pixel[:3]))
+menu.background.set_from_pixbuf(menu.bgpb)
+
 menu.hide_window()
 assert not menu.window.get_visible()
 # Allow the process to exit without gtk_main_quit on a non-running main loop.
