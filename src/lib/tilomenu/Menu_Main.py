@@ -751,7 +751,7 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                         self.usericon.updateimage(0,Globals.UserImageFrame)
                         self.usericon.updateimage(1,Globals.UserImage)
                         self.usericon.transition([1,1,-1,-1],Globals.TransitionS,Globals.TransitionQ,None)
-                        self.usericonstate == 0
+                        self.usericonstate = 0
                         self.LastUserPicName = ""
                         
 #=================================================================
