@@ -21,10 +21,15 @@ def hide():
 menu = Main_Menu(hide)
 assert menu.window is not None
 assert menu.PGL is not None
+assert menu.menuframe.get_size_request() == (Globals.MenuWidth, Globals.MenuHeight)
+assert menu.window.get_size_request() == (Globals.MenuWidth, Globals.MenuHeight)
 menu.show_window()
 while Gtk.events_pending():
     Gtk.main_iteration_do(False)
 assert menu.window.get_visible()
+allocation = menu.menuframe.get_allocation()
+assert allocation.width >= Globals.MenuWidth, (allocation.width, Globals.MenuWidth)
+assert allocation.height >= Globals.MenuHeight, (allocation.height, Globals.MenuHeight)
 menu.hide_window()
 assert not menu.window.get_visible()
 # Allow the process to exit without gtk_main_quit on a non-running main loop.
