@@ -179,7 +179,13 @@ class TiloMenu:
             self.Redraw_graphics()
             return True
         if event.button == 3:
-            # MATE handles the registered applet context menu.
+            # MATE handles the real panel context menu. The standalone test
+            # window offers the same original Preferences/About actions.
+            if not isinstance(self.applet, MatePanelApplet.Applet):
+                preview = getattr(self.applet, 'preview_menu', None)
+                if preview:
+                    preview.popup_at_pointer(event)
+                    return True
             return False
         return False
 
@@ -307,8 +313,14 @@ def run_in_window():
             return 32
 
         def setup_menu(self, xml, action_group):
-            # Bonobo's GTK2 testing applet had no registered panel context.
-            pass
+            # Expose the same action callbacks as the actual MATE panel.
+            self.preview_menu = Gtk.Menu()
+            for label, name in (('Preferences', 'Props'), ('About', 'About')):
+                item = Gtk.MenuItem(label=label)
+                item.connect('activate', lambda _item, action=name:
+                             action_group.get_action(action).activate())
+                self.preview_menu.append(item)
+            self.preview_menu.show_all()
 
     main_window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
     main_window.set_decorated(True)
