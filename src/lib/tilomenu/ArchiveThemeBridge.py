@@ -4,6 +4,9 @@ Only display widgets are replaced. Main_Menu keeps all original Button_click,
 Tab_click, search, program-list, shutdown, Favorites and other actions.
 """
 from pathlib import Path
+from dataclasses import replace
+
+from ArchiveThemeModels import ThemeElement
 
 import Globals
 from ArchiveThemeParser import load_menu_theme
@@ -40,9 +43,36 @@ class TabAdapter:
         return self._selected
 
 
+def oriented_theme(theme):
+    """Use the original Globals.py orientation coordinates for archived art.
+
+    The original code already accounts for the source image heights. Never
+    transform the icons or their text; reposition their widget containers.
+    """
+    if Globals.orientation != 'top':
+        return theme
+
+    def changed(elements, field, values):
+        result = []
+        for index, element in enumerate(elements):
+            attrs = dict(element.attributes)
+            if index < len(values):
+                attrs[field] = str(values[index])
+            result.append(ThemeElement(element.tag, attrs))
+        return tuple(result)
+
+    return replace(
+        theme,
+        buttons=changed(theme.buttons, 'ButtonY', Globals.MenuButtonY),
+        tabs=changed(theme.tabs, 'TabY', Globals.MenuTabY),
+        labels=changed(theme.labels, 'LabelY', Globals.MenuLabelY),
+        images=changed(theme.images, 'ImageY', Globals.MenuImageY),
+    )
+
+
 def render_original_chrome(main):
     """Return original-indexed Button/Tab adapters for the archive painter."""
-    theme = load_menu_theme(Path(Globals.ImageDirectory))
+    theme = oriented_theme(load_menu_theme(Path(Globals.ImageDirectory)))
     buttons = render_theme_buttons(main.menuframe, theme)
     selected, tab_boxes = render_theme_details(main.menuframe, theme)
 
