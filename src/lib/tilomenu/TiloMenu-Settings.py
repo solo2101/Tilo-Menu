@@ -64,7 +64,7 @@ class TiloMenuSettings:
                 self.window.set_icon(GdkPixbuf.Pixbuf.new_from_file(Globals.Applogo))
                 self.window.connect("delete_event", self.delete)
                 self.window.set_border_width(4)
-                self.load_settings
+                self.load_settings()
                 self.folder = os.environ['HOME']
                 self.notebook = gtk.Notebook()
                 self.vbox = gtk.VBox()
@@ -579,9 +579,9 @@ class TiloMenuSettings:
         def buttonpress(self,widget,id):
                 if id == 'ok':
                         self.SaveSettings()
-                        if utils.show_question(_('Menu needs to restart , restart now?')) is True:
-                                x = commands.getoutput("""ps axo "%p,%a" | grep "TiloMenu.py" | grep -v grep|cut -d',' -f1""")
-                                os.system('kill -9 ' + x)
+                        # Restarting the MATE panel process with kill -9 also
+                        # removes its applet. The menu reloads its original
+                        # settings on the next applet/popup start instead.
                         gtk.main_quit()
 
                 elif id == 'apply':
