@@ -1860,9 +1860,17 @@ class IconProgramList(gobject.GObject):
                 #self.VBoxOut.connect("draw", self.expose)
                 #self.ScrollFrame.connect("draw", self.expose)  
                 if Globals.Settings['GtkColors'] == 0:
-                        self.EBox.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
-                        #self.VBoxOut.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
-                        #self.ScrollFrame.modify_bg(gtk.StateType.NORMAL, Globals.ThemeColorCode)
+                        # GTK2 modify_bg/modify_base no longer paint these widgets
+                        # reliably in GTK3. Apply the original theme color to
+                        # the entire icon-list viewport, including empty areas.
+                        color = Gdk.RGBA()
+                        if color.parse(Globals.ThemeColorHtml):
+                                provider = gtk.CssProvider()
+                                provider.load_from_data(('background-color: %s;' % Globals.ThemeColorHtml).encode('utf-8'))
+                                self._theme_css = provider
+                                for component in (self.EBox, self.VBoxOut, self.ScrollFrame, self.tree1):
+                                        component.get_style_context().add_provider(
+                                                provider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
                 
                 self.ScrollFrame.set_size_request(Globals.PG_buttonframedimensions[0],Globals.PG_buttonframedimensions[1])        
