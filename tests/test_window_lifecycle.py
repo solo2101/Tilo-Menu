@@ -93,6 +93,15 @@ menu.window.queue_draw()
 for _ in range(5):
     while Gtk.events_pending():
         Gtk.main_iteration_do(False)
+print('BACKDROP DEBUG', {
+    'mapped': menu.background.get_mapped(),
+    'visible': menu.background.get_visible(),
+    'allocation': tuple(menu.background.get_allocation()),
+    'overlay_allocation': tuple(menu.underlay.get_allocation()),
+    'pixbuf_size': (menu.background.get_pixbuf().get_width(),
+                    menu.background.get_pixbuf().get_height()),
+    'parent': type(menu.background.get_parent()).__name__,
+}, flush=True)
 screenshot = Gdk.pixbuf_get_from_window(
     menu.window.get_window(), Globals.MenuWidth - 8,
     Globals.MenuHeight // 2, 1, 1)
