@@ -22,9 +22,10 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 gi.require_version('GdkPixbuf', '2.0')
 gi.require_version('MatePanelApplet', '4.0')
-from gi.repository import Gdk, GdkPixbuf, Gtk, MatePanelApplet
+from gi.repository import Gdk, GdkPixbuf, Gtk, MatePanelApplet, GLib
 
 import Globals
+import backend
 from Menu_Main import Main_Menu
 
 
@@ -38,13 +39,13 @@ ThemeDirectory = INSTALL_PREFIX / 'share' / 'tilomenu' / 'Themes'
 ProgramDirectory = Path(__file__).resolve().parent
 
 
-def start_button_images():
+def start_button_images(theme_name=None):
     """Port of Globals.ReloadSettings() Button Background XML loading.
 
     GnoBlue is the original default until Globals.py is ported.
     Artwork remains byte-for-byte identical to GnoMenu 2.9.1.
     """
-    directory = ThemeDirectory / 'Button' / 'GnoBlue'
+    directory = ThemeDirectory / 'Button' / (theme_name or 'GnoBlue')
     document = xml.dom.minidom.parse(str(directory / 'themedata.xml'))
     background = document.getElementsByTagName('Background')[0]
     return tuple(str(directory / background.getAttribute(attribute)) for attribute in (
@@ -69,6 +70,14 @@ class TiloMenu:
         self.change_orientation()
         self.size = self.get_panel_size()
         self.StartButton = Globals.StartButton
+        self._button_theme = str(Globals.Settings['Button_Name'])
+        self._settings_refresh_id = None
+        self._settings_signal_id = None
+        # GSettings writes are emitted by the separate Preferences process.
+        # Follow them in the live MATE applet without restarting mate-panel.
+        if backend.settings is not None:
+            self._settings_signal_id = backend.settings.connect(
+                'changed::values', self._settings_changed)
         self.scale = 1.0
 
         self.Fixed = Gtk.Fixed()
@@ -109,6 +118,33 @@ class TiloMenu:
         self.EBox.set_size_request(-1, self.size)
         self.Fixed.set_size_request(-1, self.size)
         self.Image.set_size_request(-1, self.size)
+
+    def _settings_changed(self, settings, key):
+        # Apply writes many keys in sequence. Debounce and redraw once.
+        if self._settings_refresh_id is not None:
+            GLib.source_remove(self._settings_refresh_id)
+        self._settings_refresh_id = GLib.timeout_add(
+            200, self._refresh_button_theme)
+
+    def _refresh_button_theme(self):
+        self._settings_refresh_id = None
+        selected = backend.load_setting('Button_Name') or 'GnoBlue'
+        if selected == self._button_theme:
+            return False
+        try:
+            images = start_button_images(selected)
+            # Verify all states first; leave the working button unchanged
+            # when a selected theme is incomplete.
+            for image in images:
+                GdkPixbuf.Pixbuf.get_file_info(image) or (_ for _ in ()).throw(
+                    OSError('Invalid button image: ' + image))
+        except (OSError, ValueError, IndexError, KeyError) as error:
+            print('TiloMenu button theme not applied:', error)
+            return False
+        self.StartButton = images
+        self._button_theme = selected
+        self.Redraw_graphics()
+        return False
 
     def remove_applet_border(self):
         # gtk.rc_parse_string was removed in GTK3.
@@ -256,6 +292,9 @@ class TiloMenu:
         return False
 
     def ShowMenu(self):
+        # Also support the original XML settings fallback when GSettings
+        # change notifications are unavailable.
+        self._refresh_button_theme()
         if self.hwg:
             window = self.applet.get_window()
             if window is not None:
@@ -291,6 +330,12 @@ class TiloMenu:
         self.Image.set_from_pixbuf(pixmap)
 
     def cleanup(self, event):
+        if self._settings_refresh_id is not None:
+            GLib.source_remove(self._settings_refresh_id)
+            self._settings_refresh_id = None
+        if self._settings_signal_id is not None and backend.settings is not None:
+            backend.settings.disconnect(self._settings_signal_id)
+            self._settings_signal_id = None
         if self.hwg is not None:
             self.hwg.destroy()
         self.hwg = None
