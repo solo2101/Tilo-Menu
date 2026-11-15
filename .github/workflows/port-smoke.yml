@@ -20,6 +20,8 @@ jobs:
           sudo apt-get install -y python3-gi libglib2.0-bin
       - name: Compile Python 3 source
         run: /usr/bin/python3 -m compileall -q src/lib/tilomenu src/bin
+      - name: Check explicit GI namespace versions in all Python files
+        run: /usr/bin/python3 tests/test_gi_versions.py
       - name: Compile GSettings schema
         run: glib-compile-schemas --strict src/share/glib-2.0/schemas
       - name: Preserve original class signatures and settings behavior
