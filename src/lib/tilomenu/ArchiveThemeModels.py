@@ -32,3 +32,4 @@ class MenuTheme:
     tabs: tuple[ThemeElement, ...] = field(default_factory=tuple)
     labels: tuple[ThemeElement, ...] = field(default_factory=tuple)
     images: tuple[ThemeElement, ...] = field(default_factory=tuple)
+    flipped: bool = False
