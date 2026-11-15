@@ -99,6 +99,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_special_menus.py
 
+      - name: Construct all original XML themes with archived GTK3 engine
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_archived_theme_matrix.py
+
       - name: Verify archived chrome and original theme transparency
         env:
           GSETTINGS_BACKEND: memory
