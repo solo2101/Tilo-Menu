@@ -12,6 +12,7 @@ import Globals
 from Menu_Main import Main_Menu
 from ArchiveThemeBridge import oriented_theme
 from ArchiveThemeParser import load_menu_theme
+from ArchiveThemeContrast import sample_background
 
 def pixels(pix, x, y):
     idx = y * pix.get_rowstride() + x * pix.get_n_channels()
@@ -53,6 +54,21 @@ try:
         expected_y = original.get_height() - y - 1 if direction == 'top' else y
         assert pixels(menu.bgpb, x, y) == pixels(original, x, expected_y), (
             direction, 'original PNG vertical flip')
+        # The text contrast helper must sample the same vertically flipped
+        # background pixels the user sees, not the unflipped asset.
+        for cy in range(8, original.get_height() - 8, 9):
+            for cx in range(8, original.get_width() - 8, 9):
+                rgba = pixels(menu.bgpb, cx, cy)
+                if len(rgba) == 4 and rgba[3] < 175:
+                    continue
+                sampled = sample_background(theme, cx, cy)
+                assert sampled == tuple(rgba[:3]), (direction, cx, cy,
+                                                     sampled, tuple(rgba[:3]))
+                break
+            else:
+                continue
+            break
+
         menu.window.destroy()
     print('PASS: original GnoMenu vertical flip and XML widget positions for both panel edges')
 finally:
