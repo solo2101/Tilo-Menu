@@ -320,6 +320,12 @@ class Main_Menu(ThemeWindowRenderingMixin, gobject.GObject):
                 self.w = max(1, int(Globals.MenuWidth))
                 self.h = max(1, int(Globals.MenuHeight))
                 self.shape()
+                # The old window-level draw callback runs beneath GTK3
+                # children, but Gtk.Fixed does not paint our PNG for us.
+                # Give the bottom-most fixed child the original artwork so
+                # later transparent event boxes cannot reveal the desktop.
+                self.background.set_from_pixbuf(self.bgpb)
+                self.background.set_size_request(self.w, self.h)
                 self.window.set_opacity(1.0)
                 if Globals.MenuHasIcon==1:
                         self.usericon = ImageFrame(Globals.IconW,Globals.IconH,Globals.IconInX,Globals.IconInY,Globals.IconInW,Globals.IconInH,self.menuframe,self.bgpb)
