@@ -153,10 +153,24 @@ class ArchivedCairoProgramList(GObject.GObject):
                     text_x = 14 + self.icon_size
                 except Exception:
                     pass
-            self._label(
-                cr, names[index].replace('\n', ' '),
-                text_x, y + max(5, (self.row_height - 17) / 2),
-                width - text_x - 14, bright)
+            if self.XDG.L_Types[index] == 9 and '\n' in names[index]:
+                # Restore the original three-line Favorites instruction text.
+                layout = PangoCairo.create_layout(cr)
+                layout.set_text(names[index], -1)
+                layout.set_font_description(Pango.FontDescription('Sans 9'))
+                layout.set_width(max(1, width - text_x - 14) * Pango.SCALE)
+                layout.set_wrap(Pango.WrapMode.WORD_CHAR)
+                if bright:
+                    cr.set_source_rgb(0.97, 0.97, 0.97)
+                else:
+                    cr.set_source_rgb(0.09, 0.09, 0.09)
+                cr.move_to(text_x, y + 6)
+                PangoCairo.show_layout(cr, layout)
+            else:
+                self._label(
+                    cr, names[index].replace('\n', ' '),
+                    text_x, y + max(5, (self.row_height - 17) / 2),
+                    width - text_x - 14, bright)
         if len(names) > count:
             track = max(1, height - 8)
             bar_h = max(16, track * count / len(names))
