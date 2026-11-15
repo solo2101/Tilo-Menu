@@ -13,6 +13,16 @@ from gi.repository import Gtk, MatePanelApplet
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src/lib/tilomenu'))
 from TiloMenu import TiloMenu
 
+# Production panel activation must use the same BLAS-limited entry point as
+# the working standalone launcher, not import TiloMenu.py directly.
+root = Path(__file__).resolve().parents[1]
+metadata = (root / 'src/lib/mate-panel/applets/org.mate.panel.TiloMenu.mate-panel-applet').read_text()
+service = (root / 'src/share/dbus-1/services/org.mate.panel.applet.TiloMenuFactory.service').read_text()
+launcher = (root / 'src/bin/TiloMenu.py').read_text()
+assert 'Location=/usr/bin/tilomenu' in metadata
+assert 'Exec=/usr/bin/tilomenu' in service
+assert "OPENBLAS_NUM_THREADS" in launcher
+
 class Sandpit(Gtk.EventBox):
     def get_orient(self):
         return 1
