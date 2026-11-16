@@ -113,6 +113,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_original_flip.py
 
+      - name: Rebind portrait frame artwork after switching menu themes
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_theme_resource_reload.py
+
       - name: Keep original XML font colors and portrait bounds across themes
         env:
           GSETTINGS_BACKEND: memory
