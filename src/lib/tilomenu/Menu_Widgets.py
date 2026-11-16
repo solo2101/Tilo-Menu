@@ -752,11 +752,18 @@ class ImageFrame:
 
                         self.temp = GdkPixbuf.Pixbuf.new_from_file(imagefile).scale_simple(self.iw,self.ih,GdkPixbuf.InterpType.BILINEAR)
 
-                elif index==0:  
-
-                        self.temp = GdkPixbuf.Pixbuf.new_from_file(imagefile)
-                        self.w = self.temp.get_width()
-                        self.h = self.temp.get_height()
+                elif index==0:
+                        # IconSettings Width/Height define the portrait frame.
+                        # The original PNG sometimes has different dimensions.
+                        # Do not resize the widget after its backdrop was
+                        # cropped and its GTK3 allocation was established:
+                        # that exposes black/uncleared strips around the face.
+                        source = GdkPixbuf.Pixbuf.new_from_file(imagefile)
+                        if (source.get_width(), source.get_height()) != (self.w, self.h):
+                                self.temp = source.scale_simple(
+                                        self.w, self.h, GdkPixbuf.InterpType.BILINEAR)
+                        else:
+                                self.temp = source
                 else:
                         try:
                                 self.temp = GdkPixbuf.Pixbuf.new_from_file_at_size(imagefile, self.w, self.h)
