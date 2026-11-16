@@ -113,6 +113,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_original_flip.py
 
+      - name: Keep original XML font colors and portrait bounds across themes
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_xml_theme_markup.py
+
       - name: Verify original separator drawing and activation
         env:
           GSETTINGS_BACKEND: memory
