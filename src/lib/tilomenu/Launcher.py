@@ -50,6 +50,14 @@ _MATE_ACTIONS = {
 _THEME_COMMANDS = {
         'gnome-terminal': ('mate-terminal', 'gnome-terminal'),
         'gnome-app-install': ('dnfdragora', 'gnome-software', 'gnome-app-install'),
+        # These are literal Exec values in the original Auxiliary page.
+        'gnome-about-me': ('mate-about-me', 'mate-control-center'),
+        'gnome-appearance-properties': (
+                'mate-appearance-properties', 'mate-control-center'),
+        'alacarte': ('mozo', 'alacarte'),
+        'gnome-screensaver-preferences': (
+                'mate-screensaver-preferences', 'mate-control-center'),
+        'gnome-system-monitor': ('mate-system-monitor', 'gnome-system-monitor'),
 }
 
 
@@ -141,6 +149,9 @@ class Launcher(gobject.GObject):
                         except OSError as error:
                                 print('TiloMenu open failed:', error)
                 elif tag == 5 or tag == 6 or tag == 7:
+                        # Original Auxiliary page passes literal GNOME 2
+                        # commands directly, bypassing LookUpCommand.
+                        command = resolve_legacy_exec(command)
                         try:
                                 subprocess.Popen(['/bin/sh', '-c', command],
                                                  start_new_session=True)
