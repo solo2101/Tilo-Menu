@@ -291,7 +291,7 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None,
         # unparented GTK3 Label can be 0/1px: that caused every caption to
         # collapse into a literal "..." ellipsis.
         pango_layout = label.get_layout()
-        natural, _height = pango_layout.get_pixel_size()
+        natural, natural_height = pango_layout.get_pixel_size()
         if natural < 2 and label.get_text():
             natural = max(20, len(label.get_text()) * 7)
         natural = max(1, natural)
@@ -308,6 +308,12 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None,
             label.set_ellipsize(Pango.EllipsizeMode.END)
         label.set_size_request(allowed, -1)
         label.set_xalign((0.0, 0.5, 1.0)[alignment])
+        # Original MenuLabel.__init__ anchors the text at (height - Y)
+        # MINUS the natural Pango line height for top-panel menus.
+        # Globals already transforms LabelY; without this subtraction,
+        # captions move down by one line and overlap the mirrored artwork.
+        if theme.flipped:
+            y -= max(1, natural_height)
         layout.put(label, left, y)
 
     tabs = {}
