@@ -67,6 +67,8 @@ try:
             menu = Main_Menu(lambda: None)
             try:
                 assert Globals.MenuHasIcon == 1, name
+                assert (menu.usericon.frame_window.get_events() &
+                        Gdk.EventMask.BUTTON_PRESS_MASK), (name, "missing button-press mask")
                 assert menu.usericon.frame_window.get_tooltip_text() == "About Me"
                 with patch("Menu_Widgets.os.system") as system:
                     menu.usericon.frame_window.emit("button-press-event", left)
