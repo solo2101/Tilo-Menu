@@ -11,6 +11,8 @@
 # applet registration to MatePanelApplet 4.0. Original menu and settings
 # modules have not been ported at this stage.
 
+import shlex
+import shutil
 import subprocess
 import sys
 import xml.dom.minidom
@@ -27,6 +29,7 @@ from gi.repository import Gdk, GdkPixbuf, Gtk, MatePanelApplet, GLib
 import Globals
 import backend
 from Menu_Main import Main_Menu
+from Launcher import resolve_legacy_action
 
 
 name = 'TiloMenu'
@@ -322,9 +325,10 @@ class TiloMenu:
         for key, icon, label, callback in actions:
             action = Gtk.Action(key, label, None, icon)
             action.connect('activate', callback)
-            # Settings uses the original TiloMenu-Settings.py window.
-            # The original external MenuEditor remains deferred.
-            action.set_sensitive(key in ('Props', 'About'))
+            # The original Edit Menus action uses the configured editor.
+            # MATE supplies Mozo instead of GNOME 2's Alacarte.
+            action.set_sensitive(
+                key != 'Edit' or self._menu_editor_command() is not None)
             self.verbs.add_action(action)
         self.applet.setup_menu(self.propxml, self.verbs)
 
@@ -355,9 +359,24 @@ class TiloMenu:
             except OSError as error:
                 output.write('ERROR: %s\n' % error)
 
+    def _menu_editor_command(self):
+        command = resolve_legacy_action(
+            'MenuEditor', Globals.Settings.get('MenuEditor', 'alacarte'))
+        try:
+            arguments = shlex.split(command)
+        except (TypeError, ValueError):
+            return None
+        return arguments if arguments and shutil.which(arguments[0]) else None
+
     def edit_menus(self, event, data=None):
-        # Original invokes MenuEditor configured in Globals.py.
-        return None
+        # Preserve the original configured menu editor, with a compatibility
+        # lookup for its GNOME 2 default. Only launch when installed.
+        arguments = self._menu_editor_command()
+        if arguments:
+            try:
+                subprocess.Popen(arguments, start_new_session=True)
+            except OSError as error:
+                print('TiloMenu menu editor launch failed:', error)
 
     def select_box(self, widget, event):
         if self.Button_state == 0:
