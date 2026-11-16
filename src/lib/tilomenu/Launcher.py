@@ -17,9 +17,64 @@ import utils
 import Globals
 import os
 import shlex
+import shutil
 import subprocess
 import urllib.parse as urllib
 from gi.repository import GObject as gobject
+
+
+# Keep the GnoMenu action names and user settings unchanged. Only translate
+# the exact legacy defaults when launching them from a modern MATE session.
+# First available command wins; custom commands always retain precedence.
+_MATE_ACTIONS = {
+        'Search': ('mate-search-tool', 'catfish', 'gnome-search-tool'),
+        'Control Panel': ('mate-control-center', 'gnome-control-center'),
+        'Package Manager': ('dnfdragora', 'gnome-software', 'synaptic'),
+        'Power': ('mate-session-save --shutdown-dialog',),
+        'Shutdown': ('mate-session-save --shutdown-dialog',),
+        'Lock': ('mate-screensaver-command --lock', 'loginctl lock-session'),
+        'Suspend': ('systemctl suspend',),
+        'Hibernate': ('systemctl hibernate',),
+        'Run': ('mate-panel --run-dialog',),
+        'Logout': ('mate-session-save --logout-dialog',),
+        'LogoutNow': ('mate-session-save --logout',),
+        # MATE's shutdown chooser includes a restart option. Avoid issuing
+        # an immediate reboot from a legacy theme command.
+        'Restart': ('mate-session-save --shutdown-dialog',),
+        'User': ('mate-about-me', 'mate-control-center'),
+        'MenuEditor': ('mozo', 'alacarte'),
+}
+
+# A few original themes hard-code GNOME 2 binary names in their XML,
+# rather than referring to a named action in Globals.MenuActions.
+_THEME_COMMANDS = {
+        'gnome-terminal': ('mate-terminal', 'gnome-terminal'),
+        'gnome-app-install': ('dnfdragora', 'gnome-software', 'gnome-app-install'),
+}
+
+
+def _first_installed(candidates):
+        for candidate in candidates:
+                try:
+                        program = shlex.split(candidate)[0]
+                except (ValueError, IndexError):
+                        continue
+                if shutil.which(program):
+                        return candidate
+        return None
+
+
+def resolve_legacy_action(action, configured):
+        """Port original commands without overriding user preferences."""
+        original = Globals.DefaultSettings.get(action)
+        if original is None or configured != original:
+                return configured
+        return _first_installed(_MATE_ACTIONS.get(action, ())) or configured
+
+
+def resolve_theme_command(command):
+        """Translate only known retired GNOME 2 theme commands."""
+        return _first_installed(_THEME_COMMANDS.get(command, ())) or command
 
 
 class Launcher(gobject.GObject):
@@ -81,20 +136,40 @@ class Launcher(gobject.GObject):
                         command = "trash:///"
                         return 'xdg-open %s &' % command
                 
-                if utils.xdg_dir("XDG_%s_DIR" % str(command).upper()) != False:
-                        command = utils.xdg_dir("XDG_%s_DIR" % str(command).upper())
-                        command = urllib.unquote(command)
-                        return 'xdg-open %s &' % command
+                # Respect original XDG user-directory names, including
+                # localized folders and paths containing spaces.
+                folder = utils.xdg_dir("XDG_%s_DIR" % str(command).upper())
+                if folder is not False and folder:
+                        return 'xdg-open %s &' % shlex.quote(urllib.unquote(folder))
+                if str(command).upper() in (
+                        'DESKTOP', 'DOCUMENTS', 'DOWNLOAD', 'MUSIC',
+                        'PICTURES', 'PUBLICSHARE', 'TEMPLATES', 'VIDEOS'):
+                        if shutil.which('xdg-user-dir'):
+                                try:
+                                        result = subprocess.run(
+                                                ['xdg-user-dir', str(command).upper()],
+                                                capture_output=True, text=True,
+                                                timeout=2, check=False)
+                                        folder = result.stdout.strip()
+                                        if result.returncode == 0 and folder and os.path.isdir(folder):
+                                                return 'xdg-open %s &' % shlex.quote(folder)
+                                except (OSError, subprocess.TimeoutExpired):
+                                        pass
+                        # Without xdg-user-dirs configuration, open Home
+                        # instead of silently invoking an unknown command.
+                        return 'xdg-open %s &' % shlex.quote(os.path.expanduser('~'))
                 
                 for i in range(0,len(Globals.MenuActions)):
                         if Globals.MenuActions[i]==command:
-                                return '%s &' % Globals.MenuCommands[i]
+                                return '%s &' % resolve_legacy_action(
+                                        command, Globals.MenuCommands[i])
                 if command.find(':ALLAPPS:') != -1:
 
                         self.emit('special-command')
                         return ""
                         
                 print("%s - Running custom command" % str(command))
-                return Globals.SecurityCheck('%s &' % command)
+                return Globals.SecurityCheck(
+                        '%s &' % resolve_theme_command(command))
 
 
