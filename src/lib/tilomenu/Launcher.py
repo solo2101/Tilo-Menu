@@ -66,7 +66,14 @@ def _first_installed(candidates):
 
 def resolve_legacy_action(action, configured):
         """Port original commands without overriding user preferences."""
-        original = Globals.DefaultSettings.get(action)
+        # XML action labels use spaces, but original preference keys use
+        # underscores. Look up the setting key before checking for defaults.
+        setting_key = {
+                'Control Panel': 'Control_Panel',
+                'Package Manager': 'Package_Manager',
+                'Network Config': 'Network_Config',
+        }.get(action, action)
+        original = Globals.DefaultSettings.get(setting_key)
         if original is None or configured != original:
                 return configured
         return _first_installed(_MATE_ACTIONS.get(action, ())) or configured
@@ -84,7 +91,12 @@ def resolve_legacy_exec(command):
         commands (tag=1), bypassing LookUpCommand entirely.
         """
         for action in _MATE_ACTIONS:
-                if command == Globals.DefaultSettings.get(action):
+                setting_key = {
+                        'Control Panel': 'Control_Panel',
+                        'Package Manager': 'Package_Manager',
+                        'Network Config': 'Network_Config',
+                }.get(action, action)
+                if command == Globals.DefaultSettings.get(setting_key):
                         return resolve_legacy_action(action, command)
         return resolve_theme_command(command)
 
