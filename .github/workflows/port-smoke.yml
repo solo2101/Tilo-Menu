@@ -113,6 +113,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_orientation_theme_matrix.py
 
+      - name: Check iTheme displayed pixels after top and bottom panel flips
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_itheme_flip_pixels.py
+
       - name: Construct all 15 themes at both panel edges with full GTK3 popup
         env:
           GSETTINGS_BACKEND: memory
