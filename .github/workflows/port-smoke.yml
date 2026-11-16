@@ -113,6 +113,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_orientation_theme_matrix.py
 
+      - name: Construct all 15 themes at both panel edges with full GTK3 popup
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_full_orientation_matrix.py
+
       - name: Verify original top and bottom panel flipping
         env:
           GSETTINGS_BACKEND: memory
