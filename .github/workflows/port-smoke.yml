@@ -169,6 +169,20 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_xp_all_applications.py
 
+      - name: Audit all original theme actions and MATE command compatibility
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_theme_action_compat.py
+
+      - name: Test actual original XDG navigation for all theme submenus
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_theme_submenu_navigation.py
+
       - name: Exercise every theme button and tab command safely
         env:
           GSETTINGS_BACKEND: memory
