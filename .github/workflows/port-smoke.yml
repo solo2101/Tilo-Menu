@@ -106,6 +106,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_gray_background_pixels.py
 
+      - name: Verify all bundled themes across top and bottom panel orientations
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_orientation_theme_matrix.py
+
       - name: Verify original top and bottom panel flipping
         env:
           GSETTINGS_BACKEND: memory
