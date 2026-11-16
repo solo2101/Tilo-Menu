@@ -169,6 +169,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_xp_all_applications.py
 
+      - name: Verify face click and Fedora MATE package-control-network action fallbacks
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_fedora_mate_actions.py
+
       - name: Audit all original theme actions and MATE command compatibility
         env:
           GSETTINGS_BACKEND: memory
