@@ -45,7 +45,7 @@ try:
             frame = Gtk.Fixed()
             frame.set_size_request(theme.width, theme.height)
             buttons = render_theme_buttons(frame, theme)
-            _, tabs = render_theme_details(frame, theme)
+            states, tabs = render_theme_details(frame, theme)
 
             assert len(buttons) == Globals.MenuButtonCount, (name, direction)
             assert len(tabs) == Globals.MenuTabCount, (name, direction)
@@ -61,32 +61,26 @@ try:
                 assert frame.child_get_property(tab, "y") == Globals.MenuTabY[i], (
                     name, direction, "tab", i
                 )
-                image_name = attrs.get("ImageSel") or attrs.get("Image")
-                if not image_name:
-                    continue
-                original = GdkPixbuf.Pixbuf.new_from_file(
-                    str(theme.directory / image_name))
-                expected = original.flip(False) if direction == "top" else original
-                # The first Gtk.Image in the tab's Gtk.Fixed is the artwork.
+                # Switch both tab states. Original MenuTab.Setimage()
+                # reverses only the PNG pixels when the panel is on top.
                 picture = next(child for child in tab.get_child().get_children()
                                if isinstance(child, Gtk.Image))
-                # Verify both active and inactive tab states.
-                # Inactive tabs with no Image are intentionally transparent.
-                current = next(item for item in theme.tabs if item.attributes is attrs)
-                assert current is not None
-                if attrs.get("ImageSel"):
-                    # Renderer draws the selected PNG on active tabs.
-                    selection = tabs[i].get_child()
-                    image = picture
-                    # Unselected -> selected transition happens through adapter;
-                    # here the static renderer initializes the "Applications"
-                    # tab selected, so compare the selected state when active.
-                    tab_name = attrs.get("Name", "")
-                    if tab_name == "Applications" or (
-                        "Applications" not in [t.attributes.get("Name") for t in theme.tabs]
-                        and i == 0):
-                        same_pixels(image.get_pixbuf(), expected,
-                                    (name, direction, tab_name))
+                name_of_tab = attrs.get("Name", "")
+                for active in (True, False, True):
+                    states[name_of_tab](active)
+                    image_name = (attrs.get("ImageSel") or attrs.get("Image")
+                                  if active else attrs.get("Image"))
+                    observed = picture.get_pixbuf()
+                    if not image_name:
+                        assert observed is None, (
+                            name, direction, name_of_tab, active, "expected no image"
+                        )
+                        continue
+                    source = GdkPixbuf.Pixbuf.new_from_file(
+                        str(theme.directory / image_name))
+                    expected = source.flip(False) if direction == "top" else source
+                    same_pixels(observed, expected,
+                                (name, direction, name_of_tab, active))
                 checked += 1
 
     assert len(names) >= 15, names
