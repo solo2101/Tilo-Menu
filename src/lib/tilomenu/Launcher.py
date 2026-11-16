@@ -77,6 +77,18 @@ def resolve_theme_command(command):
         return _first_installed(_THEME_COMMANDS.get(command, ())) or command
 
 
+def resolve_legacy_exec(command):
+        """Resolve original stored defaults even for application-list rows.
+
+        The old GnoMenu Shutdown page submits values directly as Exec
+        commands (tag=1), bypassing LookUpCommand entirely.
+        """
+        for action in _MATE_ACTIONS:
+                if command == Globals.DefaultSettings.get(action):
+                        return resolve_legacy_action(action, command)
+        return resolve_theme_command(command)
+
+
 class Launcher(gobject.GObject):
         __gsignals__ = {
         'special-command': (gobject.SignalFlags.RUN_LAST, None, ()),
@@ -93,6 +105,9 @@ class Launcher(gobject.GObject):
                         if c != '':
                                 os.system(c)
                 elif tag == 1:
+                        # Shutdown-page entries and Favorites launch through
+                        # tag=1 instead of the normal named-action handler.
+                        command = resolve_legacy_exec(command)
                         # Original .desktop Exec syntax includes quoted
                         # arguments and placeholders such as %f, %u and %F.
                         # Splitting on spaces breaks both. Preserve shell
