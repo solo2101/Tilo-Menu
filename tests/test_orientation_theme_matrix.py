@@ -49,6 +49,22 @@ try:
 
             assert len(buttons) == Globals.MenuButtonCount, (name, direction)
             assert len(tabs) == Globals.MenuTabCount, (name, direction)
+            # Static XML labels have a height-adjusted anchor in the
+            # original MenuLabel code, unlike images, buttons and tabs.
+            labels = [widget for widget in frame.get_children()
+                      if isinstance(widget, Gtk.Label)]
+            assert len(labels) == Globals.MenuLabelCount, (
+                name, direction, "missing labels"
+            )
+            for i, label in enumerate(labels):
+                natural_height = max(1, label.get_layout().get_pixel_size()[1])
+                expected_y = Globals.MenuLabelY[i]
+                if direction == "top":
+                    expected_y -= natural_height
+                actual_y = frame.child_get_property(label, "y")
+                assert actual_y == expected_y, (
+                    name, direction, "label", i, actual_y, expected_y
+                )
             for i, button in enumerate(buttons):
                 if button is not None:
                     assert frame.child_get_property(button, "y") == Globals.MenuButtonY[i], (
