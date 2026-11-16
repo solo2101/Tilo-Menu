@@ -20,6 +20,8 @@ gi.require_version('GdkPixbuf', '2.0')
 from gi.repository import Gtk as gtk, Gdk, GdkPixbuf
 import backend
 import os
+import shlex
+import sys
 import urllib.parse as urllib
 import utils
 from gi.repository import GObject as gobject, GLib
@@ -282,7 +284,16 @@ class XDGMenu(gobject.GObject):
                         self.addtomenu(_("Menu editor"),"alacarte",6,"","alacarte")
                         self.addtomenu(_("Screensaver"),"preferences-desktop-screensaver",5,"","gnome-screensaver-preferences")
                         self.addtomenu(_("System Monitor"),"utilities-system-monitor",5,"","gnome-system-monitor")
-                        self.addtomenu(_("TiloMenu settings utility"),"%slogo.png" % Globals.GraphicsDirectory,7,"","%sTiloMenu-Settings.py" % Globals.ProgramDirectory)
+                        # The port installs TiloMenu-Settings.py as a
+                        # Python module (0644), not an executable. Launch
+                        # it through Python without changing the original
+                        # Auxiliary menu row type or command handling.
+                        settings_file = Globals.ProgramDirectory + 'TiloMenu-Settings.py'
+                        self.addtomenu(_("TiloMenu settings utility"),
+                                       "%slogo.png" % Globals.GraphicsDirectory,
+                                       7, "", "%s %s" % (
+                                           shlex.quote(sys.executable),
+                                           shlex.quote(settings_file)))
                 #==============================================================
                 #FAVORITES ITEMS MENU
                 #==============================================================
