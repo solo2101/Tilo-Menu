@@ -29,7 +29,12 @@ from gi.repository import GObject as gobject
 _MATE_ACTIONS = {
         'Search': ('mate-search-tool', 'catfish', 'gnome-search-tool'),
         'Control Panel': ('mate-control-center', 'gnome-control-center'),
-        'Package Manager': ('dnfdragora', 'gnome-software', 'synaptic'),
+        'Network Config': ('nm-connection-editor', 'mate-control-center'),
+        # Fedora 43 supports Software, PackageKit, and dnfdragora.
+        # Prefer graphical tools for ordinary sessions. Some dnfdragora
+        # releases exist on Fedora but fail to launch on certain systems.
+        'Package Manager': ('gnome-software', 'gpk-application',
+                            'dnfdragora', 'synaptic'),
         'Power': ('mate-session-save --shutdown-dialog',),
         'Shutdown': ('mate-session-save --shutdown-dialog',),
         'Lock': ('mate-screensaver-command --lock', 'loginctl lock-session'),
@@ -49,7 +54,8 @@ _MATE_ACTIONS = {
 # rather than referring to a named action in Globals.MenuActions.
 _THEME_COMMANDS = {
         'gnome-terminal': ('mate-terminal', 'gnome-terminal'),
-        'gnome-app-install': ('dnfdragora', 'gnome-software', 'gnome-app-install'),
+        'gnome-app-install': ('gnome-software', 'gpk-application',
+                              'dnfdragora', 'gnome-app-install'),
         # These are literal Exec values in the original Auxiliary page.
         'gnome-about-me': ('mate-about-me', 'mate-control-center'),
         'gnome-appearance-properties': (
