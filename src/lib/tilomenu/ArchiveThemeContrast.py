@@ -133,14 +133,28 @@ def suggested_color(theme, text_x, text_y, width, preferred=None,
 def legible_markup(theme, markup, text_x, text_y, width, *,
                    selected=False, invert_unselected=False,
                    overlay="", overlay_x=0, overlay_y=0):
-    """Honor XML tab inversion and override only unreadable text colors."""
+    """Respect original XML foreground colors, including tab inversion.
+
+    GnoMenu's XML defines each caption's foreground. Contrast correction of
+    an explicit foreground is not compatible with the source themes: notably
+    XP's authored white footer text was being rendered black. Only choose a
+    background-aware color if a theme omits the foreground entirely.
+    """
     match = FOREGROUND.search(markup)
-    original = _rgb(match.group(1)) if match else None
-    if invert_unselected and not selected and original is not None:
-        original = _invert(original)
-    chosen = suggested_color(
-        theme, text_x, text_y, width, original, overlay, overlay_x, overlay_y
-    )
     if match:
-        return markup[:match.start(1)] + _hex(chosen) + markup[match.end(1):]
+        # The original MenuTab.SetSelectedTab inverts an unselected tab
+        # only when the XML explicitly requests InvertTextColorOnSel.
+        if not invert_unselected or selected:
+            return markup
+        source = _rgb(match.group(1))
+        if source is None:
+            return markup
+        inverse = _hex(_invert(source))
+        return markup[:match.start(1)] + inverse + markup[match.end(1):]
+
+    # Themes without foreground metadata still need a readable default
+    # independent of the GTK desktop theme.
+    chosen = suggested_color(
+        theme, text_x, text_y, width, None, overlay, overlay_x, overlay_y
+    )
     return "<span foreground='{}'>{}</span>".format(_hex(chosen), markup)
