@@ -176,6 +176,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_theme_action_compat.py
 
+      - name: Verify original Edit Menus uses MATE Mozo when available
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_mate_menu_editor.py
+
       - name: Test actual original XDG navigation for all theme submenus
         env:
           GSETTINGS_BACKEND: memory
