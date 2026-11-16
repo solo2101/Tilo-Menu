@@ -1,7 +1,7 @@
-"""Theme-aware XML text contrast.
+"""Original XML text colors and fallback contrast for unstyled captions.
 
-Original foreground colors are retained when readable. Transparency and tabs
-are sampled from the real artwork, never from the user's desktop GTK theme.
+Preserve authored foreground colors, even when a modern contrast heuristic
+would choose something else. Sample theme pixels only when XML has no color.
 """
 from functools import lru_cache
 from pathlib import Path
