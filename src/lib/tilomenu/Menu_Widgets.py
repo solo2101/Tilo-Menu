@@ -690,7 +690,16 @@ class ImageFrame:
 
 
         def but_click(self, widget, event):
-                os.system(Globals.Settings['User'] + ' &')
+                # Preserve the original profile-picture action. The GNOME 2
+                # default (gnome-about-me) is absent on modern MATE systems;
+                # resolve that default the same way as XML button actions.
+                if event is not None and getattr(event, 'button', 1) != 1:
+                        return False
+                from Launcher import resolve_legacy_action
+                command = resolve_legacy_action('User', Globals.Settings['User'])
+                if command:
+                        os.system(command + ' &')
+                return False
 
 
         def move(self,x,y):
