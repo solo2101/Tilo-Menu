@@ -609,6 +609,9 @@ class ImageFrame:
                 self.Pic = None
                 self.frame_window = gtk.EventBox()
                 self.frame_window.set_visible_window(False)
+                # Transparent GTK3 EventBox needs the pointer event mask
+                # explicitly so the original About Me image is clickable.
+                self.frame_window.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
                 if not self.frame_window.is_composited():
          
                         self.supports_alpha = False
