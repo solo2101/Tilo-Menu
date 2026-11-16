@@ -183,6 +183,13 @@ jobs:
         run: |
           dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_mate_menu_editor.py
 
+      - name: Verify original GTK3 button-release signal wiring across all themes
+        env:
+          GSETTINGS_BACKEND: memory
+          XDG_MENU_PREFIX: mate-
+        run: |
+          dbus-run-session -- xvfb-run -a /usr/bin/python3 tests/test_theme_button_signals.py
+
       - name: Test actual original XDG navigation for all theme submenus
         env:
           GSETTINGS_BACKEND: memory
