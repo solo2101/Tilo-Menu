@@ -320,6 +320,15 @@ def render_theme_details(layout: Gtk.Fixed, theme, on_tab=None,
         attrs = element.attributes
         normal = _pixbuf(theme.directory, attrs.get("Image", ""))
         selected = _pixbuf(theme.directory, attrs.get("ImageSel", ""))
+        # GnoMenu's original MenuTab.Setimage() flips tab artwork
+        # vertically for a top-panel popup. The background is already
+        # flipped by Main_Menu.shape(), and oriented_theme() mirrors the
+        # tab's Y coordinate. Reproduce the third part of that behavior:
+        # flip the tab bitmap, not its text or action icon. Never mutate
+        # _pixbuf's cached original, which is reused for bottom panels.
+        if theme.flipped:
+            normal = normal.flip(False) if normal is not None else None
+            selected = selected.flip(False) if selected is not None else None
         reference = selected or normal
         if reference is None:
             tab_boxes.append(None)
